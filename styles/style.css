@@ -1,0 +1,25 @@
+html {
+  margin: 0px; padding: 0px;
+  background-color: #fcfcfc;
+}
+  
+  body {
+    position: relative; margin: 0 auto; padding: 0px;
+    font-size: 0.625em; /* =10px on default font size of 16px */
+    width: 62em;        /* =760px */
+    color: #222;
+    font-family: Georgia, Times, serif;
+  }
+  
+  p {
+    font-size: 1.3em;
+    line-height: 1.5em;
+    margin-bottom: 1em;
+  }
+  
+  h1:before {
+    content: "\2743";
+    margin-right: 1em;
+    color: green;
+  }
+  

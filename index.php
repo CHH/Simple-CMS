@@ -10,6 +10,7 @@ define("APPLICATION_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR
 define("LIBRARY_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "library"));
 
 $coreConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
+$pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
 
 if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path)) {
   define("SPARK_PATH", $coreConfig->framework->path);
@@ -30,6 +31,7 @@ if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path))
   }
 }
 
+
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
 
 function __autoload($class)
@@ -39,14 +41,22 @@ function __autoload($class)
 
 // Write the Core Config to the Registry
 Spark_Registry::set("CoreConfig", $coreConfig);
+Spark_Registry::set("PagesConfig", $pagesConfig);
 
 Spark_Object_Manager::setConfig($coreConfig);
 
-$frontController = Spark_Object_Manager::getInstance("Spark_Controller_FrontController");
+$frontController = Spark_Object_Manager::get("Spark_Controller_FrontController");
 
 $router = $frontController->getRouter();
 
-$router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action/*", array("command"=>"Default", "action" => "default")));
-$router->addRoute("pages", new Zend_Controller_Router_Route("/:name", array("command"=>"page", "name" => "index")));
+$router->removeDefaultRoutes();
+
+$router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action/*", array("command"=>"default", "action" => "default")));
+$router->addRoute("pages", new Zend_Controller_Router_Route(":name", array("command"=>"page", "name" => "index")));
+
+
+$applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages);
+
+$frontController->addPostFilter($applyLayoutFilter);
 
 $frontController->handleRequest();
