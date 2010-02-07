@@ -1,0 +1,12 @@
+
+h1. How to install
+
+# Clone the git repository to your web root (e.g. htdocs folder) with git clone git://github.com/yuri41/Simple-CMS.git
+# Clone the Spark Web Framework with git clone git://github.com/yuri41/Spark-Web-Framework in the same folder as you cloned the CMS code
+# Make sure you have the Zend Framework either installed over PEAR or somewhere in your PHP include path
+# Setup a new Apache virtual host and point the document root to the folder your CMS instance lives in (e.g. htdocs/Simple-CMS). Don't forget to update your /etc/hosts or C:\Windows\system32\drivers\etc\hosts file if you don't own a domain.
+
+h1. Usage
+Every public page goes into the pages folder and has the extension ".txt". Every page gets through the Textile parser so you can use HTML and the Textile Markup Language.
+The common Layout for all pages is stored in the layouts folder. This file uses Zend_View as template engine. To get the content of the requested page, simply output $this->content. For additional information visit the manual of Zend_View.
+
