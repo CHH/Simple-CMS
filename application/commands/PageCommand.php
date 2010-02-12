@@ -8,8 +8,15 @@ class PageCommand implements Spark_Controller_CommandInterface
     Zend_Controller_Response_Abstract $response
   )
   {
-    $name = $request->getParam("name");
-    $pathToPage = WEBROOT . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR . $name . ".txt";
+    $params = $request->getParams();
+
+    unset($params["command"]);
+    unset($params["action"]);
+    
+    $path =  join($params, "/");
+    
+    $pathToPage = WEBROOT . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR 
+                  . $path . ".txt";
     
     if(file_exists($pathToPage)) {
       $contents = file_get_contents($pathToPage);

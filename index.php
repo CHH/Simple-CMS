@@ -52,11 +52,12 @@ $router = $frontController->getRouter();
 $router->removeDefaultRoutes();
 
 $router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action/*", array("command"=>"default", "action" => "default")));
-$router->addRoute("pages", new Zend_Controller_Router_Route(":name", array("command"=>"page", "name" => "index")));
 
+$router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
 $applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages);
 
 $frontController->addPostFilter($applyLayoutFilter);
 
 $frontController->handleRequest();
+
