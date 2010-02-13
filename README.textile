@@ -31,12 +31,12 @@ Put the images used for your pages in here
 Contains one or more layouts used by all pages. Layouts are rendered around the 
 page content and are used to render content used on all pages such as Navigation,
 links to stylesheets and so on.
-*library/
+* library/
 Your Classes live here.
-*pages/
+* pages/
 The folder for all pages. Subdirectories can be created to achieve a hierarchical
 organization of the pages.
-*styles/
+* styles/
 A place to put your stylesheets in.
 
 h1. Advanced Usage
