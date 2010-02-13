@@ -47,8 +47,8 @@ A place to put your stylesheets in.
 h1. Advanced Usage
 
 The common Layout for all pages is stored in the layouts folder and is named "default.phtml"
-by default. This can be changed with the config directive "pages.layout_name".
-The path where the layout files are located can be changed with "pages.layout_path".
+by default. This can be changed with the config directive "pages.layout.layout_name".
+The path where the layout files are located can be changed with "pages.layout.layout_path".
 Both config directives are found in the "pages.ini" config file in the "config" folder.
 
 The layout file uses Zend_View as template engine. To get the content of the requested page, 

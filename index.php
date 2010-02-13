@@ -55,7 +55,7 @@ $router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action
 
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
-$applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages);
+$applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
 
 $frontController->addPostFilter($applyLayoutFilter);
 
