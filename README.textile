@@ -8,6 +8,47 @@ h1. How to install
 
 h1. Usage
 
-Every public page goes into the pages folder and has the extension ".txt". Every page gets through the Textile parser so you can use HTML and the Textile Markup Language.
-The common Layout for all pages is stored in the layouts folder. This file uses Zend_View as template engine. To get the content of the requested page, simply output $this->content. For additional information visit the manual of Zend_View.
+h2. Pages
+
+To create a page, simply put a file with the extension ".txt" into the "pages" folder.
+If the Root of the Domain (e.g. http://example.com/) gets requested, the page named
+"index.txt" gets rendered. 
+
+If you want subpages in the style of "http://example.com/foo/bar" just create
+a folder "foo" in the "pages" directory. Then create the file "bar.txt" in the foo
+folder. This can be done infinitly, so you can organize your pages as you want.
+
+h2. The root folders
+
+The root of your install has various folders
+* application/
+Contains the business logic of the CMS.
+* config/
+Surprise! The folder for the config files
+* images/
+Put the images used for your pages in here
+* layouts/
+Contains one or more layouts used by all pages. Layouts are rendered around the 
+page content and are used to render content used on all pages such as Navigation,
+links to stylesheets and so on.
+*library/
+Your Classes live here.
+*pages/
+The folder for all pages. Subdirectories can be created to achieve a hierarchical
+organization of the pages.
+*styles/
+A place to put your stylesheets in.
+
+h1. Advanced Usage
+
+The common Layout for all pages is stored in the layouts folder and is named "default.phtml"
+by default. This can be changed with the config directive "pages.layout_name".
+The path where the layout files are located can be changed with "pages.layout_path".
+Both config directives are found in the "pages.ini" config file in the "config" folder.
+
+The layout file uses Zend_View as template engine. To get the content of the requested page, 
+simply output $this->content. Just write your HTML as you normally do, or use 
+the Helpers provided by Zend_View.
+For additional information refer to the manual of Zend_View.
+
 
