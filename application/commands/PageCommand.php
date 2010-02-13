@@ -9,14 +9,9 @@ class PageCommand implements Spark_Controller_CommandInterface
   )
   {
     $params = $request->getParams();
-
-    unset($params["command"]);
-    unset($params["action"]);
-    
-    $path =  join($params, "/");
     
     $pathToPage = WEBROOT . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR 
-                  . $path . ".txt";
+                  . join($params, "/") . ".txt";
     
     if(file_exists($pathToPage)) {
       $contents = file_get_contents($pathToPage);

@@ -1,7 +1,7 @@
 h1. Requirements
 
 # PHP 5.2.6 or newer (PHP 5.3 supported)
-# Permission to modify the include_path of PHP (e.g. via @set_include_path()@)
+# Permissions to modify the @include_path@ of PHP (e.g. via @set_include_path()@)
 # Apache 2.2 with mod_rewrite enabled and access to VHOSTs (not tested without, but should work)
 
 h1. How to install

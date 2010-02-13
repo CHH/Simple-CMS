@@ -8,10 +8,8 @@ class PageRoute
   private $_paramDelimiter = "/";
 
   private $_controllerName = "Page";
-  private $_controllerKey = "controller";
 
   private $_actionName = "view";
-  private $_actionKey = "action";
 
   private $_defaultPage = "index";
   
@@ -50,8 +48,10 @@ class PageRoute
       return false;
     }
     
-    $params[$this->_controllerKey] = $this->_controllerName;
-    $params[$this->_actionKey] = $this->_actionName;
+    $request->setCommandName($this->_controllerName);
+    $request->setActionName($this->_actionName);
+    
+    $request->setParams($params);
     
     return $params;
   }
@@ -67,21 +67,9 @@ class PageRoute
     return $this;
   }
 
-  public function setControllerKey($key)
-  {
-    $this->_controllerKey = $key;
-    return $this;
-  }
-
   public function setActionName($name)
   {
     $this->_actionName = $name;
-    return $this;
-  }
-
-  public function setActionKey($key)
-  {
-    $this->_actionKey = $key;
     return $this;
   }
 
