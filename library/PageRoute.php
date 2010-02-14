@@ -15,7 +15,7 @@ class PageRoute
   
   public static function getInstance(Zend_Config $config)
   {
-    return new self;
+    return new self($config);
   }
 
   public function __construct($options = null)

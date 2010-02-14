@@ -17,9 +17,3 @@ html {
     margin-bottom: 1em;
   }
   
-  h1:before {
-    content: "\2743";
-    margin-right: 1em;
-    color: green;
-  }
-  
