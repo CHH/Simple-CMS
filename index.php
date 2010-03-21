@@ -9,6 +9,8 @@ define("APPLICATION_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR
 
 define("LIBRARY_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "library"));
 
+require_once("Zend/Config/Ini.php");
+
 $coreConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
 $pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
 
@@ -34,10 +36,19 @@ if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path))
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
 
-function __autoload($class)
+function autoloadLibraries($class)
 {
-  include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
+  @include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
 }
+
+function autoloadModels($model)
+{
+  @include_once APPLICATION_PATH . DIRECTORY_SEPARATOR . "models" . DIRECTORY_SEPARATOR 
+               . $model . ".php";
+}
+
+spl_autoload_register("autoloadLibraries");
+spl_autoload_register("autoloadModels");
 
 // Write the Core Config to the Registry
 Spark_Registry::set("CoreConfig", $coreConfig);
@@ -56,6 +67,8 @@ $router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
 $applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
+
+$applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
 
 $frontController->addPostFilter($applyLayoutFilter);
 

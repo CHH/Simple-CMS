@@ -8,7 +8,23 @@
     
     <h1>Simple CMS</h1>
     
+    <h2>Table of Contents</h2>
+    
+    <ul id="table-of-contents">
+      <li><a href="/">Index</a></li>
+      <li><a href="/foo">Foo</a></li>
+      <li>
+        <a href="/projects">Projekte</a>
+        <ul>
+          <li><a href="/projects/fuel">Fuel CMS</a></li>
+          <li><a href="/projects/spark">Spark Web Framework</a></li>
+        </ul>
+      </li>
+    </ul>
+    
     <?= $this->content ?>
+    
+    <?= $this->pages()->find("partials/footer")->content ?>
     
   </body>
 

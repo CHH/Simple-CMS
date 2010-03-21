@@ -9,6 +9,7 @@ class PageCommand implements Spark_Controller_CommandInterface
   )
   {
     $pagesConfig = Spark_Registry::get("PagesConfig");
+    $pageMapper = new PageMapper;
     
     if(isset($pagesConfig->pages->extension)) {
       $ext = $pagesConfig->pages->extension;
@@ -18,15 +19,19 @@ class PageCommand implements Spark_Controller_CommandInterface
     
     $params = $request->getParams();
     
-    $pathToPage = WEBROOT . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR 
-                  . join($params, "/") . $ext;
+    $indexOfLast = count($params) - 1;
     
-    if(file_exists($pathToPage)) {
-      $contents = file_get_contents($pathToPage);
-      
-      $textile = new Spark_View_Helper_Textile;
-      
-      $content = $textile->parse($contents);
+    $id = $params[$indexOfLast];
+    unset($params[$indexOfLast]);
+    
+    $prefix = join($params, "/");
+    
+    if($prefix != "partials") {
+      $page = $pageMapper->find($id, $prefix);
+    
+      if($page) {
+        $content = $page->content;
+      }
     } else {
       // Render 404 View
       $errorViews = new Zend_View;
