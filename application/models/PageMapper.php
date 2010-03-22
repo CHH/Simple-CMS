@@ -9,6 +9,8 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   protected $_pageExtension = ".txt";
   
+  protected $_defaultPage = "index";
+  
   public function init()
   {
     $pagesConfig = Spark_Registry::get("PagesConfig");
@@ -25,14 +27,26 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   public function find($id, $prefix = null)
   {
     $pagePath = WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath . DIRECTORY_SEPARATOR . $prefix . DIRECTORY_SEPARATOR
-            . $id . $this->getPageExtension();
+            . $id;
     
-    if(!file_exists($pagePath)) {
+    if(file_exists($pagePath . $this->getPageExtension())) {
+      $pagePath = $pagePath . $this->getPageExtension();
+      
+    } elseif(is_dir($pagePath)) {
+      $pagePath = $pagePath . DIRECTORY_SEPARATOR . $this->_defaultPage . $this->getPageExtension();
+      
+    } else {
       return false;
     }
     
     $page = $this->create();
-    $page->content = file_get_contents($pagePath);
+    
+    try {
+      $page->content = file_get_contents($pagePath);
+    } catch(Exception $e) {
+      return false;
+    }
+    
     $page->id = $id;
     $page->prefix = $prefix;
     
@@ -99,6 +113,20 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     
     unlink($filename);
     
+    return $this;
+  }
+  
+  public function setDefaultPage($page)
+  {
+    if($page instanceof $this->_entityClass) {
+      $page = $page->id;
+      
+    } elseif(!is_string($page)) {
+      throw new Spark_Model_Exception("Please supply for the default page either
+        the name as string or a valid Page object");
+    }
+    
+    $this->_defaultPage = $page;
     return $this;
   }
   
