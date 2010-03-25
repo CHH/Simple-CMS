@@ -1,3 +1,55 @@
+/* CSS Reset by Eric Meyer (http://meyerweb.com) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+  outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+  text-decoration: none;
+}
+del {
+  text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 html {
   margin: 0px; padding: 0px;
   background-color: #fcfcfc;
@@ -9,11 +61,39 @@ html {
     width: 62em;        /* =760px */
     color: #222;
     font-family: Georgia, Times, serif;
+    line-height: 1.5em;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Helvetica", Arial, "Liberation Sans", sans;
+    text-transform: lowercase;
+    font-weight: bold;
+    line-height: 1.2em;
+    margin: 0.25em 0 0.5em;
+  }
+  
+  h1 { font-size: 7em; color: #c5974a; }
   
   p {
-    font-size: 1.3em;
+    font-size: 3em;
+    margin-bottom: 1.25em;
     line-height: 1.5em;
-    margin-bottom: 1em;
   }
   
+  em {
+    
+  }
+  
+  quote, q {
+    font-size: 0.5em;
+  }
+  
+  ol {
+    font-size: 2em;
+    line-height: 1.5em;
+    list-style: decimal;
+  }
+  
+  li {
+    margin: 0 0 0.5em;
+  }

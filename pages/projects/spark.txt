@@ -1,3 +1,0 @@
-h1. The Spark Web Framework
-
-...is very powerful ;)
