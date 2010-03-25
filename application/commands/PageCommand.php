@@ -28,20 +28,20 @@ class PageCommand implements Spark_Controller_CommandInterface
     
     if($prefix != "partials") {
       $page = $pageMapper->find($id, $prefix);
-    
+      
       if($page) {
         $content = $page->content;
       }
     } else {
       // Render 404 View
       $errorViews = new Zend_View;
-      $errorViews->setScriptPath(APPLICATION_PATH . "/views/Error");
+      $errorViews->setScriptPath(APPLICATION_PATH . "/views");
       
       $errorViews->requestedPageName = $params[(count($params) - 1)];
       $errorViews->requestedPath = join($params, "/");
       $errorViews->request = $request;
       
-      $content = $errorViews->render("404.phtml");
+      $content = $errorViews->render("Error/404.phtml");
     }
     
     $response->appendBody($content);

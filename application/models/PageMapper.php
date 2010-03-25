@@ -11,6 +11,8 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   protected $_defaultPage = "index";
   
+  protected $_renderer = null;
+  
   public function init()
   {
     $pagesConfig = Spark_Registry::get("PagesConfig");
@@ -26,14 +28,15 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   public function find($id, $prefix = null)
   {
-    $pagePath = WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath . DIRECTORY_SEPARATOR . $prefix . DIRECTORY_SEPARATOR
-            . $id;
+    $ds = DIRECTORY_SEPARATOR;
     
-    if(file_exists($pagePath . $this->getPageExtension())) {
+    $pagePath = $prefix . $ds . $id;
+    
+    if(file_exists(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath . $this->getPageExtension())) {
       $pagePath = $pagePath . $this->getPageExtension();
       
-    } elseif(is_dir($pagePath)) {
-      $pagePath = $pagePath . DIRECTORY_SEPARATOR . $this->_defaultPage . $this->getPageExtension();
+    } elseif(is_dir(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath)) {
+      $pagePath = $this->_defaultPage . $this->getPageExtension();
       
     } else {
       return false;
@@ -42,7 +45,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     $page = $this->create();
     
     try {
-      $page->content = file_get_contents($pagePath);
+      $page->content = $this->getRenderer()->render($pagePath);
     } catch(Exception $e) {
       return false;
     }
@@ -65,7 +68,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
         $page = $this->create();
         $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
         $page->prefix = $prefix;
-        $page->content = file_get_contents($entry->getPathname());
+        $page->content = $this->getRenderer()->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());
         
         $pages[] = $page;
         unset($page);
@@ -155,10 +158,26 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   protected function _getPageFilename(Page $page)
   {
-    $filename = WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath . DIRECTORY_SEPARATOR . $page->prefix 
-                . DIRECTORY_SEPARATOR . $page->id . $this->getPageExtension();
+    $filename = $page->prefix . DIRECTORY_SEPARATOR . $page->id . $this->getPageExtension();
                 
     return $filename;
+  }
+  
+  public function getRenderer()
+  {
+    if(is_null($this->_renderer)) {
+      $this->_renderer = new Zend_View;
+      $this->_renderer->setScriptPath(WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
+      $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+      $this->_renderer->registerHelper(new View_Helper_Pages, "pages");
+    }
+    return $this->_renderer;
+  }
+  
+  public function setRenderer(Zend_View_Interface $renderer)
+  {
+    $this->_renderer = $renderer;
+    return $this;
   }
   
 }
