@@ -48,6 +48,10 @@ class PageRoute
       return false;
     }
     
+    if(!file_exists(WEBROOT . "/pages/" . join($params, DIRECTORY_SEPARATOR) . ".txt")) {
+      return false;
+    }
+    
     $request->setCommandName($this->_controllerName);
     $request->setActionName($this->_actionName);
     

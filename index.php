@@ -62,10 +62,18 @@ $router = $frontController->getRouter();
 
 $router->removeDefaultRoutes();
 
-$router->addRoute("commands", new Zend_Controller_Router_Route(":command/:action/*", array("command"=>"default", "action" => "default")));
+$router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:command/:action/*", array("module"=>null, "command"=>"default", "action" => "default")));
 
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
+$pluginDirectory = new DirectoryIterator($coreConfig->Spark_Controller_CommandResolver->module_directory);
+foreach($pluginDirectory as $entry)
+{
+  if($entry->isDir() and !$entry->isDot()) {
+    $bootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . "Bootstrap.php";
+    include $bootstrap;
+  }
+}
 
 $applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
 $applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
