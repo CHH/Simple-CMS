@@ -14,9 +14,14 @@ class HelpCommand implements Spark_Controller_CommandInterface
     $page = $pages->find($request->getParam("page"), $request->getParam("topic"));
 
     if($page) {
+      $applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout")
+                             ->setLayoutName("layout.phtml")
+                             ->setLayoutPath(WEBROOT . "/help");
+      
       $response->appendBody($page->content);
     } else {
-      $response->appendBody($pages->setPagePath(PageMapper::DEFAULT_PAGES_PATH)->find("errors/404")->content);
+      $response->appendBody($pages->setPagePath(PageMapper::DEFAULT_PAGES_PATH)
+               ->find("errors/404")->content);
     }
   }
   

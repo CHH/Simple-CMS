@@ -81,7 +81,7 @@ foreach($pluginDirectory as $entry)
   }
 }
 
-$applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
+$applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
 $applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
 $applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
 
