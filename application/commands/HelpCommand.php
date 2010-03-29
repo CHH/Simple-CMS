@@ -15,8 +15,8 @@ class HelpCommand implements Spark_Controller_CommandInterface
 
     if($page) {
       $applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout")
-                             ->setLayoutName("layout.phtml")
-                             ->setLayoutPath(WEBROOT . "/help");
+                             ->setLayoutPath(WEBROOT . "/help")
+                             ->setLayoutName("layout.phtml");
       
       $response->appendBody($page->content);
     } else {
