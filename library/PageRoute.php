@@ -48,7 +48,9 @@ class PageRoute
       return false;
     }
     
-    if(!file_exists(WEBROOT . "/pages/" . join($params, DIRECTORY_SEPARATOR) . ".txt")) {
+    $pageMapper = Spark_Object_Manager::get("PageMapper");
+    
+    if(!$pageMapper->find($path)) {
       return false;
     }
     

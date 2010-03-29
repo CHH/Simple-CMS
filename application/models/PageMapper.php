@@ -36,7 +36,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       $pagePath = $pagePath . $this->getPageExtension();
       
     } elseif(is_dir(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath)) {
-      $pagePath = $this->_defaultPage . $this->getPageExtension();
+      $pagePath = $pagePath . $ds . $this->_defaultPage . $this->getPageExtension();
       
     } else {
       return false;
