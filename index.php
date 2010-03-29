@@ -66,9 +66,11 @@ $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:comman
 
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
+// Call the plugin bootstraps
 $pluginDirectory = new DirectoryIterator($coreConfig->Spark_Controller_CommandResolver->module_directory);
+
 foreach($pluginDirectory as $entry)
-{
+{ 
   if($entry->isDir() and !$entry->isDot()) {
     $bootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . "Bootstrap.php";
     include $bootstrap;
@@ -78,8 +80,9 @@ foreach($pluginDirectory as $entry)
 $applyLayoutFilter = Spark_Object_Manager::create("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
 $applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
 $applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+
 $frontController->addPostFilter($applyLayoutFilter);
 
 
-$frontController->handleRequest();
 
+$frontController->handleRequest();

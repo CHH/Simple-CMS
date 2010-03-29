@@ -66,6 +66,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     foreach($directory as $entry) {
       if($entry->isFile()) {
         $page = $this->create();
+        
         $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
         $page->prefix = $prefix;
         $page->content = $this->getRenderer()->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());

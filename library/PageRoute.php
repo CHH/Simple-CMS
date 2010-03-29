@@ -4,9 +4,9 @@ class PageRoute
   extends Zend_Controller_Router_Route_Abstract
   implements Spark_UnifiedConstructorInterface
 {
-
-  private $_paramDelimiter = "/";
-
+  
+  const PARAM_DELIMITER = "/";
+  
   private $_controllerName = "Page";
 
   private $_actionName = "view";
@@ -35,14 +35,14 @@ class PageRoute
     $params = array();
     $path = $request->getRequestUri();
 
-    $path = trim($path, $this->_paramDelimiter);
+    $path = trim($path, self::PARAM_DELIMITER);
 
     if($path == null)
     {
       $path = $this->_defaultPage;
     }
        
-    $params = explode($this->_paramDelimiter, $path);
+    $params = explode(self::PARAM_DELIMITER, $path);
 
     if($params === false) {
       return false;
@@ -64,7 +64,7 @@ class PageRoute
 
   public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
   {
-    return null;
+    return $data["prefix"] . self::PARAM_DELIMITER . $data["id"];
   }
 
   public function setControllerName($name)
