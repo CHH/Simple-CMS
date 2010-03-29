@@ -4,9 +4,11 @@ class PageMapper extends Spark_Model_Mapper_Abstract
 {
   
   protected $_entityClass = "Page";
+
+  const DEFAULT_PAGES_PATH = "pages";
   
-  protected $_pagePath = "pages";
-  
+  protected $_pagePath = self::DEFAULT_PAGES_PATH;
+
   protected $_pageExtension = ".txt";
   
   protected $_defaultPage = "index";

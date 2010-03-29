@@ -64,6 +64,10 @@ $router->removeDefaultRoutes();
 
 $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:command/:action/*", array("module"=>null, "command"=>"default", "action" => "default")));
 
+$router->addRoute("help", new Zend_Controller_Router_Route("/gethelp/:topic/:page", array("command"=>"help", "topic"=>null, "page"=>"index")));
+
+$router->addRoute("helpDefault", new Zend_Controller_Router_Route("/gethelp/:page", array("command"=>"help", "topic"=>null, "page"=>"index")));
+
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
 // Call the plugin bootstraps
