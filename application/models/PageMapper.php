@@ -66,7 +66,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     $directory = new DirectoryIterator($path);
     
     foreach($directory as $entry) {
-      if($entry->isFile()) {
+      if($entry->isFile() and !$entry->isDot()) {
         $page = $this->create();
         
         $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
