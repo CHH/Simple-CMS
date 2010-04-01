@@ -33,6 +33,7 @@ if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path))
   }
 }
 
+define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -64,14 +65,21 @@ $router->removeDefaultRoutes();
 
 $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:command/:action/*", array("module"=>null, "command"=>"default", "action" => "default")));
 
-$router->addRoute("help", new Zend_Controller_Router_Route("/gethelp/:topic/:page", array("command"=>"help", "topic"=>null, "page"=>"index")));
-
-$router->addRoute("helpDefault", new Zend_Controller_Router_Route("/gethelp/:page", array("command"=>"help", "topic"=>null, "page"=>"index")));
-
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
+
+$applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
+$applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
+$applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+
+Spark_Registry::set("Layout", $applyLayoutFilter);
+Spark_Registry::set("FrontController", $frontController);
+
+$frontController->addPostFilter($applyLayoutFilter);
+
+
 // Call the plugin bootstraps
-$pluginDirectory = new DirectoryIterator($coreConfig->Spark_Controller_CommandResolver->module_directory);
+$pluginDirectory = new DirectoryIterator(PLUGINS);
 
 foreach($pluginDirectory as $entry)
 { 
@@ -80,13 +88,6 @@ foreach($pluginDirectory as $entry)
     include $bootstrap;
   }
 }
-
-$applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
-$applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
-$applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
-
-$frontController->addPostFilter($applyLayoutFilter);
-
 
 
 $frontController->handleRequest();

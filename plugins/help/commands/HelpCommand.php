@@ -1,6 +1,6 @@
 <?php
 
-class HelpCommand implements Spark_Controller_CommandInterface
+class Help_HelpCommand implements Spark_Controller_CommandInterface
 {
 
   public function execute(
@@ -9,13 +9,13 @@ class HelpCommand implements Spark_Controller_CommandInterface
   )
   {
     $pages = new PageMapper;
-    $pages->setPagePath("help");
+    $pages->setPagePath("plugins/help/public");
     
     $page = $pages->find($request->getParam("page"), $request->getParam("topic"));
-
+    
     if($page) {
-      $applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout")
-                             ->setLayoutPath(WEBROOT . "/help")
+      $applyLayoutFilter = Spark_Registry::get("Layout")
+                             ->setLayoutPath(PLUGINS . "/help/public")
                              ->setLayoutName("layout.phtml");
       
       $response->appendBody($page->content);
