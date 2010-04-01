@@ -7,7 +7,7 @@ class PluginRegistry
   
   public function add($id, Plugin $plugin)
   {
-    if(array_key_exists($name, $this->_plugins)) {
+    if(array_key_exists($id, $this->_plugins)) {
       throw new Exception("Plugin already exists in the Registry. 
         Please make sure its name is unique.");
     }

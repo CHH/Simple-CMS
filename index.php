@@ -97,7 +97,8 @@ foreach($pluginDirectory as $entry)
       
       $plugin->setFrontController($frontController);
       $plugin->setLayoutFilter($applyLayoutFilter);
-      
+
+      $config = null;
       if(file_exists($entry->getPathname() . "/config/plugin.ini")) {
         $config = new Zend_Config_Ini($entry->getPathname() . "/config/plugin.ini");
       }
@@ -110,7 +111,7 @@ foreach($pluginDirectory as $entry)
       
     }
     
-    unset($plugin, $pluginConfig, $pluginName, $pluginBootstrap);
+    unset($plugin, $config, $pluginName, $pluginBootstrap);
   }
 }
 
