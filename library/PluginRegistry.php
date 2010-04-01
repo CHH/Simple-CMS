@@ -1,6 +1,6 @@
 <?php
 
-class PluginRegistry
+class PluginRegistry implements IteratorAggregate
 {
   
   protected $_plugins = array();
@@ -14,6 +14,16 @@ class PluginRegistry
     $this->_plugins[$id] = $plugin;
     
     return $this;
+  }
+
+  public function getIterator()
+  {
+    return new PluginRegistryIterator($this);
+  }
+
+  public function toArray()
+  {
+    return $this->_plugins;
   }
   
   public function __set($id, Plugin $plugin)
@@ -30,5 +40,6 @@ class PluginRegistry
     throw new Exception("Plugin {$id} was not found. Please make sure you
       have correctly installed it");
   }
+
   
 }

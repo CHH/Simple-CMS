@@ -83,7 +83,7 @@ foreach($pluginDirectory as $entry)
 { 
   if($entry->isDir() and !$entry->isDot()) {
     $pluginName = ucfirst($entry->getFilename());
-
+    
     try {
       $pluginBootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . $pluginName . ".php";
       
@@ -108,7 +108,7 @@ foreach($pluginDirectory as $entry)
       $plugins->add($pluginName, $plugin);
       
     } catch(Exception $e) {
-      
+      print "Notice: {$pluginName} could not be loaded. Is it correctly installed?";
     }
     
     unset($plugin, $config, $pluginName, $pluginBootstrap);
@@ -120,3 +120,4 @@ Spark_Registry::set("Plugins", $plugins);
 $frontController->handleRequest();
 
 unset($frontController, $router, $applyLayoutFilter);
+
