@@ -72,22 +72,50 @@ $applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLay
 $applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
 $applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
 
-Spark_Registry::set("Layout", $applyLayoutFilter);
-Spark_Registry::set("FrontController", $frontController);
 
 $frontController->addPostFilter($applyLayoutFilter);
 
-
 // Call the plugin bootstraps
 $pluginDirectory = new DirectoryIterator(PLUGINS);
+$plugins = new PluginRegistry;
 
 foreach($pluginDirectory as $entry)
 { 
   if($entry->isDir() and !$entry->isDot()) {
-    $bootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . "Bootstrap.php";
-    include $bootstrap;
+    $pluginName = ucfirst($entry->getFilename());
+
+    try {
+      $pluginBootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . $pluginName . ".php";
+      
+      include_once($pluginBootstrap);
+      
+      $plugin = new $pluginName;
+      
+      if(!($plugin instanceof PluginInterface)) {
+        continue;
+      }
+      
+      $plugin->setFrontController($frontController);
+      $plugin->setLayoutFilter($applyLayoutFilter);
+      
+      if(file_exists($entry->getPathname() . "/config/plugin.ini")) {
+        $config = new Zend_Config_Ini($entry->getPathname() . "/config/plugin.ini");
+      }
+      
+      $plugin->bootstrap($config);
+  
+      $plugins->add($pluginName, $plugin);
+      
+    } catch(Exception $e) {
+      
+    }
+    
+    unset($plugin, $pluginConfig, $pluginName, $pluginBootstrap);
   }
 }
 
+Spark_Registry::set("Plugins", $plugins);
 
 $frontController->handleRequest();
+
+unset($frontController, $router, $applyLayoutFilter);

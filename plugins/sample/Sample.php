@@ -1,0 +1,1 @@
+<?phpclass Sample extends Plugin{    public function bootstrap($config = null) {}  }

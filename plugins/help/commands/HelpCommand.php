@@ -14,7 +14,7 @@ class Help_HelpCommand implements Spark_Controller_CommandInterface
     $page = $pages->find($request->getParam("page"), $request->getParam("topic"));
     
     if($page) {
-      $applyLayoutFilter = Spark_Registry::get("Layout")
+      $applyLayoutFilter = Spark_Registry::get("Plugins")->Help->getLayoutFilter()
                              ->setLayoutPath(PLUGINS . "/help/public")
                              ->setLayoutName("layout.phtml");
       
@@ -26,4 +26,3 @@ class Help_HelpCommand implements Spark_Controller_CommandInterface
   }
   
 }
-
