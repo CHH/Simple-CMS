@@ -9,7 +9,7 @@ class Help_HelpCommand implements Spark_Controller_CommandInterface
   )
   {
     $pages = new PageMapper;
-    $pages->setPagePath("plugins/help/public");
+    $pages->setPagePath("plugins/help/public/topics");
     
     $page = $pages->find($request->getParam("page"), $request->getParam("topic"));
     
