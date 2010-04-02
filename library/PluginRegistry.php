@@ -15,7 +15,23 @@ class PluginRegistry implements IteratorAggregate
     
     return $this;
   }
+  
+  public function has($id)
+  {
+    return array_key_exists($id, $this->_plugins);
+  }
+  
+  public function get($id)
+  {
+    if($this->exists($id)) {
+      return $this->_plugins[$id];
+    }
 
+    throw new Exception("Plugin {$id} was not found. Please make sure you
+      have correctly installed it");
+  
+  }
+  
   public function getIterator()
   {
     return new PluginRegistryIterator($this);
@@ -33,12 +49,7 @@ class PluginRegistry implements IteratorAggregate
   
   public function __get($id)
   {
-    if(array_key_exists($id, $this->_plugins)) {
-      return $this->_plugins[$id];
-    }
-    
-    throw new Exception("Plugin {$id} was not found. Please make sure you
-      have correctly installed it");
+    return $this->get($id);
   }
 
   

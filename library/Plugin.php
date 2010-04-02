@@ -9,7 +9,14 @@ abstract class Plugin implements PluginInterface
   
   protected $_layoutFilter = null;
   
-  public function bootstrap($config = null)
+  protected $_config = null;
+  
+  public function __construct($config = null)
+  {
+    $this->setConfig($config);
+  }
+  
+  public function bootstrap()
   {}
   
   public function beforeDispatch()
@@ -40,6 +47,17 @@ abstract class Plugin implements PluginInterface
     return $this->_layoutFilter;
   }
   
+  public function setConfig($config)
+  {
+    $this->_config = $config;
+    return $this;
+  }
+  
+  public function getConfig()
+  {
+    return $this->_config;
+  }
+  
   public function set($var, $value)
   {
     $this->_vars[$var] = $value;
@@ -52,7 +70,7 @@ abstract class Plugin implements PluginInterface
       return $this->_vars[$var];
     }
 
-    throw new Exception("You tried to access the property {$var}, but this hasn't been set");
+    throw new Exception("You tried to access the property {$var}, but it hasn't been set");
   }
   
   public function __set($var, $value)

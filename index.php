@@ -89,7 +89,12 @@ foreach($pluginDirectory as $entry)
       
       include_once($pluginBootstrap);
       
-      $plugin = new $pluginName;
+      $config = null;
+      if(file_exists($entry->getPathname() . "/config/plugin.ini")) {
+        $config = new Zend_Config_Ini($entry->getPathname() . "/config/plugin.ini");
+      }
+      
+      $plugin = new $pluginName($config);
       
       if(!($plugin instanceof PluginInterface)) {
         continue;
@@ -97,13 +102,8 @@ foreach($pluginDirectory as $entry)
       
       $plugin->setFrontController($frontController);
       $plugin->setLayoutFilter($applyLayoutFilter);
-
-      $config = null;
-      if(file_exists($entry->getPathname() . "/config/plugin.ini")) {
-        $config = new Zend_Config_Ini($entry->getPathname() . "/config/plugin.ini");
-      }
       
-      $plugin->bootstrap($config);
+      $plugin->bootstrap();
   
       $plugins->add($pluginName, $plugin);
       

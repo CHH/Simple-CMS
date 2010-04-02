@@ -3,7 +3,7 @@
 class Help extends Plugin
 {
 
-  public function bootstrap($config = null)
+  public function bootstrap()
   {
     $router = $this->getFrontController()->getRouter();
 

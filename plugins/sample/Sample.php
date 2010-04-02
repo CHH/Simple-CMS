@@ -1,1 +1,1 @@
-<?phpclass Sample extends Plugin{    public function bootstrap($config = null) {}  }
+<?phpclass Sample extends Plugin{    public function bootstrap() {      /**     * Quick demo of config injection     */    if($config = $this->getConfig() and $config instanceof Zend_Config_Ini) {      $message = "Some config directive named \"foo\" has been set on the         plugin \"Sample\" with the value \"{$config->foo}\"";            $this->getFrontController()->getResponse()->appendBody($message);    }      }  }

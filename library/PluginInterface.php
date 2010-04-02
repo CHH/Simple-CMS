@@ -3,7 +3,7 @@
 interface PluginInterface
 {
   
-  public function bootstrap($config = null);
+  public function bootstrap();
   
   public function setFrontController(Spark_Controller_FrontController $frontController);
   
@@ -12,5 +12,9 @@ interface PluginInterface
   public function set($var, $value);
   
   public function get($var);
+  
+  public function setConfig($config);
+  
+  public function getConfig();
   
 }

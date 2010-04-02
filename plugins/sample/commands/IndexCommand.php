@@ -8,7 +8,7 @@ class Sample_IndexCommand implements Spark_Controller_CommandInterface
     Zend_Controller_Response_Abstract $response
   )
   {
-    $response->appendBody("Hello from Sample");
+    $response->appendBody("Hello from Sample Plugin");
   }
   
 }
