@@ -46,7 +46,7 @@ class PluginRegistry implements IteratorAggregate
    */
   public function get($id)
   {
-    if($this->exists($id)) {
+    if($this->has($id)) {
       return $this->_plugins[$id];
     }
 
