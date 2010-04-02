@@ -1,6 +1,6 @@
 <?php
 
-class Help_HelpCommand implements Spark_Controller_CommandInterface
+class Help_ViewCommand implements Spark_Controller_CommandInterface
 {
 
   public function execute(
