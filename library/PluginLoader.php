@@ -22,6 +22,7 @@ class PluginLoader implements PluginLoaderInterface
       if($entry->isDir() and !$entry->isDot()) {
         try {
           $this->load($entry->getFilename());
+          
         } catch(PluginLoadException $e) {
           $failedPlugins[] = $entry->getFilename();
         }
@@ -56,6 +57,7 @@ class PluginLoader implements PluginLoaderInterface
           foreach($config->depends_on as $dependency) {
             try {
               $this->load($dependency);
+              
             } catch(PluginLoadException $e) {
               $failedDependencies[] = $dependency;
             }
@@ -63,6 +65,7 @@ class PluginLoader implements PluginLoaderInterface
           
           if($failedDependencies) {
             $failedDependencies = join($failedDependencies, ", ");
+            
             throw new PluginLoadException("The plugin \"{$id}\" depends on 
               {$failedDependencies}. Make sure that these Plugins are installed.");
           }
