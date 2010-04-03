@@ -5,7 +5,7 @@ class Help extends Plugin
 
   public function bootstrap()
   {
-    $router = $this->getFrontController()->getRouter();
+    $router = $this->frontController->getRouter();
 
     $router->addRoute("help", new Zend_Controller_Router_Route("/gethelp/:topic/:page", array("module"=>"help", "command"=>"view", "topic"=>null, "page"=>"index")));
 

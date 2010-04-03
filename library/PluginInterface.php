@@ -7,22 +7,6 @@ interface PluginInterface
    */
   public function bootstrap();
   
-  /** 
-   * setFrontController() - Provides an instance of the FrontController to the Plugin
-   * @var Spark_Controller_FrontController $frontController
-   * @return PluginInterface Should provide a fluent interface
-   */
-  public function setFrontController(Spark_Controller_FrontController $frontController);
-  
-  /**
-   * setLayoutFilter() - Provides an instance of the Layout to the Plugin,
-   * commonly used to change the Layout, set placeholders, add View Helpers,...
-   *
-   * @param Spark_Controller_Filter_ApplyLayout $layoutFilter
-   * @return PluginInterface Should provide a fluent interface
-   */
-  public function setLayoutFilter(Spark_Controller_Filter_ApplyLayout $layoutFilter);
-  
   /**
    * set() - Sets a key value pair to the Plugin
    *

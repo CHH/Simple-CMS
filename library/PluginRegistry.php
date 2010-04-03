@@ -19,8 +19,7 @@ class PluginRegistry implements IteratorAggregate
   public function add($id, Plugin $plugin)
   {
     if(array_key_exists($id, $this->_plugins)) {
-      throw new Exception("Plugin already exists in the Registry. 
-        Please make sure its name is unique.");
+      return;
     }
     $this->_plugins[$id] = $plugin;
     
@@ -28,7 +27,7 @@ class PluginRegistry implements IteratorAggregate
   }
   
   /**
-   * has() - Checks if a given plugin has been loaded
+   * has() - Checks if a given plugin exists in the registry
    *
    * @param string $id Unique identifier of the plugin you want to check
    * @return bool

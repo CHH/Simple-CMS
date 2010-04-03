@@ -37,15 +37,15 @@ define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_director
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
 
-function autoloadLibraries($class)
-{
-  @include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
-}
-
 function autoloadModels($model)
 {
   @include_once APPLICATION_PATH . DIRECTORY_SEPARATOR . "models" . DIRECTORY_SEPARATOR 
                . $model . ".php";
+}
+
+function autoloadLibraries($class)
+{
+  @include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
 }
 
 spl_autoload_register("autoloadLibraries");
@@ -75,47 +75,13 @@ $applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR 
 
 $frontController->addPostFilter($applyLayoutFilter);
 
-// Call the plugin bootstraps
-$pluginDirectory = new DirectoryIterator(PLUGINS);
-$plugins = new PluginRegistry;
+// Load the plugins
+$pluginLoader = new PluginLoader;
 
-foreach($pluginDirectory as $entry)
-{ 
-  if($entry->isDir() and !$entry->isDot()) {
-    $pluginName = ucfirst($entry->getFilename());
-    
-    try {
-      $pluginBootstrap = $entry->getPathname() . DIRECTORY_SEPARATOR . $pluginName . ".php";
-      
-      include_once($pluginBootstrap);
-      
-      $config = null;
-      if(file_exists($entry->getPathname() . "/config/plugin.ini")) {
-        $config = new Zend_Config_Ini($entry->getPathname() . "/config/plugin.ini");
-      }
-      
-      $plugin = new $pluginName($config);
-      
-      if(!($plugin instanceof PluginInterface)) {
-        continue;
-      }
-      
-      $plugin->setFrontController($frontController);
-      $plugin->setLayoutFilter($applyLayoutFilter);
-      
-      $plugin->bootstrap();
-  
-      $plugins->add($pluginName, $plugin);
-      
-    } catch(Exception $e) {
-      print "Notice: {$pluginName} could not be loaded. Is it correctly installed?";
-    }
-    
-    unset($plugin, $config, $pluginName, $pluginBootstrap);
-  }
-}
-
-Spark_Registry::set("Plugins", $plugins);
+$pluginLoader->setPluginPath(PLUGINS)
+             ->setPluginOption("frontController", $frontController)
+             ->setPluginOption("layoutFilter", $applyLayoutFilter)
+             ->loadDirectory();
 
 $frontController->handleRequest();
 

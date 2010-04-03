@@ -22,11 +22,6 @@ abstract class Plugin implements PluginInterface
    */
   protected $_config = array();
   
-  public function __construct($config = null)
-  {
-    $this->setConfig($config);
-  }
-  
   /**
    * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
    */
@@ -44,51 +39,6 @@ abstract class Plugin implements PluginInterface
    */
   public function afterDispatch()
   {}
-  
-  /**
-   * setFrontController() - Set FrontController for the Plugin
-   *
-   * @param Spark_Controller_FrontController $frontController
-   * @return Plugin
-   */
-  public function setFrontController(Spark_Controller_FrontController $frontController)
-  {
-    $this->_frontController = $frontController;
-    return $this;
-  }
-  
-  /**
-   * getFrontController() - Returns the FrontController
-   *
-   * @return Spark_Controller_FrontController
-   */
-  public function getFrontController()
-  {
-    return $this->_frontController;
-  }
-  
-  /**
-   * setLayoutFilter() - Sets the layout filter to the plugin, so plugins can modify the layout
-   * (Set placeholder values, layout variables, view helpers and so on)
-   *
-   * @param Spark_Controller_Filter_ApplyLayout $layoutFilter
-   * @return Plugin
-   */
-  public function setLayoutFilter(Spark_Controller_Filter_ApplyLayout $layoutFilter)
-  {
-    $this->_layoutFilter = $layoutFilter;
-    return $this;
-  }
-  
-  /**
-   * getLayoutFilter() - Returns the LayoutFilter instance
-   * 
-   * @return Spark_Controller_Filter_ApplyLayout
-   */
-  public function getLayoutFilter()
-  {
-    return $this->_layoutFilter;
-  }
   
   /**
    * setConfig() - Sets a config to the plugin
