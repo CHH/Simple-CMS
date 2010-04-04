@@ -44,16 +44,19 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       return false;
     }
     
+    $renderer = $this->getRenderer();
+    
     $page = $this->create();
+    
+    $renderer->id = $page->id = $id;
+    $renderer->prefix = $page->prefix = $prefix;
+    $renderer->modified = $page->modified = filemtime(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath);
     
     try {
       $page->content = $this->getRenderer()->render($pagePath);
     } catch(Exception $e) {
       return false;
     }
-    
-    $page->id = $id;
-    $page->prefix = $prefix;
     
     return $page;
   }
@@ -64,13 +67,16 @@ class PageMapper extends Spark_Model_Mapper_Abstract
             . DIRECTORY_SEPARATOR . $prefix;
     
     $directory = new DirectoryIterator($path);
+    $renderer = $this->getRenderer();
     
     foreach($directory as $entry) {
       if($entry->isFile() and !$entry->isDot()) {
         $page = $this->create();
         
-        $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
-        $page->prefix = $prefix;
+        $renderer->id = $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
+        $renderer->prefix = $page->prefix = $prefix;
+        $renderer->modified = $page->modified = $entry->getMTime();
+        
         $page->content = $this->getRenderer()->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());
         
         $pages[] = $page;

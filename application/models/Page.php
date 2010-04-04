@@ -6,8 +6,16 @@ class Page extends Spark_Model_Entity
   protected $_data = array(
     "id" => "",
     "prefix" => "",
-    "content" => ""
+    "content" => "",
+    "modified" => ""
   );
+  
+  public function __set($property, $value) {
+    if($property == "modified" and is_int($value)) {
+      $value = date("Y-m-d H:i:s", $value);
+    }
+    parent::__set($property, $value);
+  }
   
   public function __get($property)
   {
