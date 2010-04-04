@@ -1,1 +1,24 @@
-h1. 404
+<link rel="stylesheet" href="/styles/errors.css" />
+
+h1. Sorry, I found no page matching your request
+
+!/images/errors/homer-simpson-doh.jpg!
+
+_I am sorry_. I found nothing at the Location you wanted to go.
+
+"Take me back home":/ or <a href="#error-info" data-toggle="#error-info">don't treat me like a kid</a>
+
+
+<div id="error-info" class="hidden">
+
+h2. Extended Error Information
+
+Error Code: <?= $this->request->getParam("code") ?>
+
+Request Method: <?= $this->request->getMethod() ?>
+
+Requested URI: <?= $this->request->getRequestURI() ?>
+
+<a class="close" href="#" data-toggle="#error-info">less info</a>
+
+</div>

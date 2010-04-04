@@ -59,6 +59,9 @@ Spark_Object_Manager::setConfig($coreConfig);
 
 $frontController = Spark_Object_Manager::get("Spark_Controller_FrontController");
 
+
+set_exception_handler(array($frontController, "handleException"));
+
 $router = $frontController->getRouter();
 
 $router->removeDefaultRoutes();

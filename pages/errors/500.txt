@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="/styles/errors.css" />
+
+h1. I am really sorry
+
+!/images/errors/homer-simpson-doh.jpg!
+
+I messed up, please forgive me.
+
+"Take me back home":/ or <a href="#errors" data-toggle="#error-info">don't treat me like a kid</a>
+
+<div id="error-info" class="hidden">
+Error Code: <?= $this->request->getParam("code") ?>
+
+Stack Trace: <?= $this->exception->getTraceAsString() ?>
+
+Exception was raised in file <?= $this->exception->getFile() ?>
+on line <?= $this->exception->getLine() ?>
+
+<a href="#" data-toggle="#error-info">less info</a>
+
+</div><!-- end of: #error-info.hidden -->

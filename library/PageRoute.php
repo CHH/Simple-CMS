@@ -41,12 +41,6 @@ class PageRoute
     {
       $path = $this->_defaultPage;
     }
-       
-    $params = explode(self::PARAM_DELIMITER, $path);
-
-    if($params === false) {
-      return false;
-    }
     
     $pageMapper = Spark_Object_Manager::get("PageMapper");
     
@@ -57,7 +51,7 @@ class PageRoute
     $request->setCommandName($this->_controllerName);
     $request->setActionName($this->_actionName);
     
-    $request->setParams($params);
+    $request->setParam("page", $path);
     
     return $params;
   }

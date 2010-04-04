@@ -17,31 +17,12 @@ class PageCommand implements Spark_Controller_CommandInterface
       $ext = ".txt";
     }
     
-    $params = $request->getParams();
+    $id = $request->getParam("page");
     
-    $indexOfLast = count($params) - 1;
-    
-    $id = $params[$indexOfLast];
-    unset($params[$indexOfLast]);
-    
-    $prefix = join($params, "/");
-    
-    if($prefix != "partials") {
-      $page = $pageMapper->find($id, $prefix);
-      
-      if($page) {
-        $content = $page->content;
-      }
-    } else {
-      // Render 404 View
-      $errorViews = new Zend_View;
-      $errorViews->setScriptPath(APPLICATION_PATH . "/views");
-      
-      $errorViews->requestedPageName = $params[(count($params) - 1)];
-      $errorViews->requestedPath = join($params, "/");
-      $errorViews->request = $request;
-      
-      $content = $errorViews->render("Error/404.phtml");
+    $page = $pageMapper->find($id);
+
+    if($page) {
+      $content = $page->content;
     }
     
     $response->appendBody($content);

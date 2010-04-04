@@ -3,18 +3,30 @@
 class ErrorCommand implements Spark_Controller_CommandInterface
 {
   
+  protected $_exception = null;
+  
   public function execute(
     Spark_Controller_RequestInterface $request,
     Zend_Controller_Response_Abstract $response
   )
   {
+    $code = $request->getParam("code");
+    if($code == null) {
+      $code = 500;
+    }
     
-    $view = new Zend_View;
-    $view->setScriptPath(APPLICATION_PATH . "/views");
+    $exception = $request->getParam("exception");
     
-    $view->request = $request;
+    $pages = new PageMapper;
     
-    $response->appendBody($view->render("Error/error.phtml"));
+    $pages->getRenderer()->exception = $exception;
+    $pages->getRenderer()->request = $request;
+    
+    if(!$errorPage = $pages->find("errors/{$code}")) {
+      $errorPage = $pages->find("errors/500");
+    }
+    
+    $response->appendBody($errorPage->content);
     
   }
   
