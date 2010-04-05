@@ -183,7 +183,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     if(is_null($this->_renderer)) {
       $this->_renderer = new Zend_View;
       $this->_renderer->setScriptPath(WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
-      $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+      $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
       $this->_renderer->registerHelper(new View_Helper_Pages, "pages");
     }
     return $this->_renderer;
