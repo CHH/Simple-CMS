@@ -58,6 +58,8 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       return false;
     }
     
+    unset($renderer->id, $renderer->prefix, $renderer->modified);
+    
     return $page;
   }
   
@@ -80,6 +82,8 @@ class PageMapper extends Spark_Model_Mapper_Abstract
         $renderer->modified = $page->modified = $entry->getMTime();
         
         $page->content = $this->getRenderer()->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());
+        
+        unset($renderer->id, $renderer->prefix, $renderer->modified);
         
         $pages[] = $page;
         unset($page);
