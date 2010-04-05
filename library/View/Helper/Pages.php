@@ -14,7 +14,7 @@ class View_Helper_Pages extends Zend_View_Helper_Abstract
   
   public function getPageMapper()
   {
-    if(is_null($_pageMapper)) {
+    if(is_null($this->_pageMapper)) {
       $this->_pageMapper = new $this->_pageMapperClass;
     }
     return $this->_pageMapper;

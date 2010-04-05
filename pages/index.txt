@@ -11,5 +11,3 @@ You want to build a site, huh? Then follow me through this short guide:
 # To mark up your pages you can use plain HTML or "Textile":http://www.textism.com/tools/textile
 # I'm also running "PHP":http://php.net Code embedded in your pages. If you don't know what "PHP":http://en.wikipedia.org/wiki/PHP is, then forget this point.
 # *To change the content here, edit the "index.txt" file in my "pages" folder.*
-
-
