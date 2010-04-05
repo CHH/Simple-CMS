@@ -50,7 +50,7 @@ class PluginRegistry implements IteratorAggregate
     }
 
     throw new Exception("Plugin {$id} was not found. Please make sure you
-      have correctly installed it");
+      installed it correctly.");
   
   }
   

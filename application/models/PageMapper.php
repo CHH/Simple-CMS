@@ -71,7 +71,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     $directory = new DirectoryIterator($path);
     $renderer = $this->getRenderer();
     
-    $pages = new PageCollection;
+    $pages = new Spark_Model_Collection;
     
     foreach($directory as $entry) {
       if($entry->isFile() and !$entry->isDot()) {
