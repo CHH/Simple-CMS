@@ -1,7 +1,0 @@
-h2. Add formatting to your pages
-
-In Simple-CMS there're several ways to add formatting and meaning to the content
-of your pages. 
-If you are a beginner to HTML, I give you the advise to use the "Textile":http://en.wikipedia.org/wiki/Textile_(markup_language) Markup 
-Language, which is a simplified version of HTML. If you are an advanced user and know HTML, you
-can also use HTML to format your pages.
