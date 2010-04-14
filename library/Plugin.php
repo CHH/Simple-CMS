@@ -66,6 +66,11 @@ abstract class Plugin implements PluginInterface
     return $this->_config;
   }
   
+  public function getPath()
+  {
+    return PLUGINS . DIRECTORY_SEPARATOR . get_class($this);
+  }
+  
   /**
    * set() - Sets a key value pair, which can be accessed like a object property
    *
