@@ -71,22 +71,21 @@ $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:comman
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
 
-$applyLayoutFilter = Spark_Object_Manager::get("Spark_Controller_Filter_ApplyLayout", $pagesConfig->pages->layout);
-$applyLayoutFilter->getLayout()->registerHelper(new View_Helper_Pages, "pages");
-$applyLayoutFilter->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+$layoutPlugin = Spark_Object_Manager::get("Spark_Controller_Plugin_Layout", $pagesConfig->pages->layout);
+$layoutPlugin->getLayout()->registerHelper(new View_Helper_Pages, "pages");
+$layoutPlugin->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
 
-
-$frontController->addPostFilter($applyLayoutFilter);
+Spark_Event_Dispatcher::getInstance()->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $layoutPlugin);
 
 // Load the plugins
 $pluginLoader = new PluginLoader;
 
 $pluginLoader->setPluginPath(PLUGINS)
              ->setPluginOption("frontController", $frontController)
-             ->setPluginOption("layoutFilter", $applyLayoutFilter)
+             ->setPluginOption("layout", $layoutPlugin)
              ->loadDirectory();
 
 $frontController->handleRequest();
 
-unset($frontController, $router, $applyLayoutFilter);
+unset($frontController, $router, $layoutPlugin);
 
