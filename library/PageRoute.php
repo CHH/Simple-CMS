@@ -30,7 +30,7 @@ class PageRoute
     Spark_Object_Options::setOptions($this, $options);
   }
 
-  public function match($request, $partial = false)
+  public function match($request)
   {
     $params = array();
     $path = $request->getRequestUri();
