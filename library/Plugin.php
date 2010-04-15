@@ -68,7 +68,7 @@ abstract class Plugin implements PluginInterface
   
   public function getPath()
   {
-    return PLUGINS . DIRECTORY_SEPARATOR . get_class($this);
+    return PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
   }
   
   /**

@@ -39,7 +39,7 @@ set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . g
 
 function autoloadModels($model)
 {
-  include_once APPLICATION_PATH . DIRECTORY_SEPARATOR . "models" . DIRECTORY_SEPARATOR 
+  @include_once APPLICATION_PATH . DIRECTORY_SEPARATOR . "models" . DIRECTORY_SEPARATOR 
                . $model . ".php";
 }
 
@@ -47,6 +47,7 @@ function autoloadLibraries($class)
 {
   @include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
 }
+
 
 spl_autoload_register("autoloadLibraries");
 spl_autoload_register("autoloadModels");
@@ -58,7 +59,6 @@ Spark_Registry::set("PagesConfig", $pagesConfig);
 Spark_Object_Manager::setConfig($coreConfig);
 
 $frontController = Spark_Object_Manager::get("Spark_Controller_FrontController");
-
 
 set_exception_handler(array($frontController, "handleException"));
 
@@ -88,4 +88,3 @@ $pluginLoader->setPluginPath(PLUGINS)
 $frontController->handleRequest();
 
 unset($frontController, $router, $layoutPlugin);
-

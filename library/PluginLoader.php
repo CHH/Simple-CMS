@@ -9,6 +9,9 @@ class PluginLoader implements PluginLoaderInterface
   
   protected $_pluginRegistry = null;
   
+  const ERROR_LOADING_PLUGIN = 510;
+  const ERROR_BOOTSTRAPPING_PLUGIN = 511;
+  
   public function loadDirectory($pluginPath = null) {
     if(is_null($pluginPath)) {
       $pluginPath = $this->getPluginPath();
@@ -23,16 +26,24 @@ class PluginLoader implements PluginLoaderInterface
         try {
           $this->load($entry->getFilename());
           
-        } catch(PluginLoadException $e) {
-          $failedPlugins[] = $entry->getFilename();
+        } catch(PluginException $e) {
+          $failedPlugins[$e->getPluginName()] = $e;
         }
       }
     }
     
     if($failedPlugins) {
-      $failedPlugins = join($failedPlugins, ", ");
-      throw new PluginLoadException("Following plugins could not be loaded: 
-        {$failedPlugins}. Make sure these plugins are correctly installed");
+      $failedPluginList = join(array_keys($failedPlugins), ", ");
+      
+      $e = new PluginException(
+        "asdf", 
+        "Following plugins could not be loaded: {$failedPluginList}. Make sure 
+          these plugins are correctly installed",
+        self::ERROR_LOADING_PLUGIN,
+        $failedPlugins
+      );
+      
+      throw $e;
     }
     
   }
@@ -64,21 +75,32 @@ class PluginLoader implements PluginLoaderInterface
           }
           
           if($failedDependencies) {
-            $failedDependencies = join($failedDependencies, ", ");
+            $failedDependenciesString = join($failedDependencies, ", ");
             
-            throw new PluginLoadException("The plugin \"{$id}\" depends on 
-              {$failedDependencies}. Make sure that these Plugins are installed.");
+            $e = new PluginLoadException(
+              $id, 
+              "The plugin \"{$id}\" depends on {$failedDependenciesString}. 
+                Make sure that these Plugins are installed.", 
+              self::ERROR_LOADING_PLUGIN
+            );
+            $e->setFailedDependencies($failedDependencies);
+            throw $e;
           }
         }
       }
       
-      if(!include_once($pluginPath)) {
+      if(!@include($pluginPath)) {
         $pluginDirectory = $this->getPluginPath() . $ds . $id;
         
-        throw new PluginLoadException("The Plugin was not found in 
-          \"{$pluginDirectory}\". Please make sure you have installed 
-          the Plugin \"{$id}\".");
+        throw new PluginLoadException(
+          $id, 
+          "The Plugin was not found in \"{$pluginDirectory}\". Please make sure 
+            you have installed the Plugin \"{$id}\".", 
+          self::ERROR_LOADING_PLUGIN
+        );
       }
+      
+      
       
       $plugin = new $pluginClass;
       
@@ -92,8 +114,9 @@ class PluginLoader implements PluginLoaderInterface
         $plugin->bootstrap();
         
       } catch(Exception $e) {
-        throw new PluginBootstrapException("There was an failure during 
-          bootstrapping of the plugin \"{$id}\" with the message {$e->getMessage()}");
+        $ne = new PluginBootstrapException($id, "There was an failure during 
+          bootstrapping of the plugin \"{$id}\" with the message {$e->getMessage()}",
+          self::ERROR_BOOTSTRAPPING_PLUGIN);
       }
       
       $pluginRegistry->add($id, $plugin);

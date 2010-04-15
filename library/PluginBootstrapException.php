@@ -1,4 +1,4 @@
 <?php
 
-class PluginBootstrapException extends Exception
+class PluginBootstrapException extends PluginException
 {}
