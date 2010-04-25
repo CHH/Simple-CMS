@@ -34,10 +34,10 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     
     $pagePath = $prefix . $ds . $id;
     
-    if(file_exists(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath . $this->getPageExtension())) {
+    if(file_exists(APPROOT . $ds . $this->_pagePath . $ds . $pagePath . $this->getPageExtension())) {
       $pagePath = $pagePath . $this->getPageExtension();
       
-    } elseif(is_dir(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath)) {
+    } elseif(is_dir(APPROOT . $ds . $this->_pagePath . $ds . $pagePath)) {
       $pagePath = $pagePath . $ds . $this->_defaultPage . $this->getPageExtension();
       
     } else {
@@ -50,7 +50,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     
     $renderer->id = $page->id = $id;
     $renderer->prefix = $page->prefix = $prefix;
-    $renderer->modified = $page->modified = filemtime(WEBROOT . $ds . $this->_pagePath . $ds . $pagePath);
+    $renderer->modified = $page->modified = filemtime(APPROOT . $ds . $this->_pagePath . $ds . $pagePath);
     
     try {
       $page->content = $this->getRenderer()->render($pagePath);
@@ -65,7 +65,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   public function findAll($prefix = null)
   {
-    $path = WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath
+    $path = APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath
             . DIRECTORY_SEPARATOR . $prefix;
     
     $directory = new DirectoryIterator($path);
@@ -126,7 +126,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       $filename = $this->_getPageFilename($id);
     } else {
       /* Assume page is in the pages root */
-      $filename = WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath . DIRECTORY_SEPARATOR . $id . $this->getPageExtension();
+      $filename = APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath . DIRECTORY_SEPARATOR . $id . $this->getPageExtension();
     }
     
     unlink($filename);
@@ -182,7 +182,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   {
     if(is_null($this->_renderer)) {
       $this->_renderer = new Zend_View;
-      $this->_renderer->setScriptPath(WEBROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
+      $this->_renderer->setScriptPath(APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
       $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
       $this->_renderer->registerHelper(new View_Helper_Pages, "pages");
     }

@@ -1,13 +1,14 @@
 <?php
 
+define("APPROOT", realpath(dirname(__FILE__) . "/../"));
+
 define("WEBROOT", realpath(dirname(__FILE__)));
 
-define("CONFIGS", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "config"));
+define("CONFIGS", realpath(dirname(__FILE__) . "/../config"));
 
-define("APPLICATION_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR 
-       . "application"));
+define("APPLICATION_PATH", realpath(dirname(__FILE__) . "/../application"));
 
-define("LIBRARY_PATH", realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "library"));
+define("LIBRARY_PATH", realpath(dirname(__FILE__) . "/../library"));
 
 require_once("Zend/Config/Ini.php");
 
@@ -17,9 +18,8 @@ $pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
 if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path)) {
   define("SPARK_PATH", $coreConfig->framework->path);
 } else {
-  // Assume a cloned Spark Repo in the parent folder
-  $sparkPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." .
-    DIRECTORY_SEPARATOR . "Spark-Web-Framework" . DIRECTORY_SEPARATOR . "lib");
+  // Assume a cloned Spark Repo in the parent folder of the Simple CMS install
+  $sparkPath = realpath(dirname(__FILE__) . "/../../Spark-Web-Framework/lib");
   
   if(is_dir($sparkPath)) {
     define("SPARK_PATH", $sparkPath);
