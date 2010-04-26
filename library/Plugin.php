@@ -29,13 +29,15 @@ abstract class Plugin implements PluginInterface
   {}
   
   /**
-   * beforeDispatch() - FrontController Callback, gets called before routing is done
+   * beforeDispatch() - FrontController Callback, gets called before a plugin
+   * command gets executed
    */
   public function beforeDispatch()
   {}
   
   /**
-   * afterDispatch() - FrontController Callback, gets called after routing
+   * afterDispatch() - FrontController Callback, gets called after a command of 
+   *  this plugin is executed and before the response is sent back to the client.
    */
   public function afterDispatch()
   {}

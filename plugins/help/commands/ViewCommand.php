@@ -14,10 +14,6 @@ class Help_ViewCommand implements Spark_Controller_CommandInterface
     $page = $pages->find($request->getParam("page"), $request->getParam("topic"));
     
     if($page) {
-      $applyLayoutFilter = Spark_Registry::get("Plugins")->help->layoutFilter
-                             ->setLayoutPath(PLUGINS . "/help/public")
-                             ->setLayoutName("layout.phtml");
-      
       $response->appendBody($page->content);
     } else {
       $response->appendBody($pages->setPagePath(PageMapper::DEFAULT_PAGES_PATH)

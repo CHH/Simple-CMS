@@ -70,12 +70,10 @@ $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:comman
 
 $router->addRoute("pages", Spark_Object_Manager::create("PageRoute"));
 
-
 $layoutPlugin = Spark_Object_Manager::get("Spark_Controller_Plugin_Layout", $pagesConfig->pages->layout);
 $layoutPlugin->getLayout()->registerHelper(new View_Helper_Pages, "pages");
 $layoutPlugin->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
 
-Spark_Event_Dispatcher::getInstance()->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $layoutPlugin);
 
 // Load the plugins
 $pluginLoader = new PluginLoader;
@@ -84,6 +82,13 @@ $pluginLoader->setPluginPath(PLUGINS)
              ->setPluginOption("frontController", $frontController)
              ->setPluginOption("layout", $layoutPlugin)
              ->loadDirectory();
+
+$callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks($pluginLoader->getPluginRegistry());
+
+Spark_Event_Dispatcher::getInstance()
+  ->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $callPluginCallbacksPlugin)
+  ->on(Spark_Controller_FrontController::EVENT_BEFORE_DISPATCH, $callPluginCallbacksPlugin)
+  ->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $layoutPlugin);
 
 $frontController->handleRequest();
 

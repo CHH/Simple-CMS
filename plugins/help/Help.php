@@ -11,5 +11,11 @@ class Help extends Plugin
 
     $router->addRoute("helpDefault", new Zend_Controller_Router_Route("/gethelp/:page", array("module"=>"help", "command"=>"view", "topic"=>null, "page"=>"index")));
   }
-
+  
+  public function afterDispatch()
+  {
+    $this->layout->setLayoutPath(PLUGINS . "/help/public")
+                 ->setLayoutName("layout.phtml");
+  }
+  
 }
