@@ -50,8 +50,8 @@ abstract class Plugin implements PluginInterface
    */
   public function setConfig($config)
   {
-    if($config instanceof Zend_Config_Ini) {
-      $config = $config->toArray();
+    if(is_array($config)) {
+      $config = new Zend_Config($config);
     }
     
     $this->_config = $config;

@@ -9,6 +9,8 @@ class Rest extends Plugin
     
     $restRoute = new RestRoute;
     
+    
+    
     $this->frontController->getRouter()->addRoute("api", $restRoute);
   }
   

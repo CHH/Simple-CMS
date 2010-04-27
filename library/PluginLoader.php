@@ -101,13 +101,12 @@ class PluginLoader implements PluginLoaderInterface
       }
       
       
-      
       $plugin = new $pluginClass;
       
       $plugin->setConfig($config);
       
       foreach($this->_pluginOptions as $var => $value) {
-        $plugin->$var = $value;
+        $plugin->set($var, $value);
       }
       
       try {

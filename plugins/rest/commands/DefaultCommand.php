@@ -21,7 +21,7 @@ class Rest_DefaultCommand implements Spark_Controller_CommandInterface
       
       $keys = array();
       
-      foreach($config["api_secret"] as $app => $secret) {
+      foreach($config->api_secret as $app => $secret) {
         $keys[] = md5($app . $secret);
       }
       
