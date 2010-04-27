@@ -1,6 +1,6 @@
 <?php
 
-class ErrorCommand implements Spark_Controller_CommandInterface
+class Pages_ErrorCommand implements Spark_Controller_CommandInterface
 {
   
   protected $_exception = null;

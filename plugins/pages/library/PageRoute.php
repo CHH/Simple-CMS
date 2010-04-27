@@ -10,7 +10,9 @@ class PageRoute
   private $_controllerName = "Page";
 
   private $_actionName = "view";
-
+  
+  private $_moduleName;
+  
   private $_defaultPage = "index";
   
   public static function getInstance(Zend_Config $config)
@@ -20,9 +22,7 @@ class PageRoute
 
   public function __construct($options = null)
   {
-    if(!is_null($options)) {
-      $this->setOptions($options);
-    }
+    $this->setOptions($options);
   }
 
   public function setOptions($options)
@@ -50,8 +50,9 @@ class PageRoute
     
     $request->setCommandName($this->_controllerName);
     $request->setActionName($this->_actionName);
+    $request->setModuleName($this->_moduleName);
     
-    $request->setParam("page", $path);
+    $params["page"] = $path;
     
     return $params;
   }
@@ -60,7 +61,13 @@ class PageRoute
   {
     return $data["prefix"] . self::PARAM_DELIMITER . $data["id"];
   }
-
+  
+  public function setModuleName($name)
+  {
+    $this->_moduleName = $name;
+    return $this;
+  }
+  
   public function setControllerName($name)
   {
     $this->_controllerName = $name;
