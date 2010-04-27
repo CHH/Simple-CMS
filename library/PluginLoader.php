@@ -53,7 +53,7 @@ class PluginLoader implements PluginLoaderInterface
     $pluginRegistry = $this->getPluginRegistry();
     $pluginClass = ucfirst($id);
     
-    if(!$pluginRegistry->has($pluginClass)) {
+    if(!$pluginRegistry->has($id)) {
       $ds = DIRECTORY_SEPARATOR;
       $pluginPath = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
       $pluginConfigPath = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
@@ -89,7 +89,7 @@ class PluginLoader implements PluginLoaderInterface
         }
       }
       
-      if(!@include($pluginPath)) {
+      if(!@include_once($pluginPath)) {
         $pluginDirectory = $this->getPluginPath() . $ds . $id;
         
         throw new PluginLoadException(
