@@ -53,9 +53,9 @@ class PluginLoader implements PluginLoaderInterface
     $pluginRegistry = $this->getPluginRegistry();
     
     if(!$pluginRegistry->has($id)) {
-      
+
       $pluginClass = ucfirst($id);
-      
+
       $ds = DIRECTORY_SEPARATOR;
       $pluginPath = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
       $pluginConfigPath = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";

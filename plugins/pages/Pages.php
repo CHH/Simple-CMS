@@ -10,7 +10,7 @@ class Pages extends Plugin
     
     $this->frontController->getRouter()->addRoute("pages", Spark_Object_Manager::create("PageRoute", array("module_name"=>"pages")));
     
-    $this->layout->getLayout()->registerHelper(new View_Helper_Pages, "pages");
+    PageMapper::setDefaultRenderer($this->layout->getLayout());
   }
   
   public function afterDispatch()

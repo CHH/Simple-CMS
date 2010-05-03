@@ -13,7 +13,9 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   protected $_defaultPage = "index";
   
-  protected $_renderer = null;
+  protected $_renderer;
+  
+  static protected $_defaultRenderer;
   
   public function init()
   {
@@ -181,11 +183,17 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   public function getRenderer()
   {
     if(is_null($this->_renderer)) {
-      $this->_renderer = new Zend_View;
-      $this->_renderer->setScriptPath(APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
+      if(is_null(self::$_defaultRenderer)) {
+        $this->_renderer = new Zend_View;
+      } else {
+        $this->_renderer = self::$_defaultRenderer;
+      }
+      
+      $this->_renderer->addScriptPath(APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
       $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
       $this->_renderer->registerHelper(new View_Helper_Pages, "pages");
     }
+    
     return $this->_renderer;
   }
   
@@ -193,6 +201,16 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   {
     $this->_renderer = $renderer;
     return $this;
+  }
+  
+  static public function setDefaultRenderer(Zend_View_Interface $renderer)
+  {
+    self::$_defaultRenderer = $renderer;
+  }
+  
+  static public function getDefaultRenderer()
+  {
+    return self::$_defaultRenderer;
   }
   
 }

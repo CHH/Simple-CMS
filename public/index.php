@@ -8,6 +8,10 @@ define("CONFIGS", realpath(dirname(__FILE__) . "/../config"));
 
 define("LIBRARY_PATH", realpath(dirname(__FILE__) . "/../library"));
 
+if(!defined("APPLICATION_ENVIRONMENT")) {
+  define("APPLICATION_ENVIRONMENT", "production");
+}
+
 require_once("Zend/Config/Ini.php");
 
 $coreConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
@@ -34,7 +38,6 @@ if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path))
 define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
-
 
 function autoloadLibraries($class)
 {
