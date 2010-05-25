@@ -12,18 +12,14 @@ class Pages_PageCommand implements Spark_Controller_CommandInterface
     $pageMapper = new PageMapper;
     
     if(isset($pagesConfig->pages->extension)) {
-      $ext = $pagesConfig->pages->extension;
-    } else {
-      $ext = ".txt";
+      $pageMapper->setPageExtension($pagesConfig->pages->extension);
     }
     
     $id = $request->getParam("page");
     
     $page = $pageMapper->find($id);
-
-    if($page) {
-      $content = $page->content;
-    }
+    
+    $content = $page->content;
     
     $response->appendBody($content);
   }

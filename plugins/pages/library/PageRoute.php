@@ -45,6 +45,7 @@ class PageRoute
     $pageMapper = Spark_Object_Manager::get("PageMapper");
     
     if(!$pageMapper->find($path)) {
+      $request->setParam("page", $path);
       return false;
     }
     
