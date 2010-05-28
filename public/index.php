@@ -12,32 +12,60 @@ if(!defined("APPLICATION_ENVIRONMENT")) {
   define("APPLICATION_ENVIRONMENT", "production");
 }
 
-require_once("Zend/Config/Ini.php");
+set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
-$coreConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
-$pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
+/**
+ * Check if all dependencies specified in the Core Config are installed
+ */
+require_once("Depender.php");
+require_once("Bundler.php");
+require_once("DependencyNotInstalledException.php");
 
-if(isset($coreConfig->framework->path) and is_dir($coreConfig->framework->path)) {
-  define("SPARK_PATH", $coreConfig->framework->path);
-} else {
-  // Assume a cloned Spark Repo in the parent folder of the Simple CMS install
-  $sparkPath = realpath(dirname(__FILE__) . "/../../Spark-Web-Framework/lib");
+$bundleConfig  = parse_ini_file(CONFIGS . DIRECTORY_SEPARATOR . "bundle.ini", true);
+
+$depender = new Depender(array_keys($bundleConfig["bundle"]));
+$bundler  = new Bundler;
+
+try {
+  $depender->setLoadPath(get_include_path())
+           ->checkAll();
   
-  if(is_dir($sparkPath)) {
-    define("SPARK_PATH", $sparkPath);
-  } else {
-    throw new Exception("Simple-CMS depends on the Spark-Web-Framework. 
-     Make sure who have either cloned the Git Repository 
-     (git clone git://github.com/yuri41/Spark-Web-Framework.git) 
-     in the parent folder of your Simple-CMS installation 
-     or you have configured the framework.path directive 
-     in the core.ini file correctly.");
+} catch (DependencyNotInstalledException $e) {
+  
+  try {
+    /**
+     * If Spark is not found, look for a checkout of Spark 
+     * in the parent folder of our Installation
+     */
+    if (in_array("Spark", $e->getFailedDependencies())) {
+      $sparkPath = realpath(dirname(__FILE__) . "/../../Spark-Web-Framework/lib");
+      
+      set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
+      
+      $depender->setLoadPath(get_include_path())
+               ->checkAll();
+    }
+    
+  } catch (DependencyNotInstalledException $e) {
+    /**
+     * Attempt to bundle the failed Dependencies
+     */
+    $bundler->setLoadPath(LIBRARY_PATH);
+    
+    foreach($e->getFailedDependencies() as $dependency) {
+      $bundler->bundle($dependency, $bundleConfig["bundle"][$dependency]);
+    }
+    
+    exit(); 
   }
 }
 
-define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
+require_once("Zend/Config/Ini.php");
 
-set_include_path(LIBRARY_PATH . PATH_SEPARATOR . SPARK_PATH . PATH_SEPARATOR . get_include_path());
+$coreConfig  = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
+$pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
+
+define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
 
 function autoloadLibraries($class)
 {
@@ -46,7 +74,9 @@ function autoloadLibraries($class)
 
 spl_autoload_register("autoloadLibraries");
 
-// Write the Core Config to the Registry
+/**
+ * Write the Core Config to the Registry
+ */
 Spark_Registry::set("CoreConfig", $coreConfig);
 Spark_Registry::set("PagesConfig", $pagesConfig);
 
@@ -61,7 +91,7 @@ $router->removeDefaultRoutes();
 $router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:command/:action/*", array("module"=>null, "command"=>"default", "action" => "default")));
 
 $layoutPlugin = Spark_Object_Manager::get("Spark_Controller_Plugin_Layout", $pagesConfig->pages->layout);
-$layoutPlugin->getLayout()->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+$layoutPlugin->getLayout()->addHelperPath("Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
 
 // Load the plugins
 $pluginLoader = new PluginLoader;

@@ -190,7 +190,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       }
       
       $this->_renderer->addScriptPath(APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath);
-      $this->_renderer->addHelperPath(SPARK_PATH . DIRECTORY_SEPARATOR . "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+      $this->_renderer->addHelperPath("Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
       $this->_renderer->registerHelper(new View_Helper_Pages, "pages");
     }
     
