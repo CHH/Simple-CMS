@@ -10,7 +10,10 @@ class Pages extends Plugin
     
     $this->frontController->getRouter()->addRoute(
       "pages", 
-      Spark_Object_Manager::create("PageRoute", array("module_name"=>"pages"))
+      Spark_Object_Manager::create(
+        "PageRoute", 
+        array("module_name"=>"pages")
+      )
     );
     
     PageMapper::setDefaultRenderer($this->layout->getLayout());
@@ -18,8 +21,11 @@ class Pages extends Plugin
   
   public function autoloadPagesLibraries($class)
   {
-    @include_once($this->getPath() . DIRECTORY_SEPARATOR . "library" . 
-       DIRECTORY_SEPARATOR . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php");
+    @include_once(
+      $this->getPath() . DIRECTORY_SEPARATOR . "library" . 
+      . DIRECTORY_SEPARATOR . 
+      . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php"
+    );
   }
   
   public function autoloadPagesModels($class)
