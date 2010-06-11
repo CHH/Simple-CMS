@@ -16,8 +16,6 @@ h2. Stable Package
 # Setup a new VHOST and point its document root to the public directory of the Simple CMS install, for example @/var/www/simple_cms/public@. Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
 # Start your server and open the URL of your VHOST in a Browser -- you should see the Getting Started Page
 
-Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
-
 h2. Developer Package
 
 You can obtain Developer Packages by directly cloning the git repository at @git://github.com/CHH/Simple-CMS.git@ or by taking a snapshot of the repository.
@@ -72,7 +70,6 @@ Simple CMS is licensed under the MIT License, and thus Open Source.
 To contribute fork the git repository at http://github.com/CHH/Simple-CMS and send me pull requests either by mail <christoph.hochstrasser@gmail.com> or submit your pull request via github.
 
 I'm always open for new features and feedback, just send me a mail or a Message on Github and we discuss it.
-
 
 
 P.S.
