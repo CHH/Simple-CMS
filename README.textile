@@ -42,8 +42,7 @@ h2. The root folders
 
 The root of your install has various folders
 
-pre..
-|-config/ Surprise! The folder for the config files
+pre.. |-config/ Surprise! The folder for the config files
 |-pages/ The folder for all pages. Subdirectories can be created to achieve a hierarchical organization of the pages.
 |-library/ All kind of classes used by the Simple CMS core
 |-plugins/ Copy the folders of downloaded plugins in there. Plugins can pretty much do everything, so I don't try to explain it here.
