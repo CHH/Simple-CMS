@@ -57,12 +57,12 @@ class PluginLoader implements PluginLoaderInterface
       $pluginClass = ucfirst($id);
 
       $ds = DIRECTORY_SEPARATOR;
-      $pluginPath = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
-      $pluginConfigPath = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
+      $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
+      $pluginConfigFile = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
       
       $config = null;
-      if(file_exists($pluginConfigPath)) {
-        $config = new Zend_Config_Ini($pluginConfigPath);
+      if(file_exists($pluginConfigFile)) {
+        $config = new Zend_Config_Ini($pluginConfigFile);
         
         if($config->depends_on) {
           $failedDependencies = array();
@@ -91,7 +91,7 @@ class PluginLoader implements PluginLoaderInterface
         }
       }
       
-      if(!@include_once($pluginPath)) {
+      if(!@include_once($pluginBootstrapFile)) {
         $pluginDirectory = $this->getPluginPath() . $ds . $id;
         
         throw new PluginLoadException(
@@ -102,10 +102,10 @@ class PluginLoader implements PluginLoaderInterface
         );
       }
       
-      
       $plugin = new $pluginClass;
       
       $plugin->setConfig($config);
+      $plugin->setPath($this->getPluginPath() . $ds . $id);
       
       foreach($this->_pluginOptions as $var => $value) {
         $plugin->set($var, $value);
@@ -115,7 +115,7 @@ class PluginLoader implements PluginLoaderInterface
         $plugin->bootstrap();
         
       } catch(Exception $e) {
-        $ne = new PluginBootstrapException($id, "There was an failure during 
+        throw new PluginBootstrapException($id, "There was an failure during 
           bootstrapping of the plugin \"{$id}\" with the message {$e->getMessage()}",
           self::ERROR_BOOTSTRAPPING_PLUGIN);
       }

@@ -22,8 +22,8 @@ class Pages extends Plugin
   public function autoloadPagesLibraries($class)
   {
     @include_once(
-      $this->getPath() . DIRECTORY_SEPARATOR . "library" . 
-      . DIRECTORY_SEPARATOR . 
+      $this->getPath() . DIRECTORY_SEPARATOR . "library"
+      . DIRECTORY_SEPARATOR
       . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php"
     );
   }

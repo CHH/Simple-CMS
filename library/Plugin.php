@@ -8,16 +8,6 @@ abstract class Plugin implements PluginInterface
   protected $_vars = array();
   
   /**
-   * @var Spark_Controller_FrontController
-   */
-  protected $_frontController = null;
-  
-  /**
-   * @var Spark_Controller_Filter_ApplyLayout
-   */
-  protected $_layoutFilter = null;
-  
-  /**
    * @var array
    */
   protected $_config = array();
@@ -70,7 +60,16 @@ abstract class Plugin implements PluginInterface
   
   public function getPath()
   {
-    return PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
+    if (is_null($this->_path)) {
+      $this->_path = PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
+    }
+    return $this->_path;
+  }
+  
+  public function setPath($path)
+  {
+    $this->_path = $path;
+    return $this;
   }
   
   /**

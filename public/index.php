@@ -15,7 +15,7 @@ if(!defined("APPLICATION_ENVIRONMENT")) {
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
 /**
- * Check if all dependencies specified in the Core Config are installed
+ * Check if all dependencies--specified in the bundle.ini--are installed
  */
 require_once("Depender.php");
 require_once("Bundler.php");
@@ -67,6 +67,7 @@ $pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
 
 define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
 
+
 function autoloadLibraries($class)
 {
   @include_once str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php";
@@ -74,26 +75,40 @@ function autoloadLibraries($class)
 
 spl_autoload_register("autoloadLibraries");
 
-/**
- * Write the Core Config to the Registry
- */
-Spark_Registry::set("CoreConfig", $coreConfig);
-Spark_Registry::set("PagesConfig", $pagesConfig);
 
 Spark_Object_Manager::setConfig($coreConfig);
 
+$eventDispatcher = new Spark_Event_Dispatcher;
 $frontController = Spark_Object_Manager::create("Spark_Controller_FrontController");
+
+$frontController->setEventDispatcher($eventDispatcher);
+
+Spark_Registry::set("CoreConfig", $coreConfig);
+Spark_Registry::set("PagesConfig", $pagesConfig);
+Spark_Registry::set("EventDispatcher", $eventDispatcher);
 
 $router = $frontController->getRouter();
 
 $router->removeDefaultRoutes();
 
-$router->addRoute("commands", new Zend_Controller_Router_Route("/:module/:command/:action/*", array("module"=>null, "command"=>"default", "action" => "default")));
+$router->addRoute(
+  "commands", 
+  new Zend_Controller_Router_Route(
+    "/:module/:command/:action/*", 
+    array("module" => null, "command" => "default", "action" => "default")
+  )
+);
 
-$layoutPlugin = Spark_Object_Manager::get("Spark_Controller_Plugin_Layout", $pagesConfig->pages->layout);
-$layoutPlugin->getLayout()->addHelperPath("Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", "Spark_View_Helper");
+$layoutPlugin = new Spark_Controller_Plugin_Layout($pagesConfig->pages->layout);
 
-// Load the plugins
+$layoutPlugin->getLayout()->addHelperPath(
+  "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
+  "Spark_View_Helper"
+);
+
+/**
+ * Load all plugins in the plugin folder
+ */
 $pluginLoader = new PluginLoader;
 
 $pluginLoader->setPluginPath(PLUGINS)
@@ -101,15 +116,39 @@ $pluginLoader->setPluginPath(PLUGINS)
              ->setPluginOption("layout", $layoutPlugin)
              ->loadDirectory();
 
-$callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks($pluginLoader->getPluginRegistry());
+/**
+ * This Front Controller plugin calls the beforeDispatch and afterDispatch
+ * Callbacks of each Plugin
+ */
+$callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
+  $pluginLoader->getPluginRegistry()
+);
 
-Spark_Event_Dispatcher::getInstance()
-  ->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $callPluginCallbacksPlugin)
-  ->on(Spark_Controller_FrontController::EVENT_BEFORE_DISPATCH, $callPluginCallbacksPlugin)
-  ->on(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, $layoutPlugin);
-  
+/**
+ * Connect Front Controller Events to Front Controller Plugins
+ */
+$eventDispatcher
+  ->on(
+    Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, 
+    $layoutPlugin
+  )
+  ->on(
+    Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, 
+    $callPluginCallbacksPlugin
+  )
+  ->on(
+    Spark_Controller_FrontController::EVENT_BEFORE_DISPATCH,
+    $callPluginCallbacksPlugin
+  );
+
 set_exception_handler(array($frontController, "handleException"));
 
 $frontController->handleRequest();
 
-unset($frontController, $router, $layoutPlugin);
+unset(
+  $frontController, 
+  $router, 
+  $layoutPlugin, 
+  $callPluginCallbacksPlugin,
+  $pluginLoader
+);

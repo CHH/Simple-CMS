@@ -1,6 +1,6 @@
 <?php
 
-class Pages_PageCommand implements Spark_Controller_CommandInterface
+class Pages_PageCommand implements Spark_Contorller_CommandInterface
 {
   
   public function execute(
