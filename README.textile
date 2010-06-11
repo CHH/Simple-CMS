@@ -16,6 +16,8 @@ h2. Stable Package
 # Setup a new VHOST and point its document root to the public directory of the Simple CMS install, for example @/var/www/simple_cms/public@
 # Start your server and open the URL of your VHOST in a Browser -- you should see the Getting Started Page
 
+Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
+
 h2. Developer Package
 
 You can obtain Developer Packages by directly cloning the git repository at @git://github.com/CHH/Simple-CMS.git@ or by taking a snapshot of the repository.
@@ -23,8 +25,6 @@ You can obtain Developer Packages by directly cloning the git repository at @git
 # Get a Developer Package, copy the folder you get from cloning or from unzipping the snapshot, to the document root of your Web Server, for example @/var/www@, you should have a folder @/var/www/Simple-CMS@
 # Clone the Spark Web Framework with @git clone git://github.com/yuri41/Spark-Web-Framework@ into for example @/var/www@. Simple CMS will by default look in its parent folder for the Spark Framework checkout
 # Proceed with Point Three of the Stable Package install
-
-# Setup a new Apache virtual host and point the document root to the folder your CMS instance lives in (e.g. htdocs/Simple-CMS). Don't forget to update your /etc/hosts or C:\Windows\system32\drivers\etc\hosts file if you don't own a domain.
 
 h1. Usage
 
