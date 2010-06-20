@@ -1,0 +1,153 @@
+/* CSS Reset by Eric Meyer (http://meyerweb.com) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+  outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+  text-decoration: none;
+}
+del {
+  text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+html {
+  margin: 0px; padding: 0px;
+  background-color: #fcfcfc;
+}
+  
+body {
+  position: relative; margin: 0 auto; padding: 0;
+  font-size: 0.625em; /* =10px on default font size of 16px */
+  width: 72em;
+  color: #222;
+  font-family: Georgia, Times, serif;
+  line-height: 1.5em;
+}
+
+#content_main {
+  position: absolute; top: 0; left: 0; width: 45em;
+}
+
+#content_sub {
+  position: absolute; width: 25em; top: 10em; left: 46em; padding: 0 0 0 1em;
+  border-left: 1px solid #ccc;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica", Arial, "Liberation Sans", sans;
+  font-weight: bold;
+  line-height: 1.2em;
+  margin: 0.25em 0 0.5em;
+}
+
+h1 { font-size: 5em; }
+
+h2 { font-size: 2em; }
+
+p {
+  font-size: 1.3em;
+  margin-bottom: 1.25em;
+  line-height: 1.5em;
+}
+
+em {
+  font-style: italic;
+}
+
+blockquote {
+  padding: 0 0 0 2em;
+  border-left: 6px solid #000;
+  font-size: 1.6em; font-style: italic;
+}
+
+code { 
+  padding: 0 0.1em; 
+  font-family: Consolas, "Lucida Console", Monaco, "Droid Sans Mono", monospace; 
+  background-color: #ddd; color: #333; 
+  border: 1px solid #ccc;
+  border-radius: 2px; -webkit-border-radius: 2px; -moz-border-radius: 2px;
+}
+
+quote, q {
+  font-size: 0.5em;
+}
+
+ol, ul {
+  line-height: 1.5em; padding: 0 0 0 3em; margin: 0 0 1.25em;
+}
+
+ol { list-style: decimal; }
+
+li {
+  margin: 0 0 0.5em;
+}
+
+.hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+.error_information { width: 400px; font-size: 1.6em; line-height: 1.5em; }
+.error_information tr { border-bottom: 1px solid #ccc; }
+.error_information td { padding-right: 5px; }
+.error_information ul, ol { font-size: 13px; padding: 0; }
+.error_information p { font-size: 13px; }
+.error_information h3 { border-bottom: 1px solid #ccc; }
+
+#content_sub h2 {}
+
+#nav_external { margin: 0 0 2em; border-bottom: 1px solid #ddd; }
+.nav { padding: 0; }
+.nav li { margin: 0 0 1.25em; }
+.nav a { text-decoration: none; color: #000; }
+.nav a:hover .title { text-decoration: underline; }
+
+.nav .title {
+  font-size: 2em; font-weight: normal; display: block; line-height: 1.2em;
+}
+.nav span {
+  font-size: 1.2em; font-style: italic; display: block; line-height: 1.5em;
+  color: #19BAC2;
+}
+
+.call_stack li { font-size: 11px; }
