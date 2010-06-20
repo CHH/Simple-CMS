@@ -26,7 +26,7 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
 		</a></li>
 		<li><a href="http://github.com/CHH/Simple-CMS/issues">
 			<strong class="title">Fehler melden</strong>
-			<span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge vorbringen</span>
+			<span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge einbringen</span>
 		</a></li>
 		<li><a href="http://yuri41.wordpress.com/category/SimpleCMS">
 			<strong class="title">Weblog von Christoph Hochstrasser</strong>
