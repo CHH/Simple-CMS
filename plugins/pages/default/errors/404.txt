@@ -1,0 +1,45 @@
+<div id="content_main">
+
+h1. Seite nicht gefunden
+
+<p>
+	Es tut mir leid, ich habe nichts an dieser Stelle gefunden. Schau bitte nochmal ob es 
+	die Seite @<?= $this->request->getParam("page") ?><?= $this->pages()->getPageExtension() ?>@
+	im @pages@ Ordner gibt.
+</p>
+
+h2. Mehr Informationen zum Fehler
+
+<table class="error_information">
+	<tr>
+		<td>Fehlernummer</td>
+		<td><?= $this->request->getParam("code") ?></td>
+	</tr>
+	<tr>
+		<td>HTTP Anfragemethode</td>
+		<td><?= $this->request->getMethod() ?></td>
+	</tr>
+	<tr>
+		<td>Angefragte URL</td>
+		<td><?= $this->request->getRequestURI() ?></td>
+	</tr>
+</table>
+
+</div>
+
+<div id="content_sub">
+	
+	<h2>Siehe auch</h2>
+	
+	<ul class="nav">
+		<li><a href="/">
+			<strong class="title">Zur Startseite</strong>
+			<span>Gehe zur&uuml;ck zur Startseite</span>
+		</a></li>
+		<li><a href="http://github.com/CHH/Simple-CMS/issues">
+			<strong class="title">Fehler melden</strong>
+			<span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge vorbringen</span>
+		</a></li>
+	</ul>
+
+</div>

@@ -1,0 +1,81 @@
+<div id="content_main">
+
+h1. Plugin Fehler
+
+<p>
+  Ein Plugin hat einen Fehler verursacht.
+</p>
+
+h2. Mehr Informationen zum Fehler
+
+<table class="error_information">
+  <tr>
+    <td>Fehlerhafte Plugins</td>
+    <td>
+      <ul>
+      <? foreach($this->exception->getFailedPlugins() as $plugin => $error): ?>
+        <li>
+          <h3><?= $plugin ?></h3>
+          <? if($error instanceof PluginLoadException): ?>
+            <p>
+              Das Plugin @<?= $plugin ?>@ ben&ouml;tigt die folgenden Plugins um richtig zu funktionieren:
+            </p>
+            
+            <ul>
+            <? foreach($error->getFailedDependencies() as $dep): ?>
+              <li><?= $dep ?></li>
+            <? endforeach; ?>
+            </ul>
+            
+            <p>Schau ob diese Plugins installiert sind, damit das Plugin @<?= $plugin ?>@
+            richtig geladen werden kann.</p>
+          <? else: ?>
+            <p class="message"><?= $error->getMessage() ?></p>
+          <? endif; ?>
+        </li>
+      <? endforeach; ?>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Fehlernummer</td>
+    <td><?= $this->exception->getCode() ?></td>
+  </tr>
+  <tr>
+    <td>Art der Ausnahme</td>
+    <td><?= get_class($this->exception) ?></td>
+  </tr>
+  <tr>
+    <td>Fehlermeldung</td>
+    <td>"<?= $this->exception->getMessage() ?>"</td>
+  </tr>
+  <tr>
+    <td>Stack Trace</td>
+    <td>
+      <ul class="call_stack">
+      <? foreach ($this->exception->getTrace() as $trace): ?>
+        <li><?= $trace["file"] ?>:<?= $trace["line"] ?>, <?= $trace["function"] ?></li>
+      <? endforeach; ?>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<div id="content_sub">
+
+  <h2>Siehe auch</h2>
+
+  <ul class="nav">
+    <li><a href="/">
+      <strong class="title">Zur Startseite</strong>
+      <span>Gehe zur&uuml;ck zur Startseite</span>
+    </a></li>
+    <li><a href="http://github.com/CHH/Simple-CMS/issues">
+      <strong class="title">Fehler melden</strong>
+      <span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge vorbringen</span>
+    </a></li>
+  </ul>
+
+</div>

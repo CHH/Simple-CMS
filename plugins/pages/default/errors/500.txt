@@ -1,0 +1,53 @@
+<div id="content_main">
+
+h1. Server Fehler
+
+<p>
+	Ein Fehler in einer Komponente hat eine Ausnahme verursacht.
+</p>
+
+h2. Mehr Informationen zum Fehler
+
+<table class="error_information">
+	<tr>
+		<td>Fehlernummer</td>
+		<td><?= $this->exception->getCode() ?></td>
+	</tr>
+	<tr>
+		<td>Art der Ausnahme</td>
+		<td><?= get_class($this->exception) ?></td>
+	</tr>
+	<tr>
+		<td>Fehlermeldung</td>
+		<td>"<?= $this->exception->getMessage() ?>"</td>
+	</tr>
+	<tr>
+		<td>Stack Trace</td>
+		<td>
+			<ul class="call_stack">
+			<? foreach ($this->exception->getTrace() as $trace): ?>
+				<li><?= $trace["file"] ?>:<?= $trace["line"] ?>, <?= $trace["function"] ?></li>
+			<? endforeach; ?>
+			</ul>
+		</td>
+	</tr>
+</table>
+
+</div>
+
+<div id="content_sub">
+
+	<h2>Siehe auch</h2>
+
+	<ul class="nav">
+		<li><a href="/">
+			<strong class="title">Zur Startseite</strong>
+			<span>Gehe zur&uuml;ck zur Startseite</span>
+		</a></li>
+		<li><a href="http://github.com/CHH/Simple-CMS/issues">
+			<strong class="title">Fehler melden</strong>
+			<span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge vorbringen</span>
+		</a></li>
+	</ul>
+
+</div>

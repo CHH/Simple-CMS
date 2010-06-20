@@ -1,2 +1,0 @@
-h1. An Error occured while bootstrapping one or more plugins
-

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <?= $this->headTitle() ?>
+    <?= $this->headLink() ?>
+  </head>
+  
+  <body>
+
+    <?php 
+      /* Output the content of the requested page */
+      echo $this->content;
+    ?>
+    
+    <?= $this->headScript() ?>
+  </body>
+
+</html>
+
