@@ -1,6 +1,6 @@
 <?php
 
-class Pages_PageCommand implements Spark_Contorller_CommandInterface
+class Pages_PageCommand implements Spark_Controller_CommandInterface
 {
   
   public function execute(
@@ -16,6 +16,10 @@ class Pages_PageCommand implements Spark_Contorller_CommandInterface
     }
     
     $id = $request->getParam("page");
+    
+    if (strpos($id, "_") === 0 or strpos($id, "/_") !== false) {
+      throw new Exception("Page is hidden", 404);
+    }
     
     $page = $pageMapper->find($id);
     
