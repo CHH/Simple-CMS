@@ -1,0 +1,37 @@
+<?= $this->doctype() ?>
+<html>
+  <head>
+	<?= $this->headTitle() ?>
+	<?= $this->headMeta() ?>
+	<?= $this->headLink() ?>
+  </head>
+
+  <body id="<?= $this->placeholder('signature') ?>">
+	<h1 id="branding">Administration</h1>
+	
+	<div id="nav">
+		<div class="container">
+			<ul id="nav_main">
+				<li class="start"><a href="/admin">Start</a></li>
+				<li class="content"><a href="/admin/content">Inhalte</a></li>
+				<li class="style"><a href="/admin/style">Stil</a></li>
+				<li class="settings"><a href="/admin/settings">Einstellungen</a></li>
+				<?= $this->placeholder('navigation') ?>
+			</ul>
+	
+			<div id="me">
+				Hallo <a href="/admin/user/username">Christoph</a>
+				<?= $this->gravatar("christoph.hochstrasser@asdfg.com", 48, null, "identicon")->toImage() ?>
+				<a href="/admin/user/logout">Abmelden</a>
+			</div>
+		</div>
+	</div>
+	
+	<div id="content">
+		<?= $this->content; ?>
+	</div>
+	
+	<?= $this->headScript() ?>
+  </body>
+
+</html>

@@ -18,25 +18,27 @@ class Pages extends Plugin
       )
     );
     
-    /**
-     * If no user defined layout exists, use the predefined layout from the plugin
-     */
-    if (!file_exists($this->layoutPlugin->getLayoutPath() . DIRECTORY_SEPARATOR . $this->layoutPlugin->getLayoutName())) {
-      $this->layoutPlugin->setLayoutPath($this->getPath() . DIRECTORY_SEPARATOR . "default");
-      $this->layoutPlugin->setLayoutName("layout.phtml");
-    }
-    
+    $this->layoutPlugin->setLayoutPath($this->getPath() . DIRECTORY_SEPARATOR . "default");
+    $this->layoutPlugin->setLayoutName("layout.phtml");
+        
     $layout = $this->layoutPlugin->getLayout();
     
     $layout->doctype("HTML5");
     $layout->headMeta()->setCharset("UTF-8"); 
+    
+    $layout->headScript()->prependFile("/js/less.min.js");
     
     /**
      * If the App is in development mode, then prepend our stylesheet for pretty 
      * Errors and default pages
      */
     if (APPLICATION_ENVIRONMENT === "development") {  
-      $layout->headLink()->prependStylesheet("/styles/defaults.css");
+      $layout->headLink(array(
+        "href" => "/styles/defaults.less",
+        "rel"  => "stylesheet/less",
+        "type" => "text/css"
+      ));
+      $layout->headScript()->appendScript("less.env='development'; less.watch();");
     }
     
     PageMapper::setDefaultRenderer($layout);

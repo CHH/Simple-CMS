@@ -1,3 +1,4 @@
+<div id="default">
 <div id="content_main">
 
 h1. Seite nicht gefunden
@@ -43,3 +44,4 @@ h2. Mehr Informationen zum Fehler
 	</ul>
 
 </div>
+</div><!-- end of: #default -->

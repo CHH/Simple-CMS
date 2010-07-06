@@ -1,3 +1,4 @@
+<div id="default">
 <div id="content_main">
 
 h1. Plugin Fehler
@@ -78,4 +79,5 @@ h2. Mehr Informationen zum Fehler
     </a></li>
   </ul>
 
-</div>
+</div><!-- end of: #content_sub -->
+</div><!-- end of: #default -->

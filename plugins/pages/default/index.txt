@@ -1,3 +1,4 @@
+<div id="default">
 <div id="content_main">
 
 h1. Schnellstart
@@ -46,3 +47,4 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
 	<p>&copy; 2010 Christoph Hochstrasser</p>
 	
 </div>
+</div><!-- end of: #default -->

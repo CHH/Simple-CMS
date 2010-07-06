@@ -1,0 +1,15 @@
+<div id="user_login">
+	<form action="/admin/user/login" method="post">
+		<h1>Bitte melde dich an</h1>
+		
+		<dl>
+			<dt><?= $this->formLabel("username", "Benutzername") ?></dt>
+			<dd><?= $this->formText("username") ?></dd>
+	
+			<dt><?= $this->formLabel("password", "Kennwort") ?></dt>
+			<dd><?= $this->formPassword("password") ?></dd>
+		</dl>
+	
+		<button type="submit">Anmelden &rarr;</button>
+	</form>
+</div>

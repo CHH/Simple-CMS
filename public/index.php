@@ -86,7 +86,7 @@ $router->addRoute(
   "commands", 
   new Zend_Controller_Router_Route(
     "/:module/:command/:action/*", 
-    array("module" => null, "command" => "default", "action" => "default")
+    array("module" => null, "command" => "default", "action" => "index")
   )
 );
 
@@ -114,19 +114,9 @@ $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
 /**
  * Connect Front Controller Events to Front Controller Plugins
  */
-$eventDispatcher
-  ->on(
-    Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, 
-    $layoutPlugin
-  )
-  ->on(
-    Spark_Controller_FrontController::EVENT_AFTER_DISPATCH, 
-    $callPluginCallbacksPlugin
-  )
-  ->on(
-    Spark_Controller_FrontController::EVENT_BEFORE_DISPATCH,
-    $callPluginCallbacksPlugin
-  );
+$frontController->addPlugin($callPluginCallbacksPlugin)
+                ->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
+                
 
 set_exception_handler(array($frontController, "handleException"));
 
