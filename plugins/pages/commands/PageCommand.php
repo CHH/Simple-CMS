@@ -8,12 +8,7 @@ class Pages_PageCommand implements Spark_Controller_CommandInterface
     Zend_Controller_Response_Abstract $response
   )
   {
-    $pagesConfig = Spark_Registry::get("PagesConfig");
-    $pageMapper = new PageMapper;
-    
-    if(isset($pagesConfig->pages->extension)) {
-      $pageMapper->setPageExtension($pagesConfig->pages->extension);
-    }
+    $pageMapper  = new PageMapper; 
     
     $id = $request->getParam("page");
     

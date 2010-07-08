@@ -1,32 +1,65 @@
 <?php
 
-class Pages extends Plugin
+class pages extends Plugin
 {
   
   public function bootstrap()
   {
+    $frontController = $this->import("FrontController");
+    $request         = $frontController->getRequest(); 
+    
+    /**
+     * Set up autoloading for the Libraries and Models of the plugin
+     */
     spl_autoload_register(array($this, "autoloadPagesLibraries"));
     spl_autoload_register(array($this, "autoloadPagesModels"));
     
-    $this->frontController->setErrorCommand("pages::error");
+    /**
+     * Tell the Front Controller to use the error command of our plugin (=pages)
+     */
+    $frontController->setErrorCommand("pages::error");
     
-    $this->frontController->getRouter()->addRoute(
+    $frontController->getRouter()->addRoute(
       "pages", 
       Spark_Object_Manager::create(
         "PageRoute", 
         array("module_name"=>"pages")
       )
+    );      
+    
+    /**
+     * Create the layout Plugin for the Front Controller, it wraps 
+     * all of our pages in a common layout template
+     */
+    $layoutPlugin = new Spark_Controller_Plugin_Layout(array(
+      "layout_path" => $this->getPath() . "/default"
+    ));
+    
+    /**
+     * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
+     * to the Layout
+     */
+    $layoutPlugin->getLayout()->addHelperPath(
+      "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
+      "Spark_View_Helper"
     );
     
-    $this->layoutPlugin->setLayoutPath($this->getPath() . DIRECTORY_SEPARATOR . "default");
-    $this->layoutPlugin->setLayoutName("layout.phtml");
-        
-    $layout = $this->layoutPlugin->getLayout();
+    $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
+    
+    /**
+     * Set up the doctype and charset for the layout
+     */
+    $layout = $layoutPlugin->getLayout();
     
     $layout->doctype("HTML5");
     $layout->headMeta()->setCharset("UTF-8"); 
     
-    $layout->headScript()->prependFile("/js/less.min.js");
+    /**
+     * Add Less.js to Layout for CSS Preprocessing
+     */
+    $layout->headScript()->prependFile($request->getBaseUrl() . "/js/less.min.js");
+    
+    $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
     
     /**
      * If the App is in development mode, then prepend our stylesheet for pretty 
@@ -34,7 +67,7 @@ class Pages extends Plugin
      */
     if (APPLICATION_ENVIRONMENT === "development") {  
       $layout->headLink(array(
-        "href" => "/styles/defaults.less",
+        "href" => $request->getBaseUrl() . "/styles/defaults.less",
         "rel"  => "stylesheet/less",
         "type" => "text/css"
       ));
@@ -42,6 +75,9 @@ class Pages extends Plugin
     }
     
     PageMapper::setDefaultRenderer($layout);
+    
+    $this->export("Pages", new PageMapper);
+    $this->export("LayoutPlugin", $layoutPlugin);
   }
   
   public function autoloadPagesLibraries($class)

@@ -5,7 +5,7 @@ class PluginLoader implements PluginLoaderInterface
 
   protected $_pluginPath = null;
   
-  protected $_pluginOptions = array();
+  protected $_exports = array();
   
   protected $_pluginRegistry = null;
   
@@ -36,7 +36,7 @@ class PluginLoader implements PluginLoaderInterface
       $failedPluginList = join(array_keys($failedPlugins), ", ");
       
       $e = new PluginException(
-        "asdf", 
+        "main", 
         "Following plugins could not be loaded: {$failedPluginList}. Make sure 
           these plugins are correctly installed",
         self::ERROR_LOADING_PLUGIN,
@@ -45,7 +45,6 @@ class PluginLoader implements PluginLoaderInterface
       
       throw $e;
     }
-    
   }
   
   public function load($id)
@@ -54,11 +53,11 @@ class PluginLoader implements PluginLoaderInterface
     
     if(!$pluginRegistry->has($id)) {
 
-      $pluginClass = ucfirst($id);
-
-      $ds = DIRECTORY_SEPARATOR;
+      $pluginClass         = $this->_getPluginClass($id);
+ 
+      $ds                  = DIRECTORY_SEPARATOR;
       $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
-      $pluginConfigFile = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
+      $pluginConfigFile    = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
       
       $config = null;
       if(file_exists($pluginConfigFile)) {
@@ -104,14 +103,16 @@ class PluginLoader implements PluginLoaderInterface
       
       $plugin = new $pluginClass;
       
-      $plugin->setConfig($config);
-      $plugin->setPath($this->getPluginPath() . $ds . $id);
-      
-      foreach($this->_pluginOptions as $var => $value) {
-        $plugin->set($var, $value);
+      if ($plugin instanceof Plugin) {
+        $plugin->setConfig($config);
+        $plugin->setPath($this->getPluginPath() . $ds . $id);
+        $plugin->setPluginLoader($this);
       }
-      
+         
       try {
+        if (!method_exists($plugin, "bootstrap")) {
+          throw new Exception("The Method \"bootstrap()\" was not found.");
+        }
         $plugin->bootstrap();
         
       } catch(Exception $e) {
@@ -162,16 +163,26 @@ class PluginLoader implements PluginLoaderInterface
     return $this->_pluginRegistry;
   }
   
-  public function setPluginOption($name, $value)
+  public function setExport($name, $value)
   {
-    $this->_pluginOptions[$name] = $value;
+    if (isset($this->_exports[$name])) {
+      throw new InvalidArgumentException("{$name} is already exported");
+    }
+    $this->_exports[$name] = $value;
     return $this;
   }
   
-  public function __set($name, $value)
+  public function getExport($name)
   {
-    $this->setPluginOption($name, $value);
+    if (isset($this->_exports[$name])) {
+      return $this->_exports[$name];
+    }
+    throw new InvalidArgumentException("The option with the name {$name} has yet to be set");
   }
-
   
+  protected function _getPluginClass($id)
+  {
+    $class = str_replace(" ", "", ucwords(str_replace("_", " ", $id)));
+    return $class;
+  }
 }

@@ -16,6 +16,11 @@ class DependencyNotInstalledException extends Exception
     $this->code = 513;
   }
   
+  public function hasFailedDependency($dependency)
+  {
+    return in_array($dependency, self::$_failedDependencies) ? true : false;
+  }
+  
   public function getFailedDependencies()
   {
     return self::$_failedDependencies;

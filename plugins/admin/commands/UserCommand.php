@@ -1,6 +1,6 @@
 <?php
 
-class Admin_UserCommand extends Spark_Controller_ActionController
+class Admin_UserCommand extends PluginController
 {
   protected $_pages;
   

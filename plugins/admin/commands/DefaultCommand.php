@@ -1,9 +1,11 @@
 <?php
 
-class Admin_DefaultCommand extends Spark_Controller_ActionController
+class Admin_DefaultCommand extends PluginController
 {
+
   public function indexAction($request, $response)
   {
     
   }
+  
 }

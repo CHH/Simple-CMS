@@ -34,7 +34,8 @@ class PageRoute
   {
     $params = array();
     $path = $request->getRequestUri();
-
+    $path = substr($path, strlen($request->getBaseUrl()));
+    
     $path = trim($path, self::PARAM_DELIMITER);
 
     if($path == null)

@@ -5,12 +5,12 @@ abstract class Plugin implements PluginInterface
   /**
    * @var array
    */
-  protected $_vars = array();
+  protected $_config = array();
   
   /**
-   * @var array
+   * @var PluginLoaderInterface
    */
-  protected $_config = array();
+  protected $_pluginLoader;
   
   /**
    * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
@@ -58,6 +58,17 @@ abstract class Plugin implements PluginInterface
     return $this->_config;
   }
   
+  public function setPluginLoader(PluginLoaderInterface $pluginLoader)
+  {
+    $this->_pluginLoader = $pluginLoader;
+    return $this;
+  }
+  
+  public function getPluginLoader()
+  {
+    return $this->_pluginLoader;
+  }
+  
   public function getPath()
   {
     if (is_null($this->_path)) {
@@ -73,53 +84,27 @@ abstract class Plugin implements PluginInterface
   }
   
   /**
-   * set() - Sets a key value pair, which can be accessed like a object property
+   * export() - Exports an object so other plugins can import it
    *
    * @param string $var
    * @param mixed $value
    * @return Plugin
    */
-  public function set($var, $value)
+  public function export($var, $object)
   {
-    $this->_vars[$var] = $value;
+    $this->getPluginLoader()->setExport($var, $object);
     return $this;
   }
   
   /**
-   * get() - Returns the value for the given key
+   * import() - Returns an object from the PluginLoader
    *
    * @param string $var
    * @return mixed
    */
-  public function get($var)
+  public function import($var)
   {
-    if(array_key_exists($var, $this->_vars)) {
-      return $this->_vars[$var];
-    }
-
-    throw new Exception("You tried to access the property {$var}, but it hasn't been set");
-  }
-  
-  /**
-   * __set() - Alias for set(), enables $this->$var = $value assignments
-   * @see set()
-   * @param string $var
-   * @param mixed $value
-   */
-  public function __set($var, $value)
-  {
-    $this->set($var, $value);
-  }
-  
-  /**
-   * __get - Alias for get()
-   * @see get()
-   * @param string $var
-   * @return mixed
-   */
-  public function __get($var)
-  {
-    return $this->get($var);
+    return $this->getPluginLoader()->getExport($var);
   }
   
 }

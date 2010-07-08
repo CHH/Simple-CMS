@@ -9,19 +9,23 @@ class Admin extends Plugin
   
   public function beforeDispatch()
   {
-    $this->layoutPlugin->setLayoutPath($this->getPath() . "/views");
-    $this->layoutPlugin->setLayoutName("layout.phtml");
+    $layoutPlugin    = $this->import("LayoutPlugin");
+    $frontController = $this->import("FrontController");
+    $request         = $frontController->getRequest();
     
-    $layout = $this->layoutPlugin->getLayout();
+    $layoutPlugin->setLayoutPath($this->getPath() . "/views");
+    $layoutPlugin->setLayoutName("layout.phtml");
     
-    $layout->headScript()->prependFile("/js/jquery.min.js");
-    $layout->headScript()->appendFile("/js/jquery.textchange.min.js");
-    $layout->headScript()->appendFile("/js/admin_panel.js");
+    $layout = $layoutPlugin->getLayout();
+    
+    $layout->headScript()->prependFile($request->getBaseUrl() . "/js/jquery.min.js");
+    $layout->headScript()->appendFile($request->getBaseUrl()  . "/js/jquery.textchange.min.js");
+    $layout->headScript()->appendFile($request->getBaseUrl()  . "/js/admin_panel.js");
     
     $layout->placeholder("signature")->set("admin_panel");
     
     $layout->headLink(array(
-      "href" => "/styles/admin_panel.less",
+      "href" => $request->getBaseUrl() . "/styles/admin_panel.less",
       "type" => "text/css",
       "rel"  => "stylesheet/less"
     ));
