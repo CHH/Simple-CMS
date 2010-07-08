@@ -1,12 +1,10 @@
 <?php
 
-define("APPROOT", realpath(dirname(__FILE__) . "/../"));
+define("APPROOT", realpath(dirname(__FILE__)));
 
-define("WEBROOT", realpath(dirname(__FILE__)));
+define("CONFIGS", APPROOT . "/config");
 
-define("CONFIGS", realpath(dirname(__FILE__) . "/../config"));
-
-define("LIBRARY_PATH", realpath(dirname(__FILE__) . "/../library"));
+define("LIBRARY_PATH", APPROOT . "/library");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -32,28 +30,28 @@ try {
            ->checkAll();
   
 } catch (DependencyNotInstalledException $e) {
-  
-  try {
-    /**
-     * If the Spark Namespace is not found, look for a checkout of Spark 
-     * in the parent folder of our Installation
-     */
-    if (in_array("Spark", $e->getFailedDependencies())) {
-      $sparkPath = realpath(dirname(__FILE__) . "/../../Spark-Web-Framework/lib");
-      set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
-      
+  /**
+   * If the Spark Namespace is not found, look for a checkout of Spark 
+   * in the parent folder of our Installation and try one more time
+   */
+  if ($e->hasFailedDependency("Spark")) {
+    $sparkPath = realpath(APPROOT . "/../Spark-Web-Framework/lib");
+    set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
+    
+    try {  
       $depender->setLoadPath(get_include_path())
                ->checkAll();
+    } catch (DependencyNotInstalledException $e) {
+      exit($e->getMessage());
     }
-  } catch (DependencyNotInstalledException $e) {
-    print $e->getMessage();
-    exit();
   }
 }
 
-
+/**
+ * Now everything is fine and we can actually do some useful tasks,
+ * like loading some config files
+ */
 $coreConfig  = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
-$pagesConfig = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "pages.ini");
 
 if (!defined("APPLICATION_ENVIRONMENT")) {
   $environment = "production";
@@ -75,7 +73,6 @@ $frontController = Spark_Object_Manager::create("Spark_Controller_FrontControlle
 $frontController->setEventDispatcher($eventDispatcher);
 
 Spark_Registry::set("CoreConfig", $coreConfig);
-Spark_Registry::set("PagesConfig", $pagesConfig);
 Spark_Registry::set("EventDispatcher", $eventDispatcher);
 
 $router = $frontController->getRouter();
@@ -90,18 +87,10 @@ $router->addRoute(
   )
 );
 
-$layoutPlugin = new Spark_Controller_Plugin_Layout($pagesConfig->pages->layout);
-
-$layoutPlugin->getLayout()->addHelperPath(
-  "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
-  "Spark_View_Helper"
-);
-
 $pluginLoader = new PluginLoader;
 
 $pluginLoader->setPluginPath(PLUGINS)
-             ->setPluginOption("frontController", $frontController)
-             ->setPluginOption("layoutPlugin", $layoutPlugin);
+             ->setExport("FrontController", $frontController);
 
 /**
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
@@ -114,9 +103,7 @@ $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
 /**
  * Connect Front Controller Events to Front Controller Plugins
  */
-$frontController->addPlugin($callPluginCallbacksPlugin)
-                ->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
-                
+$frontController->addPlugin($callPluginCallbacksPlugin); 
 
 set_exception_handler(array($frontController, "handleException"));
 
@@ -129,8 +116,7 @@ $frontController->handleRequest();
 
 unset(
   $frontController, 
-  $router, 
-  $layoutPlugin, 
+  $router,
   $callPluginCallbacksPlugin,
   $pluginLoader,
   $depender
