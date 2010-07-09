@@ -1,0 +1,67 @@
+<style type="text/css">
+  .ui-fb { overflow: hidden; position: relative; padding: 20px; margin: 20px; border: 1px solid #ccc; }
+  
+  .ui-fb .folder { display: none; }
+  .ui-fb .folder.open, .ui-fb .folder:first-child { display: block; }
+  .ui-fb .folder .name { display: block; padding: 5px; }
+  
+  .ui-fb ul { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+  .ui-fb .file {
+    float: left; height: 150px; width: 150px; margin: 0 20px 20px 0;
+    overflow: hidden;
+  }
+</style>
+
+<h1>
+  Filebrowser
+</h1>
+<div class="ui-fb">
+  <ul>
+    <li class="folder">
+      <span class="name">_errors</span>
+      <ul>
+        <li class="file text">
+          <a href="/path/to/file">
+            <span class="name">404.txt</span>
+            <span class="changed">vor 2 Minuten</span>
+            <span class="preview">
+              <pre><code>Es tut mir leid, ich hab die Seite leider nicht gefunden. Ich bitte um dein Verständnis&hellip;</code></pre>
+            </span>
+          </a>
+        </li>
+        <li class="file text">
+          <a href="/path/to/file">
+            <span class="filename">404.txt</span>
+            <span class="changed">vor 2 Minuten</span>
+            <span class="preview">
+              <pre><code>Es tut mir leid, ich hab die Seite leider nicht gefunden. Ich bitte um dein Verständnis&hellip;</code></pre>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="folder">
+      <span class="name">_partials</span>
+      <ul>
+        <li class="file text">
+          <a href="/path/to/file">
+            <span class="filename">header.txt</span>
+            <span class="changed">vor 1 Stunde</span>
+            <span class="preview">
+              <pre><code><h1>Super Seite</h1> bla bla bla bla</code></pre>
+            </span>
+          </a>
+        </li>
+        <li class="file text">
+          <a href="/path/to/file">
+            <span class="filename">footer.txt</span>
+            <span class="changed">vor 3 Tagen</span>
+            <span class="preview">
+              <pre><code><h1>Footer</h1> bla bla bla bla</code></pre>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
