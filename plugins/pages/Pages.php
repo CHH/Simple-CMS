@@ -1,6 +1,6 @@
 <?php
 
-class pages extends Plugin
+class Pages extends Plugin
 {
   
   public function bootstrap()
@@ -12,7 +12,6 @@ class pages extends Plugin
      * Set up autoloading for the Libraries and Models of the plugin
      */
     spl_autoload_register(array($this, "autoloadPagesLibraries"));
-    spl_autoload_register(array($this, "autoloadPagesModels"));
     
     /**
      * Tell the Front Controller to use the error command of our plugin (=pages)
@@ -25,14 +24,20 @@ class pages extends Plugin
         "PageRoute", 
         array("module_name"=>"pages")
       )
-    );      
+    );
+    
+    $layoutPath = $this->getPath() . "/default";
+    
+    if (isset($this->getConfig()->layout->path)) {
+      $layoutPath = $this->getConfig()->layout->path;
+    }
     
     /**
      * Create the layout Plugin for the Front Controller, it wraps 
      * all of our pages in a common layout template
      */
     $layoutPlugin = new Spark_Controller_Plugin_Layout(array(
-      "layout_path" => $this->getPath() . "/default"
+      "layout_path" => $layoutPath
     ));
     
     /**
@@ -84,14 +89,6 @@ class pages extends Plugin
   {
     @include_once(
       $this->getPath() . DIRECTORY_SEPARATOR . "library" . DIRECTORY_SEPARATOR
-      . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php"
-    );
-  }
-  
-  public function autoloadPagesModels($class)
-  {
-    @include_once(
-      $this->getPath() . DIRECTORY_SEPARATOR . "models" . DIRECTORY_SEPARATOR 
       . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php"
     );
   }

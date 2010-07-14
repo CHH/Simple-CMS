@@ -43,10 +43,11 @@ class PageRoute
       $path = $this->_defaultPage;
     }
     
-    $pageMapper = Spark_Object_Manager::get("PageMapper");
+    $pageMapper = Spark_Registry::get("Plugins")->pages->import("Pages");
     
-    if(!$pageMapper->find($path)) {
+    if(!$page = $pageMapper->find($path)) {
       $request->setParam("page", $path);
+      //Spark_Registry::get("EventDispatcher")->trigger("pages.page_not_found");
       return false;
     }
     

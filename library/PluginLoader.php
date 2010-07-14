@@ -51,82 +51,82 @@ class PluginLoader implements PluginLoaderInterface
   { 
     $pluginRegistry = $this->getPluginRegistry();
     
-    if(!$pluginRegistry->has($id)) {
-
-      $pluginClass         = $this->_getPluginClass($id);
- 
-      $ds                  = DIRECTORY_SEPARATOR;
-      $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
-      $pluginConfigFile    = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
-      
-      $config = null;
-      if(file_exists($pluginConfigFile)) {
-        $config = new Zend_Config_Ini($pluginConfigFile);
-        
-        if($config->depends_on) {
-          $failedDependencies = array();
-          
-          foreach($config->depends_on as $dependency) {
-            try {
-              $this->load($dependency);
-              
-            } catch(PluginLoadException $e) {
-              $failedDependencies[] = $dependency;
-            }
-          }
-          
-          if($failedDependencies) {
-            $failedDependenciesString = join($failedDependencies, ", ");
-            
-            $e = new PluginLoadException(
-              $id, 
-              "The plugin \"{$id}\" depends on {$failedDependenciesString}. 
-                Make sure that these Plugins are installed.", 
-              self::ERROR_LOADING_PLUGIN
-            );
-            $e->setFailedDependencies($failedDependencies);
-            throw $e;
-          }
-        }
-      }
-      
-      if(!@include_once($pluginBootstrapFile)) {
-        $pluginDirectory = $this->getPluginPath() . $ds . $id;
-        
-        throw new PluginLoadException(
-          $id, 
-          "The Plugin was not found in \"{$pluginDirectory}\". Please make sure 
-            you have installed the Plugin \"{$id}\".", 
-          self::ERROR_LOADING_PLUGIN
-        );
-      }
-      
-      $plugin = new $pluginClass;
-      
-      if ($plugin instanceof Plugin) {
-        $plugin->setConfig($config);
-        $plugin->setPath($this->getPluginPath() . $ds . $id);
-        $plugin->setPluginLoader($this);
-      }
-         
-      try {
-        if (!method_exists($plugin, "bootstrap")) {
-          throw new Exception("The Method \"bootstrap()\" was not found.");
-        }
-        $plugin->bootstrap();
-        
-      } catch(Exception $e) {
-        throw new PluginBootstrapException($id, "There was an failure during 
-          bootstrapping of the plugin \"{$id}\" with the message {$e->getMessage()}",
-          self::ERROR_BOOTSTRAPPING_PLUGIN);
-      }
-      
-      $pluginRegistry->add($id, $plugin);
-      
-      return $plugin;
+    if($pluginRegistry->has($id)) {
+      return false;
     }
     
-    return false;
+    $pluginClass         = $this->_getPluginClass($id);
+
+    $ds                  = DIRECTORY_SEPARATOR;
+    $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
+    $pluginConfigFile    = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
+    
+    $config = null;
+    
+    if(file_exists($pluginConfigFile)) {
+      $config = new Zend_Config_Ini($pluginConfigFile);
+      
+      if($config->depends_on) {
+        $failedDependencies = array();
+        
+        foreach($config->depends_on as $dependency) {
+          try {
+            $this->load($dependency);
+            
+          } catch(PluginLoadException $e) {
+            $failedDependencies[] = $dependency;
+          }
+        }
+        
+        if($failedDependencies) {
+          $failedDependenciesString = join($failedDependencies, ", ");
+          
+          $e = new PluginLoadException(
+            $id, 
+            "The plugin \"{$id}\" depends on {$failedDependenciesString}. 
+              Make sure that these Plugins are installed.", 
+            self::ERROR_LOADING_PLUGIN
+          );
+          $e->setFailedDependencies($failedDependencies);
+          throw $e;
+        }
+      }
+    }
+    
+    if(!@include_once($pluginBootstrapFile)) {
+      $pluginDirectory = $this->getPluginPath() . $ds . $id;
+      
+      throw new PluginLoadException(
+        $id, 
+        "The Plugin was not found in \"{$pluginDirectory}\". Please make sure 
+          you have installed the Plugin \"{$id}\".", 
+        self::ERROR_LOADING_PLUGIN
+      );
+    }
+    
+    $plugin = new $pluginClass;
+    
+    if ($plugin instanceof Plugin) {
+      $plugin->setConfig($config);
+      $plugin->setPath($this->getPluginPath() . $ds . $id);
+      $plugin->setPluginLoader($this);
+    }
+       
+    try {
+      if (!method_exists($plugin, "bootstrap")) {
+        throw new Exception("The Method \"bootstrap()\" was not found.");
+      }
+      $plugin->bootstrap();
+      
+    } catch(Exception $e) {
+      throw new PluginBootstrapException($id, "There was an failure during 
+        bootstrapping of the plugin \"{$id}\" with the message {$e->getMessage()}",
+        self::ERROR_BOOTSTRAPPING_PLUGIN);
+    }
+    
+    $pluginRegistry->add($id, $plugin);
+    
+    return $plugin;
     
   }
   

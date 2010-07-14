@@ -5,7 +5,7 @@ h1. Schnellstart
 
 Die 6 Schritte zu deiner ersten Webseite mit SimpleCMS:
 
-# Alle Dinge die du auf jeder Seite brauchst -- z.B. Navigation, Kopf-, Fu&szlig;zeile -- geh&ouml;ren in das Layout, diese Datei sollte @default.phtml@ hei&szlig;en und geh&ouml;rt in den Ordner @/public/layouts@.
+# Alle Dinge die du auf jeder Seite brauchst -- z.B. Navigation, Kopf-, Fu&szlig;zeile -- geh&ouml;ren in das Layout, diese Datei sollte @layout.phtml@ hei&szlig;en und geh&ouml;rt in den Ordner @/layouts@.
 # Du erstellst Seiten indem du eine Textdatei mit der Endung @.txt@ im @pages@ Ordner anlegst.
 # Um deine Seiten zu organisieren, kannst du Unterordner im @pages@ Verzeichnis erstellen. Alle Seiten die in einem Unterordner liegen werden &uuml;ber @/<Unterordner>/<Seitenname>@ aufgerufen.
 # Seiten die @index.txt@ hei&szlig;en haben eine spezielle Bedeutung -- sie werden angezeigt wenn in der URL kein Seitenname festgelegt wird, z.B. wenn @/@ angefragt wird, wird die Seite @index.txt@ im @pages@ Verzeichnis angezeigt. Du kannst diese Seiten z.B. als Startseite f&uuml;r die Web Seite oder als Startseite f&uuml;r eine bestimmte Kategorie verwenden.

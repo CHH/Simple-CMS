@@ -90,7 +90,8 @@ $router->addRoute(
 $pluginLoader = new PluginLoader;
 
 $pluginLoader->setPluginPath(PLUGINS)
-             ->setExport("FrontController", $frontController);
+             ->setExport("FrontController", $frontController)
+             ->setExport("Hooker", $eventDispatcher);
 
 /**
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
