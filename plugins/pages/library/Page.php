@@ -15,6 +15,11 @@ class Page extends Spark_Model_Entity
       $value = date("Y-m-d H:i:s", $value);
     }
     parent::__set($property, $value);
+    
+    Spark_Registry::get("EventDispatcher")->trigger(
+      "pages.page_modified",
+      new PageEvent($this)
+    );
   }
   
   public function __get($property)

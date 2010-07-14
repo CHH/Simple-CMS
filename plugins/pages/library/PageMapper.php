@@ -3,16 +3,12 @@
 class PageMapper extends Spark_Model_Mapper_Abstract
 {
   
-  protected $_entityClass = "Page";
-
   const DEFAULT_PAGES_PATH = "pages";
   
-  protected $_pagePath = self::DEFAULT_PAGES_PATH;
-
+  protected $_entityClass   = "Page";
+  protected $_pagePath      = self::DEFAULT_PAGES_PATH;
   protected $_pageExtension = ".txt";
-  
-  protected $_defaultPage = "index";
-  
+  protected $_defaultPage   = "index";
   protected $_renderer;
   
   static protected $_defaultRenderer;
@@ -50,12 +46,22 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     
     $page = $this->create();
     
-    $renderer->id = $page->id = $id;
-    $renderer->prefix = $page->prefix = $prefix;
+    $renderer->id       = $page->id       = $id;
+    $renderer->prefix   = $page->prefix   = $prefix;
     $renderer->modified = $page->modified = filemtime(APPROOT . $ds . $this->_pagePath . $ds . $pagePath);
     
     try {
+      Spark_Registry::get("EventDispatcher")->trigger(
+        "pages.page_before_render",
+        new PageEvent($page)
+      );
+      
       $page->content = $this->getRenderer()->render($pagePath);
+      
+      Spark_Registry::get("EventDispatcher")->trigger(
+        "pages.page_after_render",
+        new PageEvent($page)
+      );
     } catch(Exception $e) {
       return false;
     }
