@@ -15,7 +15,7 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
     $code      = $request->getParam("code");
     $exception = $request->getParam("exception");
     
-    if ($code == null or (APPLICATION_ENVIRONMENT === "production" and $code > 500)) {
+    if ($code == null or (ENVIRONMENT === "production" and $code > 500)) {
       $code = 500;
     }
     
@@ -39,7 +39,7 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
      */
     $pages->setPagePath(PageMapper::DEFAULT_PAGES_PATH);
 
-    if($errorPage = $pages->find("errors/{$code}")) {
+    if($errorPage = $pages->find("_errors/{$code}")) {
       $response->appendBody($errorPage->content);
       return;
     }
@@ -50,10 +50,10 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
     */
     $pages->setPagePath($pluginPagePath);
 
-    if ($defaultErrorPage = $pages->find("errors/{$code}")) {
+    if ($defaultErrorPage = $pages->find("_errors/{$code}")) {
       $errorPage = $defaultErrorPage;
     } else {
-      $errorPage = $pages->find("errors/500");
+      $errorPage = $pages->find("_errors/500");
     }
     
     $response->appendBody($errorPage->content);

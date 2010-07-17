@@ -43,7 +43,7 @@ class PageRoute
       $path = $this->_defaultPage;
     }
     
-    $pageMapper = Spark_Registry::get("Plugins")->pages->import("Pages");
+    $pageMapper = Spark_Registry::get("Plugins")->Pages->import("Pages");
     
     if(!$page = $pageMapper->find($path)) {
       $request->setParam("page", $path);

@@ -50,13 +50,12 @@ class PluginLoader implements PluginLoaderInterface
   public function load($id)
   { 
     $pluginRegistry = $this->getPluginRegistry();
+    $pluginClass         = $this->_getPluginClass($id);
     
-    if($pluginRegistry->has($id)) {
+    if($pluginRegistry->has($pluginClass)) {
       return false;
     }
     
-    $pluginClass         = $this->_getPluginClass($id);
-
     $ds                  = DIRECTORY_SEPARATOR;
     $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
     $pluginConfigFile    = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
@@ -106,6 +105,17 @@ class PluginLoader implements PluginLoaderInterface
     
     $plugin = new $pluginClass;
     
+    if (!$plugin instanceof PluginInterface) {
+      throw new PluginLoadException(
+        $id, 
+        "The Plugin \"{$id}\" does not implement the PluginInterface.", 
+        self::ERROR_LOADING_PLUGIN
+      );
+    }
+    
+    /*
+     * If Plugin extends the Abstract Plugin, then give it some more information
+     */
     if ($plugin instanceof Plugin) {
       $plugin->setConfig($config);
       $plugin->setPath($this->getPluginPath() . $ds . $id);
@@ -113,9 +123,6 @@ class PluginLoader implements PluginLoaderInterface
     }
        
     try {
-      if (!method_exists($plugin, "bootstrap")) {
-        throw new Exception("The Method \"bootstrap()\" was not found.");
-      }
       $plugin->bootstrap();
       
     } catch(Exception $e) {
@@ -124,10 +131,9 @@ class PluginLoader implements PluginLoaderInterface
         self::ERROR_BOOTSTRAPPING_PLUGIN);
     }
     
-    $pluginRegistry->add($id, $plugin);
+    $pluginRegistry->add($pluginClass, $plugin);
     
     return $plugin;
-    
   }
   
   public function setPluginPath($pluginPath)
@@ -166,7 +172,7 @@ class PluginLoader implements PluginLoaderInterface
   public function setExport($name, $value)
   {
     if (isset($this->_exports[$name])) {
-      throw new InvalidArgumentException("{$name} is already exported");
+      throw new InvalidArgumentException("\"{$name}\" was already exported");
     }
     $this->_exports[$name] = $value;
     return $this;
@@ -177,7 +183,7 @@ class PluginLoader implements PluginLoaderInterface
     if (isset($this->_exports[$name])) {
       return $this->_exports[$name];
     }
-    throw new InvalidArgumentException("The option with the name {$name} has yet to be set");
+    throw new InvalidArgumentException("The Export with the name {$name} has yet to be set");
   }
   
   protected function _getPluginClass($id)

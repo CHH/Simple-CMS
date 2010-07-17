@@ -1,10 +1,10 @@
 <?php
 
-define("APPROOT", realpath(dirname(__FILE__)));
+define("APPROOT",      realpath(dirname(__FILE__)));
 
-define("CONFIGS", APPROOT . "/config");
-
+define("ENVIRONMENT",  "development");
 define("LIBRARY_PATH", APPROOT . "/library");
+define("PLUGINS",      APPROOT . "/plugins");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -21,7 +21,7 @@ function autoloadLibraries($class)
 
 spl_autoload_register("autoloadLibraries");
 
-$bundleConfig  = parse_ini_file(CONFIGS . DIRECTORY_SEPARATOR . "bundle.ini", true);
+$bundleConfig  = parse_ini_file(APPROOT . DIRECTORY_SEPARATOR . "bundle.ini", true);
 
 $depender = new Depender(array_keys($bundleConfig["bundle"]));
 
@@ -30,7 +30,7 @@ try {
            ->checkAll();
   
 } catch (DependencyNotInstalledException $e) {
-  /**
+  /*
    * If the Spark Namespace is not found, look for a checkout of Spark 
    * in the parent folder of our Installation and try one more time
    */
@@ -47,38 +47,21 @@ try {
   }
 }
 
-/**
- * Now everything is fine and we can actually do some useful tasks,
- * like loading some config files
+/*
+ * Initialize Event Dispatcher and Front Controller
  */
-$coreConfig  = new Zend_Config_Ini(CONFIGS . DIRECTORY_SEPARATOR . "core.ini");
-
-if (!defined("APPLICATION_ENVIRONMENT")) {
-  $environment = "production";
-  
-  if (isset($coreConfig->application->environment)) {
-    $environment = $coreConfig->application->environment;
-  }
-  
-  define("APPLICATION_ENVIRONMENT", $environment);
-}
-
-define("PLUGINS", $coreConfig->Spark_Controller_CommandResolver->module_directory);
-
-Spark_Object_Manager::setConfig($coreConfig);
-
 $eventDispatcher = new Spark_Event_Dispatcher;
-$frontController = Spark_Object_Manager::create("Spark_Controller_FrontController");
-
-$frontController->setEventDispatcher($eventDispatcher);
-
-Spark_Registry::set("CoreConfig", $coreConfig);
 Spark_Registry::set("EventDispatcher", $eventDispatcher);
 
+$frontController = new Spark_Controller_FrontController;
+$frontController->setEventDispatcher($eventDispatcher);
+$frontController->getResolver()->setModuleDirectory(PLUGINS);
+
+/*
+ * Add our own Default Route, taking plugins and our default settings for names in accout
+ */
 $router = $frontController->getRouter();
-
 $router->removeDefaultRoutes();
-
 $router->addRoute(
   "commands", 
   new Zend_Controller_Router_Route(
@@ -88,12 +71,11 @@ $router->addRoute(
 );
 
 $pluginLoader = new PluginLoader;
-
 $pluginLoader->setPluginPath(PLUGINS)
              ->setExport("FrontController", $frontController)
-             ->setExport("Hooker", $eventDispatcher);
+             ->setExport("EventDispatcher",          $eventDispatcher);
 
-/**
+/*
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
  * Callbacks of each Plugin
  */
@@ -101,14 +83,14 @@ $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
   $pluginLoader->getPluginRegistry()
 );
 
-/**
+/*
  * Connect Front Controller Events to Front Controller Plugins
  */
 $frontController->addPlugin($callPluginCallbacksPlugin); 
 
 set_exception_handler(array($frontController, "handleException"));
 
-/**
+/*
  * Load all plugins in the plugin folder
  */
 $pluginLoader->loadDirectory();

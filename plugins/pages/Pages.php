@@ -16,13 +16,14 @@ class Pages extends Plugin
     /**
      * Tell the Front Controller to use the error command of our plugin (=pages)
      */
+    
     $frontController->setErrorCommand("pages::error");
     
     $frontController->getRouter()->addRoute(
       "pages", 
       Spark_Object_Manager::create(
         "PageRoute", 
-        array("module_name"=>"pages")
+        array("module_name" => "pages", "controller_name" => "page")
       )
     );
     
@@ -70,7 +71,7 @@ class Pages extends Plugin
      * If the App is in development mode, then prepend our stylesheet for pretty 
      * Errors and default pages
      */
-    if (APPLICATION_ENVIRONMENT === "development") {  
+    if (ENVIRONMENT === "development") {  
       $layout->headLink(array(
         "href" => $request->getBaseUrl() . "/styles/defaults.less",
         "rel"  => "stylesheet/less",
