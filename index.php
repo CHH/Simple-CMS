@@ -10,20 +10,13 @@ set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
 function autoloadLibraries($class)
 {
-  $file = str_replace(
-    "_",
-    DIRECTORY_SEPARATOR,
-    str_replace("\\", DIRECTORY_SEPARATOR, $class)
-  );
-
-  @include_once $file . ".php";
+  @include_once str_replace(array("_", "\\"), DIRECTORY_SEPARATOR,$class) . ".php";
 }
 
 spl_autoload_register("autoloadLibraries");
 
 $bundleConfig  = parse_ini_file(APPROOT . DIRECTORY_SEPARATOR . "bundle.ini", true);
-
-$depender = new Depender(array_keys($bundleConfig["bundle"]));
+$depender      = new Depender(array_keys($bundleConfig["bundle"]));
 
 try {
   $depender->setLoadPath(get_include_path())

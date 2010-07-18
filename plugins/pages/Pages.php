@@ -8,15 +8,14 @@ class Pages extends Plugin
     $frontController = $this->import("FrontController");
     $request         = $frontController->getRequest(); 
     
-    /**
+    /*
      * Set up autoloading for the Libraries and Models of the plugin
      */
     spl_autoload_register(array($this, "autoloadPagesLibraries"));
     
-    /**
+    /*
      * Tell the Front Controller to use the error command of our plugin (=pages)
      */
-    
     $frontController->setErrorCommand("pages::error");
     
     $frontController->getRouter()->addRoute(
@@ -27,47 +26,46 @@ class Pages extends Plugin
       )
     );
     
-    $layoutPath = $this->getPath() . "/default";
-    
-    if (isset($this->getConfig()->layout->path)) {
-      $layoutPath = $this->getConfig()->layout->path;
-    }
-    
-    /**
+    /*
      * Create the layout Plugin for the Front Controller, it wraps 
      * all of our pages in a common layout template
      */
-    $layoutPlugin = new Spark_Controller_Plugin_Layout(array(
-      "layout_path" => $layoutPath
-    ));
+    $layoutPlugin = new Spark_Controller_Plugin_Layout;
+    $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
     
-    /**
+    $layoutPlugin->setLayoutPath($this->getPath() . "/default");
+
+    $layout = $layoutPlugin->getLayout();
+
+    $layout->addScriptPath(APPROOT . "/layouts");
+
+    if (isset($this->getConfig()->layout->path)) {
+      $layout->addScriptPath($this->getConfig()->layout->path);
+    }
+      
+    /*
      * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
      * to the Layout
-     */
-    $layoutPlugin->getLayout()->addHelperPath(
+     */    
+    $layout->addHelperPath(
       "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
       "Spark_View_Helper"
     );
     
-    $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
-    
-    /**
+    /*
      * Set up the doctype and charset for the layout
      */
-    $layout = $layoutPlugin->getLayout();
-    
     $layout->doctype("HTML5");
     $layout->headMeta()->setCharset("UTF-8"); 
     
-    /**
+    /*
      * Add Less.js to Layout for CSS Preprocessing
      */
     $layout->headScript()->prependFile($request->getBaseUrl() . "/js/less.min.js");
     
     $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
     
-    /**
+    /*
      * If the App is in development mode, then prepend our stylesheet for pretty 
      * Errors and default pages
      */

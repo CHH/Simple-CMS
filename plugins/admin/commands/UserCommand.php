@@ -22,6 +22,7 @@ class Admin_UserCommand extends PluginController
   
   public function loginAction($request, $response)
   {
+    $this->import("LayoutPlugin")->setLayoutName("admin_login.phtml");
     $response->appendBody($this->_pages->find("login")->content);
   }
   

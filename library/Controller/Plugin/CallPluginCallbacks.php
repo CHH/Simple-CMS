@@ -11,16 +11,21 @@ class Controller_Plugin_CallPluginCallbacks extends Spark_Controller_PluginAbstr
   
   public function beforeDispatch($request, $response)
   {
-    if($this->_plugins->has($request->getModuleName())) {
-      $this->_plugins->get($request->getModuleName())->beforeDispatch();
+    if($this->_plugins->has($this->_getPluginName($request))) {
+      $this->_plugins->get($this->_getPluginName($request))->beforeDispatch();
     }
   }
   
   public function afterDispatch($request, $response)
   {
-    if($this->_plugins->has($request->getModuleName())) {
-      $this->_plugins->get($request->getModuleName())->afterDispatch();
+    if($this->_plugins->has($this->_getPluginName($request))) {
+      $this->_plugins->get($this->_getPluginName($request))->afterDispatch();
     }
+  }
+
+  protected function _getPluginName($request)
+  {
+    return str_replace(" ", null, ucwords(str_replace("_", " ", $request->getModuleName())));
   }
   
 }
