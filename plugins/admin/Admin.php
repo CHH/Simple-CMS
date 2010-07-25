@@ -2,7 +2,7 @@
 
 class Admin extends Plugin
 {
-  public function bootstrap()
+  public function init()
   {
     $this->dependOn("pages");
   }

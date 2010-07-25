@@ -15,7 +15,7 @@ abstract class Plugin implements PluginInterface
   /**
    * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
    */
-  public function bootstrap()
+  public function init()
   {}
   
   /**

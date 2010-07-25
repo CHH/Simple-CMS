@@ -89,7 +89,7 @@ class PluginLoader implements PluginLoaderInterface
     }
        
     try {
-      $plugin->bootstrap();
+      $plugin->init();
       
     } catch(Exception $e) {
       throw new PluginBootstrapException($id, "There was an failure during 

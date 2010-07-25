@@ -3,7 +3,7 @@
 class Pages extends Plugin
 {
   
-  public function bootstrap()
+  public function init()
   {
     $frontController = $this->import("FrontController");
     $request         = $frontController->getRequest(); 
