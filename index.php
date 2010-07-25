@@ -39,6 +39,9 @@ try {
   }
 }
 
+$config = new Zend_Config_Ini(APPROOT . "/config.ini");
+Spark_Registry::set("config", $config);
+
 /*
  * Initialize Event Dispatcher and Front Controller
  */
