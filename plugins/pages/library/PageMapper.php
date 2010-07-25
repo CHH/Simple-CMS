@@ -15,15 +15,7 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   
   public function init()
   {
-    $pagesConfig = Spark_Registry::get("PagesConfig");
     
-    if(isset($pagesConfig->pages->extension)) {
-      $this->setPageExtension($pagesConfig->pages->extension);
-    }
-    
-    if(isset($pagesConfig->pages->path)) {
-      $this->setPagePath($pagesConfig->pages->path);
-    }
   }
   
   public function find($id, $prefix = null)

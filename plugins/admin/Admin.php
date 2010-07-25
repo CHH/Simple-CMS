@@ -2,6 +2,11 @@
 
 class Admin extends Plugin
 {
+  public function bootstrap()
+  {
+    $this->dependOn("pages");
+  }
+  
   public function beforeDispatch()
   {
     spl_autoload_register(array($this, "autoloadAuthModels"));

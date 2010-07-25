@@ -38,10 +38,6 @@ class Pages extends Plugin
     $layout = $layoutPlugin->getLayout();
 
     $layout->addScriptPath(APPROOT . "/layouts");
-
-    if (isset($this->getConfig()->layout->path)) {
-      $layout->addScriptPath($this->getConfig()->layout->path);
-    }
       
     /*
      * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 

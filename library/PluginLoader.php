@@ -50,7 +50,7 @@ class PluginLoader implements PluginLoaderInterface
   public function load($id)
   { 
     $pluginRegistry = $this->getPluginRegistry();
-    $pluginClass         = $this->_getPluginClass($id);
+    $pluginClass    = $this->_getPluginClass($id);
     
     if($pluginRegistry->has($pluginClass)) {
       return false;
@@ -58,39 +58,6 @@ class PluginLoader implements PluginLoaderInterface
     
     $ds                  = DIRECTORY_SEPARATOR;
     $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
-    $pluginConfigFile    = $this->getPluginPath() . $ds . $id . $ds . "config" . $ds . "plugin.ini";
-    
-    $config = null;
-    
-    if(file_exists($pluginConfigFile)) {
-      $config = new Zend_Config_Ini($pluginConfigFile);
-      
-      if($config->depends_on) {
-        $failedDependencies = array();
-        
-        foreach($config->depends_on as $dependency) {
-          try {
-            $this->load($dependency);
-            
-          } catch(PluginLoadException $e) {
-            $failedDependencies[] = $dependency;
-          }
-        }
-        
-        if($failedDependencies) {
-          $failedDependenciesString = join($failedDependencies, ", ");
-          
-          $e = new PluginLoadException(
-            $id, 
-            "The plugin \"{$id}\" depends on {$failedDependenciesString}. 
-              Make sure that these Plugins are installed.", 
-            self::ERROR_LOADING_PLUGIN
-          );
-          $e->setFailedDependencies($failedDependencies);
-          throw $e;
-        }
-      }
-    }
     
     if(!@include_once($pluginBootstrapFile)) {
       $pluginDirectory = $this->getPluginPath() . $ds . $id;
@@ -117,7 +84,6 @@ class PluginLoader implements PluginLoaderInterface
      * If Plugin extends the Abstract Plugin, then give it some more information
      */
     if ($plugin instanceof Plugin) {
-      $plugin->setConfig($config);
       $plugin->setPath($this->getPluginPath() . $ds . $id);
       $plugin->setPluginLoader($this);
     }

@@ -32,32 +32,6 @@ abstract class Plugin implements PluginInterface
   public function afterDispatch()
   {}
   
-  /**
-   * setConfig() - Sets a config to the plugin
-   *
-   * @param mixed $config
-   * @return Plugin
-   */
-  public function setConfig($config)
-  {
-    if(is_array($config)) {
-      $config = new Zend_Config($config);
-    }
-    
-    $this->_config = $config;
-    return $this;
-  }
-  
-  /**
-   * getConfig() - Returns the plugin config
-   *
-   * @return array
-   */
-  public function getConfig()
-  {
-    return $this->_config;
-  }
-  
   public function setPluginLoader(PluginLoaderInterface $pluginLoader)
   {
     $this->_pluginLoader = $pluginLoader;
@@ -80,6 +54,30 @@ abstract class Plugin implements PluginInterface
   public function setPath($path)
   {
     $this->_path = $path;
+    return $this;
+  }
+
+  /**
+   * Load an other Plugin
+   *
+   * @throws InvalidArgumentException
+   *
+   * @param  string $plugin,... Plugins which should be loaded
+   * @return Plugin
+   */ 
+  public function dependOn()
+  {
+    $plugins      = func_get_args();
+    $pluginLoader = $this->getPluginLoader();
+    
+    if (!$plugins) {
+      throw new InvalidArgumentException("No plugin given");
+    }
+    
+    foreach ($plugins as $plugin) {
+      $pluginLoader->load($plugin);
+    }
+
     return $this;
   }
   
