@@ -4,7 +4,7 @@ define("APPROOT",      realpath(dirname(__FILE__)));
 
 define("ENVIRONMENT",  "development");
 define("LIBRARY_PATH", APPROOT . "/library");
-define("PLUGINS",      APPROOT . "/plugins");
+define("PLUGINS",       APPROOT . "/plugins");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -65,6 +65,9 @@ $router->addRoute(
   )
 );
 
+/*
+ * Set up Plugin search path and some standard exports
+ */
 $pluginLoader = new PluginLoader;
 $pluginLoader->setPluginPath(PLUGINS)
              ->setExport("FrontController", $frontController)
@@ -93,6 +96,7 @@ $pluginLoader->loadDirectory();
 $frontController->handleRequest();
 
 unset(
+  $config,
   $frontController, 
   $router,
   $callPluginCallbacksPlugin,

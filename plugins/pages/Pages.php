@@ -79,6 +79,22 @@ class Pages extends Plugin
     $this->export("Pages", new PageMapper);
     $this->export("LayoutPlugin", $layoutPlugin);
   }
+
+  public function beforeDispatch($request, $response)
+  {
+    $pageMapper = new PageMapper; 
+    $id         = $request->getParam("page");
+    
+    if (strpos($id, "_") === 0 or strpos($id, "/_") !== false) {
+      throw new Exception("Page is hidden", 404);
+    }
+    
+    $page = $pageMapper->find($id);
+    
+    $response->appendBody($page->content);
+    
+    $request->setDispatched(true);
+  }
   
   public function autoloadPagesLibraries($class)
   {

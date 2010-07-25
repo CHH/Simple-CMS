@@ -12,14 +12,14 @@ class Controller_Plugin_CallPluginCallbacks extends Spark_Controller_PluginAbstr
   public function beforeDispatch($request, $response)
   {
     if($this->_plugins->has($this->_getPluginName($request))) {
-      $this->_plugins->get($this->_getPluginName($request))->beforeDispatch();
+      $this->_plugins->get($this->_getPluginName($request))->beforeDispatch($request, $response);
     }
   }
   
   public function afterDispatch($request, $response)
   {
     if($this->_plugins->has($this->_getPluginName($request))) {
-      $this->_plugins->get($this->_getPluginName($request))->afterDispatch();
+      $this->_plugins->get($this->_getPluginName($request))->afterDispatch($request, $response);
     }
   }
 
