@@ -15,8 +15,7 @@ function autoloadLibraries($class)
 
 spl_autoload_register("autoloadLibraries");
 
-$bundleConfig  = parse_ini_file(APPROOT . DIRECTORY_SEPARATOR . "bundle.ini", true);
-$depender      = new Depender($bundleConfig["bundle"]);
+$depender      = new Depender(array("Zend", "Spark"));
 
 try {
   $depender->setLoadPath(get_include_path())
