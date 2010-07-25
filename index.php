@@ -16,7 +16,7 @@ function autoloadLibraries($class)
 spl_autoload_register("autoloadLibraries");
 
 $bundleConfig  = parse_ini_file(APPROOT . DIRECTORY_SEPARATOR . "bundle.ini", true);
-$depender      = new Depender(array_keys($bundleConfig["bundle"]));
+$depender      = new Depender($bundleConfig["bundle"]);
 
 try {
   $depender->setLoadPath(get_include_path())
