@@ -1,10 +1,9 @@
 <?php
 
-define("APPROOT",      realpath(dirname(__FILE__)));
+define("APPROOT", realpath(dirname(__FILE__)));
 
-define("ENVIRONMENT",  "development");
 define("LIBRARY_PATH", APPROOT . "/library");
-define("PLUGINS",       APPROOT . "/plugins");
+define("PLUGINS", APPROOT . "/plugins");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -42,6 +41,11 @@ try {
 $config = new Zend_Config_Ini(APPROOT . "/config.ini");
 Spark_Registry::set("config", $config);
 
+if (isset($config->env)) {
+    define("ENVIRONMENT",  $config->env);
+} else {
+    define("ENVIRONMENT", "production");
+}
 /*
  * Initialize Event Dispatcher and Front Controller
  */
