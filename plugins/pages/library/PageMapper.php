@@ -6,16 +6,28 @@ class PageMapper extends Spark_Model_Mapper_Abstract
   const DEFAULT_PAGES_PATH = "pages";
   
   protected $_entityClass   = "Page";
-  protected $_pagePath      = self::DEFAULT_PAGES_PATH;
-  protected $_pageExtension = ".txt";
-  protected $_defaultPage   = "index";
+  protected $_pagePath;
+  protected $_pageExtension;
+  protected $_defaultPage;
   protected $_renderer;
+  
+  protected $_defaults = array(
+    "page_path"      => self::DEFAULT_PAGES_PATH,
+    "page_extension" => ".txt",
+    "default_page"   => "index"
+  );
   
   static protected $_defaultRenderer;
   
   public function init()
   {
     
+  }
+  
+  public function setOptions(array $options)
+  {
+    $options = array_merge($this->_defaults, $options);
+    return parent::setOptions($options);
   }
   
   public function find($id, $prefix = null)
@@ -38,9 +50,11 @@ class PageMapper extends Spark_Model_Mapper_Abstract
     
     $page = $this->create();
     
-    $renderer->id       = $page->id       = $id;
-    $renderer->prefix   = $page->prefix   = $prefix;
-    $renderer->modified = $page->modified = filemtime(APPROOT . $ds . $this->_pagePath . $ds . $pagePath);
+    $page->id       = $id;
+    $page->prefix   = $prefix;
+    $page->modified = filemtime(APPROOT . $ds . $this->_pagePath . $ds . $pagePath);
+    
+    $renderer->page = $page;
     
     try {
       Spark_Registry::get("EventDispatcher")->trigger(
@@ -77,11 +91,14 @@ class PageMapper extends Spark_Model_Mapper_Abstract
       if($entry->isFile() and !$entry->isDot()) {
         $page = $this->create();
         
-        $renderer->id = $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
-        $renderer->prefix = $page->prefix = $prefix;
-        $renderer->modified = $page->modified = $entry->getMTime();
+        $page->id = str_replace($this->getPageExtension(), "", $entry->getFilename());
+        $page->prefix = $prefix;
+        $page->modified = $entry->getMTime();
         
-        $page->content = $this->getRenderer()->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());
+        $renderer = $this->getRenderer();
+        $renderer->page = $page;
+        
+        $page->content = $renderer->render($prefix . DIRECTORY_SEPARATOR . $entry->getFilename());
         
         unset($renderer->id, $renderer->prefix, $renderer->modified);
         

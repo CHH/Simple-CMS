@@ -1,12 +1,7 @@
 <?php
 
 abstract class Plugin implements PluginInterface
-{
-  /**
-   * @var array
-   */
-  protected $_config = array();
-  
+{ 
   /**
    * @var PluginLoaderInterface
    */

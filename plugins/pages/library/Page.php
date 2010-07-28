@@ -35,6 +35,16 @@ class Page extends Spark_Model_Entity
     return parent::__get($property);
   }
   
+  public function __toString()
+  {
+    return $this->toString();
+  }
+  
+  public function toString()
+  {
+    return $this->content;
+  }
+  
   public function toJson()
   {
     $data = $this->_data;

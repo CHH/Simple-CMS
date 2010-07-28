@@ -7,27 +7,35 @@ class PageRoute
   
   const PARAM_DELIMITER = "/";
   
-  private $_controllerName = "Page";
+  private $_controllerName;
 
-  private $_actionName = "view";
+  private $_actionName;
   
   private $_moduleName;
   
-  private $_defaultPage = "index";
+  private $_defaultPage;
+  
+  private $_defaults = array(
+    "controller_name" => "Page",
+    "action_name"     => "view",
+    "module_name"     =>  null,
+    "default_page"    => "index"
+  );
   
   public static function getInstance(Zend_Config $config)
   {
     return new self($config);
   }
 
-  public function __construct($options = null)
+  public function __construct(array $options = array())
   {
     $this->setOptions($options);
   }
 
-  public function setOptions($options)
+  public function setOptions(array $options)
   {
-    Spark_Object_Options::setOptions($this, $options);
+    Spark_Object_Options::setOptions($this, $options, $this->_defaults);
+    return $this;
   }
 
   public function match($request)

@@ -12,7 +12,19 @@ class PluginLoader implements PluginLoaderInterface
   const ERROR_LOADING_PLUGIN = 510;
   const ERROR_BOOTSTRAPPING_PLUGIN = 511;
   
-  public function loadDirectory($pluginPath = null) {
+  public function __construct(array $options = array())
+  {
+    $this->setOptions($options);
+  }
+  
+  public function setOptions(array $options)
+  {
+    Spark_Object_Options::setOptions($this, $options);
+    return $this;
+  }
+  
+  public function loadDirectory($pluginPath = null) 
+  {
     if(is_null($pluginPath)) {
       $pluginPath = $this->getPluginPath();
     }

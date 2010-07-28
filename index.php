@@ -82,7 +82,7 @@ $pluginLoader->setPluginPath(PLUGINS)
  * Callbacks of each Plugin
  */
 $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
-  $pluginLoader->getPluginRegistry()
+  array("plugins" => $pluginLoader->getPluginRegistry())
 );
 
 /*
