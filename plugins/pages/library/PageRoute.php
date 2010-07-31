@@ -41,21 +41,17 @@ class PageRoute
   public function match($request)
   {
     $params = array();
-    $path = $request->getRequestUri();
-    $path = substr($path, strlen($request->getBaseUrl()));
+    $path   = $request->getRequestUri();
+    $path   = substr($path, strlen($request->getBaseUrl()));
     
-    $path = trim($path, self::PARAM_DELIMITER);
+    $path   = trim($path, self::PARAM_DELIMITER);
 
-    if($path == null)
-    {
+    if ($path == null) {
       $path = $this->_defaultPage;
     }
     
-    $pageMapper = Spark_Registry::get("Plugins")->Pages->import("Pages");
-    
-    if(!$page = $pageMapper->find($path)) {
+    if (!$page = Page::find($path)) {
       $request->setParam("page", $path);
-      //Spark_Registry::get("EventDispatcher")->trigger("pages.page_not_found");
       return false;
     }
     
@@ -69,9 +65,7 @@ class PageRoute
   }
 
   public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
-  {
-    return $data["prefix"] . self::PARAM_DELIMITER . $data["id"];
-  }
+  {}
   
   public function setModuleName($name)
   {

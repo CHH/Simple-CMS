@@ -38,7 +38,10 @@ class Pages extends Plugin
     $layout = $layoutPlugin->getLayout();
 
     $layout->addScriptPath(APPROOT . "/layouts");
-      
+    $layout->addScriptPath(APPROOT);
+
+    Page::setRenderer($layout);
+    
     /*
      * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
      * to the Layout
@@ -74,22 +77,19 @@ class Pages extends Plugin
       $layout->headScript()->appendScript("less.env='development'; less.watch();");
     }
     
-    PageMapper::setDefaultRenderer($layout);
-    
     $this->export("Pages", new PageMapper);
     $this->export("LayoutPlugin", $layoutPlugin);
   }
 
   public function beforeDispatch($request, $response)
   {
-    $pageMapper = new PageMapper; 
-    $id         = $request->getParam("page");
+    $page = $request->getParam("page");
     
-    if (strpos($id, "_") === 0 or strpos($id, "/_") !== false) {
+    if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
       throw new Exception("Page is hidden", 404);
     }
     
-    $page = $pageMapper->find($id);
+    $page = Page::find($page);
     
     $response->appendBody($page->content);
     

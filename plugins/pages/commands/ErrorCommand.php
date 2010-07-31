@@ -8,9 +8,8 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
     Zend_Controller_Response_Abstract $response
   )
   {
-    $pages          = new PageMapper;
-    $pluginPagePath = "/plugins/pages/default/";
-    $pages->setPagePath($pluginPagePath);
+    $pluginPagePath = DIRECTORY_SEPARATOR . "plugins" . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR . "default";
+    Page::setPath($pluginPagePath);
     
     $code      = $request->getParam("code");
     $exception = $request->getParam("exception");
@@ -22,24 +21,26 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
     /**
      * Render a page predefined by our plugin
      */
-    if ($defaultPage = $pages->find($request->getParam("page")) and $code == 404) {
+    if ($defaultPage = Page::find($request->getParam("page")) and $code == 404) {
       $response->appendBody($defaultPage->content);
       return;
     }
+
+    $renderer = Page::getRenderer();
     
     /**
      * Make the Exception which triggered the error and the request
      * available to the error page
      */
-    $pages->getRenderer()->exception = $exception;
-    $pages->getRenderer()->request   = $request;
+    $renderer->exception = $exception;
+    $renderer->request   = $request;
 
     /**
      * First, we look in the Default Path for the error view
      */
-    $pages->setPagePath(PageMapper::DEFAULT_PAGES_PATH);
+    Page::setPath("/pages");
 
-    if($errorPage = $pages->find("_errors/{$code}")) {
+    if($errorPage = Page::find("_errors/{$code}")) {
       $response->appendBody($errorPage->content);
       return;
     }
@@ -48,12 +49,12 @@ class Pages_ErrorCommand implements Spark_Controller_CommandInterface
     * Second, we look in the Page Path of our Plugin for the 
     * default error page
     */
-    $pages->setPagePath($pluginPagePath);
+    Page::setPath($pluginPagePath);
 
-    if ($defaultErrorPage = $pages->find("_errors/{$code}")) {
+    if ($defaultErrorPage = Page::find("_errors/{$code}")) {
       $errorPage = $defaultErrorPage;
     } else {
-      $errorPage = $pages->find("_errors/500");
+      $errorPage = Page::find("_errors/500");
     }
     
     $response->appendBody($errorPage->content);
