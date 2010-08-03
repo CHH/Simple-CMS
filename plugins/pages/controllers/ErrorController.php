@@ -1,10 +1,10 @@
 <?php
 
-class Pages_ErrorCommand implements Spark_Controller_CommandInterface
+class Pages_ErrorController implements Spark_Controller_Controller
 {
   
   public function execute(
-    Spark_Controller_RequestInterface $request,
+    Zend_Controller_Request_Abstract  $request,
     Zend_Controller_Response_Abstract $response
   )
   {

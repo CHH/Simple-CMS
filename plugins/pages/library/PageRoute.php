@@ -55,7 +55,7 @@ class PageRoute
       return false;
     }
     
-    $request->setCommandName($this->_controllerName);
+    $request->setControllerName($this->_controllerName);
     $request->setActionName($this->_actionName);
     $request->setModuleName($this->_moduleName);
     
