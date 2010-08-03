@@ -13,7 +13,7 @@ h2. Stable Package
 
 # Get a stable package (simple_cms_vX.X.X) from the @Downloads@ section of Github, these are well tested
 # Unzip the contents of the downloaded Package, to a folder in the document root of your web server, for example @/var/www/simple_cms@
-# Setup a new VHOST and point its document root to the public directory of the Simple CMS install, for example @/var/www/simple_cms/public@. Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
+# Setup a new VHOST and point its document root to the directory of the Simple CMS install, for example @/var/www/simple_cms@. Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
 # Start your server and open the URL of your VHOST in a Browser -- you should see the Getting Started Page
 
 h2. Developer Package
@@ -46,11 +46,10 @@ pre.. |-config/ Surprise! The folder for the config files
 |-pages/ The folder for all pages. Subdirectories can be created to achieve a hierarchical organization of the pages.
 |-library/ All kind of classes used by the Simple CMS core
 |-plugins/ Copy the folders of downloaded plugins in there. Plugins can pretty much do everything, so I don't try to explain it here.
-|-public/ The public webroot, all files in here are visible by people surfing your site
-  |-images/
-  |-js/ Javascript files for your site
-  |-styles/ A place to put your stylesheets in.
-  |-layouts/ Contains one or more layouts used by all pages. Layouts are rendered around the page content and are used to render content used on all pages such as Navigation or links to stylesheets.
+|-images/
+|-js/ Javascript files for your site
+|-styles/ A place to put your stylesheets in.
+|-layouts/ Contains one or more layouts used by all pages. Layouts are rendered around the page content and are used to render content used on all pages such as Navigation or links to stylesheets.
 
 h1. Advanced Usage
 
