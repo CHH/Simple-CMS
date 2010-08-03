@@ -19,7 +19,7 @@ class PageMapper
   public function setOptions(array $options)
   {
     $options = array_merge($this->_defaults, $options);
-    Spark_Object_Options::setOptions($this, $options);
+    Spark_Options::setOptions($this, $options);
   }
   
   public function find($name)

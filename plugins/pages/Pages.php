@@ -20,8 +20,7 @@ class Pages extends Plugin
     
     $frontController->getRouter()->addRoute(
       "pages", 
-      Spark_Object_Manager::create(
-        "PageRoute", 
+      new PageRoute(
         array("module_name" => "pages", "controller_name" => "page")
       )
     );

@@ -34,7 +34,7 @@ class PageRoute
 
   public function setOptions(array $options)
   {
-    Spark_Object_Options::setOptions($this, $options, $this->_defaults);
+    Spark_Options::setOptions($this, $options, $this->_defaults);
     return $this;
   }
 
