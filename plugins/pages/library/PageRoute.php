@@ -2,7 +2,7 @@
 
 class PageRoute 
   extends Zend_Controller_Router_Route_Abstract
-  implements Spark_UnifiedConstructorInterface
+  implements Spark_Configurable
 {
   
   const PARAM_DELIMITER = "/";

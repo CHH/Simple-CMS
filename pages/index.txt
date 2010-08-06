@@ -1,0 +1,3 @@
+<pre><? var_dump(Page::findAll("test")) ?></pre>
+
+*WOOT!* It's _still_ working!

@@ -1,6 +1,6 @@
 <?php
 
-class PageMapper
+class PageMapper implements Spark_Configurable
 { 
   protected $_entityClass   = "Page";
   protected $_pageExtension;
@@ -35,12 +35,14 @@ class PageMapper
     } else {
       return false;
     }
+
+    $folder = substr($pagePath, 0, strrpos($pagePath, $ds));
     
     $page = new Page;
     
     $page->name     = $name;
     $page->modified = filemtime(APPROOT . $ds . $name . $this->getPageExtension());
-
+    $page->folder   = $folder;
     $page->setFilename($pagePath);
     
     return $page;
@@ -48,8 +50,7 @@ class PageMapper
   
   public function findAll($inDirectory = null)
   {
-    $path = APPROOT . DIRECTORY_SEPARATOR . $this->_pagePath
-          . DIRECTORY_SEPARATOR . $inDirectory;
+    $path = APPROOT . DIRECTORY_SEPARATOR . $inDirectory;
     
     $directory = new DirectoryIterator($path);
     $pages     = new Spark_Model_Collection;
@@ -62,7 +63,8 @@ class PageMapper
       $page           = new Page;
       $page->name     = str_replace($this->getPageExtension(), "", $entry->getFilename());
       $page->modified = $entry->getMTime();
-      
+      $page->folder   = DIRECTORY_SEPARATOR . $inDirectory;
+
       $page->setFilename($entry->getFilename());
       
       $pages[] = $page;

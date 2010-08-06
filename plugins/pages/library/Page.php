@@ -2,7 +2,7 @@
 
 class Page extends Spark_Model_Entity
 {
-  const DEFAULT_PATH = "/pages";
+  const DEFAULT_PATH = "pages";
   
   private static $_mapper;
   private static $_renderer;
@@ -11,7 +11,8 @@ class Page extends Spark_Model_Entity
   private $_filename;
   
   protected $_data = array(
-    "name"       => "",
+    "name"     => "",
+    "folder"   => "",
     "content"  => "",
     "modified" => ""
   );

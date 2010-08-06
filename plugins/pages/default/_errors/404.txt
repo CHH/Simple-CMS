@@ -5,7 +5,7 @@ h1. Seite nicht gefunden
 
 <p>
 	Es tut mir leid, ich habe nichts an dieser Stelle gefunden. Schau bitte nochmal ob es 
-	die Seite @<?= $this->request->getParam("page") ?><?= $this->pages()->getPageExtension() ?>@
+	die Seite @<?= $this->request->getParam("page") ?>.txt@
 	im @pages@ Ordner gibt.
 </p>
 
