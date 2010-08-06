@@ -10,11 +10,11 @@
  * should be performance wise superior to the Action-Controller-based
  * approach, similar to Zend_Controller_Action, which is also available.
  */
-class Sample_DefaultCommand implements Spark_Controller_CommandInterface
+class Sample_DefaultController implements Spark_Controller_Controller
 {
   
   public function execute(
-    Spark_Controller_RequestInterface $request,
+    Zend_Controller_Request_Abstract  $request,
     Zend_Controller_Response_Abstract $response
   )
   {

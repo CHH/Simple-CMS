@@ -16,12 +16,11 @@ class Pages extends Plugin
     /*
      * Tell the Front Controller to use the error command of our plugin (=pages)
      */
-    $frontController->setErrorCommand("pages::error");
+    $frontController->setErrorController("pages::error");
     
     $frontController->getRouter()->addRoute(
       "pages", 
-      Spark_Object_Manager::create(
-        "PageRoute", 
+      new PageRoute(
         array("module_name" => "pages", "controller_name" => "page")
       )
     );

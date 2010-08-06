@@ -64,8 +64,8 @@ $router->removeDefaultRoutes();
 $router->addRoute(
   "commands", 
   new Zend_Controller_Router_Route(
-    "/:module/:command/:action/*", 
-    array("module" => null, "command" => "default", "action" => "index")
+    "/:module/:controller/:action/*", 
+    array("module" => null, "controller" => "default", "action" => "index")
   )
 );
 
@@ -75,7 +75,7 @@ $router->addRoute(
 $pluginLoader = new PluginLoader;
 $pluginLoader->setPluginPath(PLUGINS)
              ->setExport("FrontController", $frontController)
-             ->setExport("EventDispatcher",          $eventDispatcher);
+             ->setExport("EventDispatcher", $eventDispatcher);
 
 /*
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
