@@ -38,7 +38,7 @@ class PageMapper
     
     $page = new Page;
     
-    $page->id       = $name;
+    $page->name     = $name;
     $page->modified = filemtime(APPROOT . $ds . $name . $this->getPageExtension());
 
     $page->setFilename($pagePath);
@@ -60,7 +60,7 @@ class PageMapper
       }
       
       $page           = new Page;
-      $page->id       = str_replace($this->getPageExtension(), "", $entry->getFilename());
+      $page->name     = str_replace($this->getPageExtension(), "", $entry->getFilename());
       $page->modified = $entry->getMTime();
       
       $page->setFilename($entry->getFilename());
@@ -109,7 +109,7 @@ class PageMapper
   public function setDefaultPage($page)
   {
     if($page instanceof $this->_entityClass) {
-      $page = $page->id;
+      $page = $page->name;
       
     } elseif(!is_string($page)) {
       throw new InvalidArgumentException("Please supply for the default page either
@@ -145,7 +145,7 @@ class PageMapper
   
   protected function _getPageFilename(Page $page)
   {
-    $filename = $page->prefix . DIRECTORY_SEPARATOR . $page->id . $this->getPageExtension();
+    $filename = $page->prefix . DIRECTORY_SEPARATOR . $page->name . $this->getPageExtension();
                 
     return $filename;
   }

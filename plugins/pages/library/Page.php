@@ -11,7 +11,7 @@ class Page extends Spark_Model_Entity
   private $_filename;
   
   protected $_data = array(
-    "id"       => "",
+    "name"       => "",
     "content"  => "",
     "modified" => ""
   );
