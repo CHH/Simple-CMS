@@ -1,6 +1,6 @@
 <?php
 
-class PluginLoader implements PluginLoaderInterface
+class PluginLoader implements PluginLoaderInterface, Spark_Configurable
 {
 
   protected $_pluginPath = null;
