@@ -59,7 +59,7 @@ class Pages extends Plugin
     /*
      * Add Less.js to Layout for CSS Preprocessing
      */
-    $layout->headScript()->prependFile($request->getBaseUrl() . "/js/less.min.js");
+    $layout->headScript()->prependFile($request->getBaseUrl() . "/javascript/less.min.js");
     
     $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
     

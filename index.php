@@ -46,6 +46,15 @@ if (isset($config->env)) {
 } else {
     define("ENVIRONMENT", "production");
 }
+
+/*
+ * Force Error Reporting in Development Environment if host has it disabled
+ */
+if (ENVIRONMENT === "development") {
+    ini_set("display_errors", true);
+    error_reporting(E_ALL | E_STRICT);
+}
+
 /*
  * Initialize Event Dispatcher and Front Controller
  */
@@ -90,6 +99,9 @@ $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
  */
 $frontController->addPlugin($callPluginCallbacksPlugin); 
 
+/*
+ * Exceptions should be handled by the Front Controller
+ */
 set_exception_handler(array($frontController, "handleException"));
 
 /*
