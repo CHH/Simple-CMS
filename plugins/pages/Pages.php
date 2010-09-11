@@ -1,6 +1,6 @@
 <?php
 
-class Pages extends Plugin
+class Pages extends AbstractPlugin
 {
   
   public function init()
@@ -97,7 +97,7 @@ class Pages extends Plugin
   
   public function autoloadPagesLibraries($class)
   {
-    @include_once(
+    include_once(
       $this->getPath() . DIRECTORY_SEPARATOR . "library" . DIRECTORY_SEPARATOR
       . str_replace("_", DIRECTORY_SEPARATOR, $class) . ".php"
     );

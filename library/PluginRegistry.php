@@ -1,12 +1,17 @@
 <?php
-
+/**
+ * Container for registering Plugin instances
+ *
+ * @author   Christoph Hochstrasser <christoph.hochstrasser@gmail.com>
+ * @category SimpleCMS
+ */
 class PluginRegistry implements IteratorAggregate
 {
   
   /**
    * @var array
    */
-  protected $_plugins = array();
+  protected $plugins = array();
   
   /**
    * add() - Add a plugin to the registry
@@ -18,10 +23,10 @@ class PluginRegistry implements IteratorAggregate
    */
   public function add($id, Plugin $plugin)
   {
-    if(array_key_exists($id, $this->_plugins)) {
+    if(array_key_exists($id, $this->plugins)) {
       return;
     }
-    $this->_plugins[$id] = $plugin;
+    $this->plugins[$id] = $plugin;
     
     return $this;
   }
@@ -34,7 +39,7 @@ class PluginRegistry implements IteratorAggregate
    */
   public function has($id)
   {
-    return array_key_exists($id, $this->_plugins);
+    return array_key_exists($id, $this->plugins);
   }
   
   /**
@@ -46,7 +51,7 @@ class PluginRegistry implements IteratorAggregate
   public function get($id)
   {
     if($this->has($id)) {
-      return $this->_plugins[$id];
+      return $this->plugins[$id];
     }
 
     throw new Exception("Plugin {$id} was not found. Please make sure you
@@ -61,7 +66,7 @@ class PluginRegistry implements IteratorAggregate
    */
   public function getIterator()
   {
-    return new PluginRegistryIterator($this);
+    return new ArrayIterator($this->plugins);
   }
   
   /**
@@ -72,7 +77,7 @@ class PluginRegistry implements IteratorAggregate
    */
   public function toArray()
   {
-    return $this->_plugins;
+    return $this->plugins;
   }
   
   /**
@@ -92,6 +97,4 @@ class PluginRegistry implements IteratorAggregate
   {
     return $this->get($id);
   }
-
-  
 }

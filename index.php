@@ -9,7 +9,7 @@ set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
 function autoloadLibraries($class)
 {
-  @include_once str_replace(array("_", "\\"), DIRECTORY_SEPARATOR,$class) . ".php";
+  include_once str_replace(array("_", "\\"), DIRECTORY_SEPARATOR,$class) . ".php";
 }
 
 spl_autoload_register("autoloadLibraries");
@@ -81,7 +81,7 @@ $router->addRoute(
 /*
  * Set up Plugin search path and some standard exports
  */
-$pluginLoader = new PluginLoader;
+$pluginLoader = new StandardPluginLoader;
 $pluginLoader->setPluginPath(PLUGINS)
              ->setExport("FrontController", $frontController)
              ->setExport("EventDispatcher", $eventDispatcher);
