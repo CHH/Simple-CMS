@@ -2,19 +2,17 @@
 
 define("APPROOT", realpath(dirname(__FILE__)));
 
-define("LIBRARY_PATH", APPROOT . "/library");
-define("PLUGINS", APPROOT . "/plugins");
+define("LIBRARY_PATH", APPROOT . DIRECTORY_SEPARATOR . "library");
+define("PLUGINS", APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
-function autoloadLibraries($class)
-{
-  include_once str_replace(array("_", "\\"), DIRECTORY_SEPARATOR,$class) . ".php";
-}
+require_once "Autoloader.php";
 
-spl_autoload_register("autoloadLibraries");
+$autoloader = new Autoloader();
+$autoloader->register();
 
-$depender      = new Depender(array("Zend", "Spark"));
+$depender = new Depender(array("Zend", "Spark"));
 
 try {
   $depender->setLoadPath(get_include_path())
