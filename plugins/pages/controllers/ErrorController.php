@@ -7,10 +7,7 @@ class Pages_ErrorController implements Spark_Controller_Controller
     Zend_Controller_Request_Abstract  $request,
     Zend_Controller_Response_Abstract $response
   )
-  {
-    $pluginPagePath = DIRECTORY_SEPARATOR . "plugins" . DIRECTORY_SEPARATOR . "pages" . DIRECTORY_SEPARATOR . "default";
-    Page::setPath($pluginPagePath);
-    
+  { 
     $code      = $request->getParam("code");
     $exception = $request->getParam("exception");
     
@@ -18,47 +15,25 @@ class Pages_ErrorController implements Spark_Controller_Controller
       $code = 500;
     }
     
-    /**
-     * Render a page predefined by our plugin
-     */
-    if ($defaultPage = Page::find($request->getParam("page")) and $code == 404) {
-      $response->appendBody($defaultPage->content);
-      return;
-    }
-
-    $renderer = Page::getRenderer();
-    
-    /**
+    /*
      * Make the Exception which triggered the error and the request
      * available to the error page
      */
-    $renderer->exception = $exception;
-    $renderer->request   = $request;
-
-    /**
+    Spark_Registry::set("exception", $exception);
+    Spark_Registry::set("request", $request);
+    
+    /*
      * First, we look in the Default Path for the error view
      */
-    Page::setPath("/pages");
-
+    
     if($errorPage = Page::find("_errors/{$code}")) {
-      $response->appendBody($errorPage->content);
+      $errorPage->setAttribute("exception", $exception)
+                ->setAttribute("request", $request);
+      $response->appendBody($errorPage->getContent());
       return;
     }
-
-    /**
-    * Second, we look in the Page Path of our Plugin for the 
-    * default error page
-    */
-    Page::setPath($pluginPagePath);
-
-    if ($defaultErrorPage = Page::find("_errors/{$code}")) {
-      $errorPage = $defaultErrorPage;
-    } else {
-      $errorPage = Page::find("_errors/500");
-    }
     
-    $response->appendBody($errorPage->content);
-    
+    throw new Exception("No Error Page Template found");
   }
   
 }

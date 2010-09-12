@@ -12,21 +12,21 @@ h2. Mehr Informationen zum Fehler
 <table class="error_information">
 	<tr>
 		<td>Fehlernummer</td>
-		<td><?= $this->exception->getCode() ?></td>
+		<td><?= $this->getAttribute("exception")->getCode() ?></td>
 	</tr>
 	<tr>
 		<td>Art der Ausnahme</td>
-		<td><?= get_class($this->exception) ?></td>
+		<td><?= get_class($this->getAttribute("exception")) ?></td>
 	</tr>
 	<tr>
 		<td>Fehlermeldung</td>
-		<td>"<?= $this->exception->getMessage() ?>"</td>
+		<td>"<?= $this->getAttribute("exception")->getMessage() ?>"</td>
 	</tr>
 	<tr>
 		<td>Stack Trace</td>
 		<td>
 			<ul class="call_stack">
-			<? foreach ($this->exception->getTrace() as $trace): ?>
+			<? foreach ($this->getAttribute("exception")->getTrace() as $trace): ?>
 				<li><?= $trace["file"] ?>:<?= $trace["line"] ?>, <?= $trace["function"] ?></li>
 			<? endforeach; ?>
 			</ul>

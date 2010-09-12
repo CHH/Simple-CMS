@@ -34,9 +34,11 @@ class Pages extends AbstractPlugin
         $layout = $layoutPlugin->getLayout();
 
         $layout->addScriptPath(APPROOT . "/layouts");
-        $layout->addScriptPath(APPROOT);
 
-        Page::setRenderer($layout);
+        Page::setSearchPath(array(
+            APPROOT . DIRECTORY_SEPARATOR . "pages",
+            $this->getPath() . DIRECTORY_SEPARATOR . "default"
+        ));
 
         /*
          * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
@@ -73,7 +75,6 @@ class Pages extends AbstractPlugin
             $layout->headScript()->appendScript("less.env='development'; less.watch();");
         }
 
-        $this->export("Pages", new PageMapper);
         $this->export("LayoutPlugin", $layoutPlugin);
     }
 
@@ -87,7 +88,7 @@ class Pages extends AbstractPlugin
 
         $page = Page::find($page);
 
-        $response->appendBody($page->content);
+        $response->appendBody($page->getContent());
 
         $request->setDispatched(true);
     }

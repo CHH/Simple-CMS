@@ -5,7 +5,7 @@ h1. Seite nicht gefunden
 
 <p>
 	Es tut mir leid, ich habe nichts an dieser Stelle gefunden. Schau bitte nochmal ob es 
-	die Seite @<?= $this->request->getParam("page") ?>.txt@
+	die Seite @<?= $this->getAttribute("request")->getParam("page") ?>.txt@
 	im @pages@ Ordner gibt.
 </p>
 
@@ -14,15 +14,15 @@ h2. Mehr Informationen zum Fehler
 <table class="error_information">
 	<tr>
 		<td>Fehlernummer</td>
-		<td><?= $this->request->getParam("code") ?></td>
+		<td><?= $this->getAttribute("request")->getParam("code") ?></td>
 	</tr>
 	<tr>
 		<td>HTTP Anfragemethode</td>
-		<td><?= $this->request->getMethod() ?></td>
+		<td><?= $this->getAttribute("request")->getMethod() ?></td>
 	</tr>
 	<tr>
 		<td>Angefragte URL</td>
-		<td><?= $this->request->getRequestURI() ?></td>
+		<td><?= $this->getAttribute("request")->getRequestURI() ?></td>
 	</tr>
 </table>
 
