@@ -11,17 +11,24 @@ class PageNew
     
     public function __construct($page = array())
     {
-        /*
-         * Treat first argument as filename if string is given
-         */ 
         if (is_array($page)) {
             Spark_Options::setOptions($this, $page);
         }
+    }
+
+    public static function findAll($file)
+    {
+    }
+    
+    public static function find($file)
+    {
+        return self::loadFile($file);
     }
     
     public static function loadFile($file)
     {
         $renderer = self::getRenderer();
+        $textile  = new Spark_View_Helper_Textile();
         
         if (strpos($file, $this->extension) === false) {
             $file .= $this->extension;
@@ -29,10 +36,25 @@ class PageNew
         
         $page = new self;
         
-        // TODO: Set Name, path, created, modified of page
-        $page->setContent($renderer->render($file));
-
+        $content  = $textile->parse($renderer->render($file));
+        $pathinfo = pathinfo($file);
+        
+        $page->setName($pathinfo["filename"]);
+        $page->setModified(filemtime($file));
+        $page->setPath($pathinfo["dirname"]);
+        $page->setContent($content);
+        
         return $page;
+    }
+
+    public static function setRenderer($renderer)
+    {
+        self::$renderer = $renderer;
+    }
+
+    public static function getRenderer()
+    {
+        return self::$renderer;
     }
     
     public function setName($name)

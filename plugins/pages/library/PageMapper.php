@@ -2,7 +2,7 @@
 
 class PageMapper implements Spark_Configurable
 { 
-  protected $_entityClass   = "Page";
+  protected $_entityClass = "Page";
   protected $_pageExtension;
   protected $_defaultPage;
   
