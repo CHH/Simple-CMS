@@ -1,16 +1,17 @@
 <?php
 
-class Controller_Plugin_CallPluginCallbacks extends Spark_Controller_PluginAbstract
+class Controller_Plugin_CallPluginCallbacks 
+    extends Spark_Controller_AbstractPlugin
+    implements Spark_Configurable
 {
-  
   protected $_plugins;
   
-  public function __construct(array $options = array()) 
+  public function __construct(Array $options = array()) 
   {
     $this->setOptions($options);
   }
   
-  public function setOptions(array $options)
+  public function setOptions(Array $options)
   {
     Spark_Options::setOptions($this, $options);
     return $this;
@@ -18,15 +19,17 @@ class Controller_Plugin_CallPluginCallbacks extends Spark_Controller_PluginAbstr
   
   public function beforeDispatch($request, $response)
   {
-    if($this->_plugins->has($this->_getPluginName($request))) {
-      $this->_plugins->get($this->_getPluginName($request))->beforeDispatch($request, $response);
+    $plugin = $this->_getPluginName($request);
+    if($this->_plugins->has($plugin)) {
+      $this->_plugins->get($plugin)->beforeDispatch($request, $response);
     }
   }
   
   public function afterDispatch($request, $response)
   {
-    if($this->_plugins->has($this->_getPluginName($request))) {
-      $this->_plugins->get($this->_getPluginName($request))->afterDispatch($request, $response);
+    $plugin = $this->_getPluginName($request);
+    if($this->_plugins->has($plugin)) {
+      $this->_plugins->get($plugin)->afterDispatch($request, $response);
     }
   }
   

@@ -17,5 +17,4 @@ class PluginController extends Spark_Controller_ActionController
   {
     return $this->getPlugin()->import($var);
   }
-  
 }

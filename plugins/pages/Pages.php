@@ -2,16 +2,19 @@
 
 class Pages extends AbstractPlugin
 {
-  
     public function init()
     {
         $frontController = $this->import("FrontController");
         $request         = $frontController->getRequest(); 
-
+        
+        /*
+         * Register an Autoloader for the classes in the plugin's library path
+         */
         $loader = new Autoloader(array("base_path" => $this->getPath() . "/library"));
         $loader->register();
+        
         /*
-         * Tell the Front Controller to use the error controller of our plugin (=pages)
+         * Use the error controller of our plugin (=pages)
          */
         $frontController->setErrorController(array("pages", "error"));
         
@@ -27,19 +30,13 @@ class Pages extends AbstractPlugin
          * all of our pages in a common layout template
          */
         $layoutPlugin = new Spark_Controller_Plugin_Layout;
-        $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
-
         $layoutPlugin->setLayoutPath($this->getPath() . "/default");
-
+        
         $layout = $layoutPlugin->getLayout();
-
         $layout->addScriptPath(APPROOT . "/layouts");
-
-        Page::setSearchPath(array(
-            APPROOT . DIRECTORY_SEPARATOR . "pages",
-            $this->getPath() . DIRECTORY_SEPARATOR . "default"
-        ));
-
+        
+        $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
+        
         /*
          * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
          * to the Layout
@@ -59,9 +56,13 @@ class Pages extends AbstractPlugin
          * Add Less.js to Layout for CSS Preprocessing
          */
         $layout->headScript()->prependFile($request->getBaseUrl() . "/javascript/less.min.js");
-
         $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
 
+        Page::setSearchPath(array(
+            APPROOT . DIRECTORY_SEPARATOR . "pages",
+            $this->getPath() . DIRECTORY_SEPARATOR . "default"
+        ));
+        
         /*
          * If the App is in development mode, then prepend our stylesheet for pretty 
          * Errors and default pages
@@ -74,22 +75,22 @@ class Pages extends AbstractPlugin
             ));
             $layout->headScript()->appendScript("less.env='development'; less.watch();");
         }
-
+        
         $this->export("LayoutPlugin", $layoutPlugin);
     }
 
     public function beforeDispatch($request, $response)
     {
         $page = $request->getParam("page");
-
+        
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
           throw new Exception("Page is hidden", 404);
         }
-
+        
         $page = Page::find($page);
-
+        $page->setAttribute("layout", $this->import("LayoutPlugin")->getLayout());
+        
         $response->appendBody($page->getContent());
-
         $request->setDispatched(true);
     }
 }
