@@ -112,7 +112,7 @@ class Page
                 or strpos(self::$suffix, pathinfo($entry->getFilename(), PATHINFO_EXTENSION) === false)) {
                 continue;
             }
-            $page = new self;
+            $page    = new self;
             $pages[] = $page->loadFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
         }
     }
@@ -272,6 +272,11 @@ class Page
             $this->content = $textile->parse(ob_get_clean());
         }
         return $this->content;
+    }
+    
+    public function __toString()
+    {
+        return $this->getContent();
     }
     
     /**
