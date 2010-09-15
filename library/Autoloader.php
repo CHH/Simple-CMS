@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @uses Zend_Loader
+ */
 require_once "Zend/Loader.php";
 
 class Autoloader
@@ -10,7 +12,7 @@ class Autoloader
      * @var array
      */
     protected $prefixDirectoryMap = array();
-
+    
     /**
      * Path for fallback loading
      *
@@ -88,12 +90,22 @@ class Autoloader
         require_once $filename;
     }
     
+    /**
+     * Adds this autoloader on the autoloader stack
+     *
+     * @return Autoloader
+     */
     public function register()
     {
         spl_autoload_register(array($this, "autoload"));
         return $this;
     }
 
+    /**
+     * Removes this autoloader from the autoloader stack
+     *
+     * @param Autoloader
+     */
     public function unregister()
     {
         spl_autoload_unregister(array($this, "autoload"));

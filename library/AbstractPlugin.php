@@ -3,9 +3,16 @@
 abstract class AbstractPlugin implements Plugin
 { 
   /**
-   * @var PluginLoaderInterface
+   * Instance of the plugin loader
+   * @var PluginLoader
    */
-  protected $_pluginLoader;
+  protected $pluginLoader;
+  
+  /**
+   * Absolute path to the directory of the plugin
+   * @var string
+   */
+  protected $path;
   
   /**
    * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
@@ -29,26 +36,42 @@ abstract class AbstractPlugin implements Plugin
   
   public function setPluginLoader(PluginLoader $pluginLoader)
   {
-    $this->_pluginLoader = $pluginLoader;
+    $this->pluginLoader = $pluginLoader;
     return $this;
   }
   
+  /**
+   * Returns the plugin loader
+   *
+   * @return PluginLoader
+   */
   public function getPluginLoader()
   {
-    return $this->_pluginLoader;
+    return $this->pluginLoader;
   }
   
+  /**
+   * Returns the absolute path to the plugin directory
+   *
+   * @return string
+   */
   public function getPath()
   {
-    if (is_null($this->_path)) {
-      $this->_path = PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
+    if (is_null($this->path)) {
+      $this->path = PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
     }
-    return $this->_path;
+    return $this->path;
   }
   
+  /**
+   * Sets the absolute path to the plugin directory
+   *
+   * @param  string
+   * @return Plugin
+   */
   public function setPath($path)
   {
-    $this->_path = $path;
+    $this->path = $path;
     return $this;
   }
 
@@ -57,7 +80,7 @@ abstract class AbstractPlugin implements Plugin
    *
    * @throws InvalidArgumentException
    *
-   * @param  string $plugin,... Plugins which should be loaded
+   * @param  string $plugin,... Plugins to load
    * @return Plugin
    */ 
   public function dependOn()
