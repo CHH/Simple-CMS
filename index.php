@@ -72,10 +72,6 @@ $pluginLoader->setPluginPath(PLUGINS)
 $callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
   array("plugins" => $pluginLoader->getPluginRegistry())
 );
-
-/*
- * Connect Front Controller Events to Front Controller Plugins
- */
 $frontController->addPlugin($callPluginCallbacksPlugin); 
 
 /*
@@ -95,6 +91,5 @@ unset(
   $frontController, 
   $router,
   $callPluginCallbacksPlugin,
-  $pluginLoader,
-  $depender
+  $pluginLoader
 );
