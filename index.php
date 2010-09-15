@@ -12,28 +12,9 @@ require_once "Autoloader.php";
 $autoloader = new Autoloader();
 $autoloader->register();
 
-$depender = new Depender(array("Zend", "Spark"));
-
-try {
-  $depender->setLoadPath(get_include_path())
-           ->checkAll();
-  
-} catch (DependencyNotInstalledException $e) {
-  /*
-   * If the Spark Namespace is not found, look for a checkout of Spark 
-   * in the parent folder of our Installation and try one more time
-   */
-  if ($e->hasFailedDependency("Spark")) {
+if (!is_dir(LIBRARY_PATH . "/Spark")) {
     $sparkPath = realpath(APPROOT . "/../Spark-Web-Framework/lib");
     set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
-    
-    try {  
-      $depender->setLoadPath(get_include_path())
-               ->checkAll();
-    } catch (DependencyNotInstalledException $e) {
-      exit($e->getMessage());
-    }
-  }
 }
 
 $config = new Zend_Config_Ini(APPROOT . "/config.ini");
