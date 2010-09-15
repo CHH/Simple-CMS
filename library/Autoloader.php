@@ -18,8 +18,9 @@ class Autoloader
      */
     protected $basePath;
     
-    const PREFIX_SEPARATOR = "_";
-
+    const PREFIX_SEPARATOR    = "_";
+    const NAMESPACE_SEPARATOR = "\\";    
+    
     /**
      * Constructor
      *
@@ -67,7 +68,11 @@ class Autoloader
             $class    = substr($class, strrpos($class, self::PREFIX_SEPARATOR));
             $filename = $path . $class;
         } else {
-            $filename = str_replace(self::PREFIX_SEPARATOR, DIRECTORY_SEPARATOR, $class);
+            $filename = str_replace(
+                array(self::PREFIX_SEPARATOR, self::NAMESPACE_SEPARATOR), 
+                DIRECTORY_SEPARATOR, 
+                $class
+            );
 
             if ($this->basePath) {
                 $filename = $this->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -80,7 +85,7 @@ class Autoloader
             return false;
         }
         
-        return require_once $filename;
+        require_once $filename;
     }
     
     public function register()
