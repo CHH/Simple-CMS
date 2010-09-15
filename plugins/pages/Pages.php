@@ -58,10 +58,8 @@ class Pages extends AbstractPlugin
         $layout->headScript()->prependFile($request->getBaseUrl() . "/javascript/less.min.js");
         $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
 
-        Page::setSearchPath(array(
-            APPROOT . DIRECTORY_SEPARATOR . "pages",
-            $this->getPath() . DIRECTORY_SEPARATOR . "default"
-        ));
+        Page::setSearchPath($this->getPath() . DIRECTORY_SEPARATOR . "default");
+        Page::setSearchPath(APPROOT . DIRECTORY_SEPARATOR . "pages");
         
         /*
          * If the App is in development mode, then prepend our stylesheet for pretty 
