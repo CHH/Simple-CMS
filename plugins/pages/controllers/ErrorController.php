@@ -15,12 +15,10 @@ class Pages_ErrorController implements Spark_Controller_Controller
            $code = 500;
         }
         
-        /*
-         * First, we look in the Default Path for the error view
-         */
         if($errorPage = Page::find("_errors/{$code}")) {
             $errorPage->setAttribute("exception", $exception)
-                    ->setAttribute("request", $request);
+                      ->setAttribute("request", $request);
+            
             $response->appendBody($errorPage->getContent());
             return;
         }
