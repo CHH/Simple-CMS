@@ -114,6 +114,12 @@ class Autoloader
         return $this;
     }
     
+    /**
+     * Sets the script suffix, defaults to ".php"
+     *
+     * @param  string $suffix
+     * @return Autoloader
+     */
     public function setSuffix($suffix)
     {
         if (!is_string($suffix) or empty($suffix)) {
@@ -126,6 +132,11 @@ class Autoloader
         return $this;
     }
     
+    /**
+     * Returns the script suffix
+     *
+     * @return string
+     */
     public function getSuffix()
     {
         return $this->suffix;
@@ -144,6 +155,12 @@ class Autoloader
         return $this;
     }
     
+    /**
+     * Sets an array of prefix => include path pairs
+     *
+     * @param  array $prefixes
+     * @return Autoloader
+     */
     public function setPrefixes(Array $prefixes)
     {
         foreach ($prefixes as $prefix => $path) {
@@ -152,6 +169,13 @@ class Autoloader
         return $this;
     }
     
+    /**
+     * Register a prefix with a path
+     *
+     * @param  string $prefix Class prefix, e.g. "Spark_"
+     * @param  string $path   Absolute or relative path
+     * @return Autoloader
+     */
     public function registerPrefix($prefix, $path)
     {
         $this->prefixDirectoryMap[$prefix] = $path;

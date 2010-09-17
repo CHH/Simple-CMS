@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Plugin_CallPluginCallbacks 
+class Controller_Plugin_PluginCallbacks 
     extends Spark_Controller_AbstractPlugin
     implements Spark_Configurable
 {

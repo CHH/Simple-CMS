@@ -1,9 +1,8 @@
 <?php
 
-define("APPROOT", realpath(dirname(__FILE__)));
-
+define("APPROOT",       realpath(dirname(__FILE__)));
 define("LIBRARY_PATH", APPROOT . DIRECTORY_SEPARATOR . "library");
-define("PLUGINS", APPROOT . DIRECTORY_SEPARATOR . "plugins");
+define("PLUGINS",       APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
 set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
 
@@ -12,6 +11,7 @@ require_once "Autoloader.php";
 $autoloader = new Autoloader();
 $autoloader->register();
 
+// Look for Spark in the parent folder
 if (!is_dir(LIBRARY_PATH . "/Spark")) {
     $sparkPath = realpath(APPROOT . "/../Spark-Web-Framework/lib");
     set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
@@ -53,7 +53,7 @@ $router->addRoute(
   "commands", 
   new Zend_Controller_Router_Route(
     "/:module/:controller/:action/*", 
-    array("module" => null, "controller" => "default", "action" => "index")
+    array("module" => null, "controller" => "index", "action" => "index")
   )
 );
 
@@ -69,10 +69,10 @@ $pluginLoader->setPluginPath(PLUGINS)
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
  * Callbacks of each Plugin
  */
-$callPluginCallbacksPlugin = new Controller_Plugin_CallPluginCallbacks(
+$pluginCallbacks = new Controller_Plugin_PluginCallbacks(
   array("plugins" => $pluginLoader->getPluginRegistry())
 );
-$frontController->addPlugin($callPluginCallbacksPlugin); 
+$frontController->addPlugin($pluginCallbacks); 
 
 /*
  * Exceptions should be handled by the Front Controller
