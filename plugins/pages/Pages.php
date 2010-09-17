@@ -10,7 +10,7 @@ class Pages extends AbstractPlugin
         /*
          * Register an Autoloader for the classes in the plugin's library path
          */
-        $loader = new Autoloader(array("base_path" => $this->getPath() . "/library"));
+        $loader = new Autoloader(array("include_path" => $this->getPath() . "/library"));
         $loader->register();
         
         /*

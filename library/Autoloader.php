@@ -18,10 +18,12 @@ class Autoloader
      *
      * @var string
      */
-    protected $basePath;
+    protected $includePath;
     
     const PREFIX_SEPARATOR    = "_";
     const NAMESPACE_SEPARATOR = "\\";    
+    
+    protected $suffix = ".php";
     
     /**
      * Constructor
@@ -76,12 +78,12 @@ class Autoloader
                 $class
             );
 
-            if ($this->basePath) {
-                $filename = $this->basePath . DIRECTORY_SEPARATOR . $filename;
+            if ($this->includePath) {
+                $filename = $this->includePath . DIRECTORY_SEPARATOR . $filename;
             }
         }
 
-        $filename .= ".php";
+        $filename .= $this->suffix;
 
         if (!Zend_Loader::isReadable($filename)) {
             return false;
@@ -112,6 +114,23 @@ class Autoloader
         return $this;
     }
     
+    public function setSuffix($suffix)
+    {
+        if (!is_string($suffix) or empty($suffix)) {
+            throw new InvalidArgumentException(sprintf(
+                "Suffix must be a string, %s given",
+                gettype($suffix)
+            ));
+        }
+        $this->suffix = $suffix;
+        return $this;
+    }
+    
+    public function getSuffix()
+    {
+        return $this->suffix;
+    }
+    
     /**
      * Sets the base path for the case no Prefix => Path mapping is available for 
      * the class to load. If a relative path is set, then the include_path gets searched
@@ -119,9 +138,9 @@ class Autoloader
      * @param  string $path;
      * @return Autoloader
      */
-    public function setBasePath($path)
+    public function setIncludePath($path)
     {
-        $this->basePath = $path;
+        $this->includePath = $path;
         return $this;
     }
     
