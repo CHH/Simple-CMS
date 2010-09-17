@@ -18,7 +18,7 @@ if (!is_dir(LIBRARY_PATH . "/Spark")) {
 }
 
 $config = new Zend_Config_Ini(APPROOT . "/config.ini");
-Spark_Registry::set("config", $config);
+Spark_StaticRegistry::set("config", $config);
 
 if (isset($config->env)) {
     define("ENVIRONMENT",  $config->env);
@@ -38,7 +38,7 @@ if (ENVIRONMENT === "development") {
  * Initialize Event Dispatcher and Front Controller
  */
 $eventDispatcher = new Spark_Event_Dispatcher;
-Spark_Registry::set("EventDispatcher", $eventDispatcher);
+Spark_StaticRegistry::set("EventDispatcher", $eventDispatcher);
 
 $frontController = new Spark_Controller_FrontController;
 $frontController->setEventDispatcher($eventDispatcher);

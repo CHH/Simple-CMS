@@ -82,7 +82,7 @@ class Pages extends AbstractPlugin
         $page = $request->getParam("page");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
-          throw new Exception("Page is hidden", 404);
+            throw new Exception("Page is hidden", 404);
         }
         
         $page = Page::find($page);

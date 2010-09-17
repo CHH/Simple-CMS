@@ -20,20 +20,34 @@ class Controller_Plugin_CallPluginCallbacks
   public function beforeDispatch($request, $response)
   {
     $plugin = $this->_getPluginName($request);
+
     if($this->_plugins->has($plugin)) {
-      $this->_plugins->get($plugin)->beforeDispatch($request, $response);
+      $plugin = $this->_plugins->get($plugin);
+      
+      if (!is_callable(array($plugin, "beforeDispatch"))) {
+        return;
+      }
+      
+      $plugin->beforeDispatch($request, $response);
     }
   }
   
   public function afterDispatch($request, $response)
   {
     $plugin = $this->_getPluginName($request);
+    
     if($this->_plugins->has($plugin)) {
-      $this->_plugins->get($plugin)->afterDispatch($request, $response);
+      $plugin = $this->_plugins->get($plugin);
+      
+      if (!is_callable(array($plugin, "afterDispatch"))) {
+        return;
+      }
+      
+      $plugin->afterDispatch($request, $response);
     }
   }
   
-  public function setPlugins(PluginRegistry $plugins)
+  public function setPlugins(Spark_Registry $plugins)
   {
     $this->_plugins = $plugins;
     return $this;
