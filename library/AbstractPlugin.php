@@ -21,17 +21,17 @@ abstract class AbstractPlugin implements Plugin
   {}
   
   /**
-   * beforeDispatch() - FrontController Callback, gets called before a plugin
+   * preDispatch() - FrontController Callback, gets called before a plugin
    * command gets executed
    */
-  public function beforeDispatch($request, $response)
+  public function preDispatch($request, $response)
   {}
   
   /**
-   * afterDispatch() - FrontController Callback, gets called after a command of 
-   *  this plugin is executed and before the response is sent back to the client.
+   * postDispatch() - FrontController Callback, gets called after a command of 
+   * this plugin is executed and before the response is sent back to the client.
    */
-  public function afterDispatch($request, $response)
+  public function postDispatch($request, $response)
   {}
   
   public function setPluginLoader(PluginLoader $pluginLoader)

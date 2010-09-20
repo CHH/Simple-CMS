@@ -17,32 +17,32 @@ class Controller_Plugin_PluginCallbacks
         return $this;
     }
 
-    public function beforeDispatch($request, $response)
+    public function preDispatch($request, $response)
     {
         $plugin = $this->_getPluginName($request);
 
         if($this->_plugins->has($plugin)) {
             $plugin = $this->_plugins->get($plugin);
 
-            if (!is_callable(array($plugin, "beforeDispatch"))) {
+            if (!is_callable(array($plugin, "preDispatch"))) {
                 return;
             }
-            $plugin->beforeDispatch($request, $response);
+            $plugin->preDispatch($request, $response);
         }
     }
 
-    public function afterDispatch($request, $response)
+    public function postDispatch($request, $response)
     {
         $plugin = $this->_getPluginName($request);
 
         if($this->_plugins->has($plugin)) {
             $plugin = $this->_plugins->get($plugin);
 
-            if (!is_callable(array($plugin, "afterDispatch"))) {
+            if (!is_callable(array($plugin, "postDispatch"))) {
                 return;
             }
 
-            $plugin->afterDispatch($request, $response);
+            $plugin->postDispatch($request, $response);
         }
     }
 

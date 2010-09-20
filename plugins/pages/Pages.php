@@ -35,7 +35,10 @@ class Pages extends AbstractPlugin
         $layout = $layoutPlugin->getLayout();
         $layout->addScriptPath(APPROOT . "/layouts");
         
-        $frontController->addPlugin($layoutPlugin, array(Spark_Controller_FrontController::EVENT_AFTER_DISPATCH));
+        $frontController->addPlugin(
+            $layoutPlugin,
+            array(Spark_Controller_FrontController::EVENT_POST_DISPATCH)
+        );
         
         /*
          * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
@@ -77,7 +80,7 @@ class Pages extends AbstractPlugin
         $this->export("LayoutPlugin", $layoutPlugin);
     }
 
-    public function beforeDispatch($request, $response)
+    public function preDispatch($request, $response)
     {
         $page = $request->getParam("page");
         
