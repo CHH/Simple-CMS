@@ -7,15 +7,11 @@ class Pages extends AbstractPlugin
         $frontController = $this->import("FrontController");
         $request         = $frontController->getRequest(); 
         
-        /*
-         * Register an Autoloader for the classes in the plugin's library path
-         */
+        // Register an Autoloader for the classes in the plugin's library path
         $loader = new Autoloader(array("include_path" => $this->getPath() . "/library"));
         $loader->register();
         
-        /*
-         * Use the error controller of our plugin (=pages)
-         */
+        // Use the error controller of our plugin (=pages)
         $frontController->setErrorController(array("pages", "error"));
         
         $frontController->getRouter()->addRoute(
@@ -49,15 +45,11 @@ class Pages extends AbstractPlugin
           "Spark_View_Helper"
         );
 
-        /*
-         * Set up the doctype and charset for the layout
-         */
+        // Set up the doctype and charset for the layout
         $layout->doctype("HTML5");
         $layout->headMeta()->setCharset("UTF-8"); 
 
-        /*
-         * Add Less.js to Layout for CSS Preprocessing
-         */
+        // Add Less.js to Layout for CSS Preprocessing
         $layout->headScript()->prependFile($request->getBaseUrl() . "/javascript/less.min.js");
         $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
 

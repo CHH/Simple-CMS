@@ -3,7 +3,7 @@
 interface PluginLoader
 {
   
-  public function load($id);
+  public function load($plugin);
   
   public function loadDirectory($pluginPath = null);
   

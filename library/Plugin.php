@@ -3,8 +3,7 @@
 interface Plugin
 {
   /**
-   * bootstrap() - Gets called from the main bootstrap at plugin load time
+   * Gets called from the plugin loader after instantiation
    */
   public function init();
-  
 }

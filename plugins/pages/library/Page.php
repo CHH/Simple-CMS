@@ -64,7 +64,7 @@ class Page
      */
     public function __construct(Array $page = array())
     {
-        if (!$page) {
+        if ($page) {
             Spark_Options::setOptions($this, $page);
         }
     }

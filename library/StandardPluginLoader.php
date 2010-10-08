@@ -59,25 +59,25 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
         }
     }
 
-    public function load($id)
+    public function load($pluginName)
     { 
         $pluginRegistry = $this->getPluginRegistry();
-        $pluginClass    = $this->getPluginClass($id);
+        $pluginClass    = $this->getPluginClass($pluginName);
 
         if($pluginRegistry->has($pluginClass)) {
             return false;
         }
 
         $ds                  = DIRECTORY_SEPARATOR;
-        $pluginBootstrapFile = $this->getPluginPath() . $ds . $id . $ds . $pluginClass . ".php";
+        $pluginBootstrapFile = $this->getPluginPath() . $ds . $pluginName . $ds . $pluginClass . ".php";
 
         if(!include_once($pluginBootstrapFile)) {
-            $pluginDirectory = $this->getPluginPath() . $ds . $id;
+            $pluginDirectory = $this->getPluginPath() . $ds . $pluginName;
 
             throw new PluginLoadException(
-                $id, 
+                $plugin, 
                 "The Plugin was not found in \"{$pluginDirectory}\". Please make sure 
-                  you have installed the Plugin \"{$id}\".", 
+                  you have installed the Plugin \"{$pluginName}\".", 
                 self::ERROR_LOADING_PLUGIN
             );
         }
@@ -86,8 +86,8 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
 
         if (!$plugin instanceof Plugin) {
             throw new PluginLoadException(
-                $id, 
-                "The Plugin \"{$id}\" does not implement the PluginInterface.", 
+                $pluginName, 
+                "The Plugin \"{$pluginName}\" does not implement the PluginInterface.", 
                 self::ERROR_LOADING_PLUGIN
             );
         }
@@ -96,7 +96,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
          * If Plugin extends the Abstract Plugin, then give it some more information
          */
         if ($plugin instanceof AbstractPlugin) {
-            $plugin->setPath($this->getPluginPath() . $ds . $id);
+            $plugin->setPath($this->getPluginPath() . $ds . $pluginName);
             $plugin->setPluginLoader($this);
         }
 
@@ -105,9 +105,9 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
 
         } catch(Exception $e) {
             throw new PluginBootstrapException(
-                $id, 
+                $pluginName, 
                 "There was an failure during bootstrapping of " 
-                . "the plugin \"{$id}\" with the message {$e->getMessage()}",
+                . "the plugin \"{$pluginName}\" with the message {$e->getMessage()}",
                 self::ERROR_BOOTSTRAPPING_PLUGIN
             );
         }
