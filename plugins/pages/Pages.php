@@ -66,7 +66,7 @@ class Pages extends AbstractPlugin
         
         /*
          * If the App is in development mode, then prepend our stylesheet for pretty 
-         * Errors and default pages
+         * errors and default pages
          */
         if (ENVIRONMENT === "development") {  
             $layout->headLink(array(

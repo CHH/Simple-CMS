@@ -18,7 +18,6 @@ if (!is_dir(LIBRARY_PATH . "/Spark")) {
 }
 
 $config = new Zend_Config_Ini(APPROOT . "/config.ini");
-Spark_StaticRegistry::set("config", $config);
 
 if (isset($config->env)) {
     define("ENVIRONMENT",  $config->env);
@@ -26,27 +25,20 @@ if (isset($config->env)) {
     define("ENVIRONMENT", "production");
 }
 
-/*
- * Force Error Reporting in Development Environment if host has it disabled
- */
+// Force error reporting in development environment
 if (ENVIRONMENT === "development") {
     ini_set("display_errors", true);
     error_reporting(E_ALL | E_STRICT);
 }
 
-/*
- * Initialize Event Dispatcher and Front Controller
- */
+// Initialize event dispatcher and front controller
 $eventDispatcher = new Spark_Event_Dispatcher;
-Spark_StaticRegistry::set("EventDispatcher", $eventDispatcher);
 
 $frontController = new Spark_Controller_FrontController;
 $frontController->setEventDispatcher($eventDispatcher);
 $frontController->getResolver()->setModuleDirectory(PLUGINS);
 
-/*
- * Add our own Default Route, taking plugins and our default settings for names in accout
- */
+// Add our own Default Route, taking plugins and our default settings for names in accout
 $router = $frontController->getRouter();
 $router->removeDefaultRoutes();
 $router->addRoute(
@@ -57,13 +49,12 @@ $router->addRoute(
   )
 );
 
-/*
- * Set up Plugin search path and some standard exports
- */
+// Set up Plugin search path and some standard exports
 $pluginLoader = new StandardPluginLoader;
 $pluginLoader->setPluginPath(PLUGINS)
              ->setExport("FrontController", $frontController)
-             ->setExport("EventDispatcher", $eventDispatcher);
+             ->setExport("EventDispatcher", $eventDispatcher)
+             ->setExport("Config", $config);
 
 /*
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
@@ -74,22 +65,21 @@ $pluginCallbacks = new Controller_Plugin_PluginCallbacks(
 );
 $frontController->addPlugin($pluginCallbacks); 
 
-/*
- * Exceptions should be handled by the Front Controller
- */
+// Exceptions should be handled by the Front Controller
 set_exception_handler(array($frontController, "handleException"));
 
-/*
- * Load all plugins in the plugin folder
- */
+// Load all plugins in the plugin folder
 $pluginLoader->loadDirectory();
 
 $frontController->handleRequest();
 
+// Some cleanup
 unset(
-  $config,
-  $frontController, 
-  $router,
-  $callPluginCallbacksPlugin,
-  $pluginLoader
+    $autoloader,
+    $config,
+    $eventDispatcher,
+    $frontController, 
+    $router,
+    $callPluginCallbacksPlugin,
+    $pluginLoader
 );
