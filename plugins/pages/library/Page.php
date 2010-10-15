@@ -99,7 +99,7 @@ class Page
                 break;
             }
         }
-        
+                
         if (!isset($absolutePath)) {
             throw new InvalidArgumentException("Path not found");
         }
@@ -109,12 +109,15 @@ class Page
         
         foreach ($directory as $entry) {
             if (!$entry->isFile() or $entry->isDot() 
-                or strpos(self::$suffix, pathinfo($entry->getFilename(), PATHINFO_EXTENSION) === false)) {
+                or self::$suffix !== "." . pathinfo($entry->getFilename(), PATHINFO_EXTENSION)) {
                 continue;
             }
+            
             $page    = new self;
             $pages[] = $page->loadFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
         }
+        
+        return $pages;
     }
     
     /**
