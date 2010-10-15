@@ -117,7 +117,7 @@ class Page
             $pages[] = $page->loadFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
         }
         
-        return $pages;
+        return new Spark_Model_Collection($pages);
     }
     
     /**
@@ -338,7 +338,7 @@ class Page
      * @param  array $attributes
      * @return Page
      */
-    public function setAttributes(Array $attribues)
+    public function setAttributes(Array $attributes)
     {
         foreach ($attributes as $attribute => $value) {
             $this->setAttribute($attribute, $value);
