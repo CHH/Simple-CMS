@@ -1,21 +1,27 @@
 <?php
 
-define("APPROOT",       realpath(dirname(__FILE__)));
+define("APPROOT",      realpath(dirname(__FILE__)));
 define("LIBRARY_PATH", APPROOT . DIRECTORY_SEPARATOR . "library");
-define("PLUGINS",       APPROOT . DIRECTORY_SEPARATOR . "plugins");
+define("PLUGINS",      APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
-set_include_path(LIBRARY_PATH . PATH_SEPARATOR . get_include_path());
+require_once "Zend/Loader.php";
+require_once LIBRARY_PATH . DIRECTORY_SEPARATOR . "Autoloader.php";
 
-require_once "Autoloader.php";
+// Fallback loader
+$libraryLoader = new Autoloader(array("include_path" => LIBRARY_PATH));
+$libraryLoader->register();
 
-$autoloader = new Autoloader();
-$autoloader->register();
-
-// Look for Spark in the parent folder
+// If Spark is not in the LIBRARY_PATH, then load it from a checkout in the parent folder
 if (!is_dir(LIBRARY_PATH . "/Spark")) {
-    $sparkPath = realpath(APPROOT . "/../Spark-Web-Framework/lib");
-    set_include_path($sparkPath . PATH_SEPARATOR . get_include_path());
+    $sparkLoader = new Autoloader(array(
+        "include_path" => realpath(APPROOT . "/../Spark-Web-Framework/lib/")
+    ));
+    $sparkLoader->register();
 }
+
+// Fallback Loader
+$fallback = new Autoloader();
+$fallback->register();
 
 $config = new Zend_Config_Ini(APPROOT . "/config.ini");
 
@@ -41,27 +47,29 @@ $frontController->getResolver()->setModuleDirectory(PLUGINS);
 // Add our own Default Route, taking plugins and our default settings for names in accout
 $router = $frontController->getRouter();
 $router->removeDefaultRoutes();
-$router->addRoute(
-  "commands", 
-  new Zend_Controller_Router_Route(
-    "/:module/:controller/:action/*", 
-    array("module" => null, "controller" => "index", "action" => "index")
-  )
+$defaultRoute = new Zend_Controller_Router_Route(
+	"/:module/:controller/:action/*", 
+	array("module" => null, "controller" => "index", "action" => "index")
 );
+
+$router->addRoute("commands", $defaultRoute);
 
 // Set up Plugin search path and some standard exports
 $pluginLoader = new StandardPluginLoader;
-$pluginLoader->setPluginPath(PLUGINS)
-             ->setExport("FrontController", $frontController)
-             ->setExport("EventDispatcher", $eventDispatcher)
-             ->setExport("Config", $config);
+$pluginLoader->setPluginPath(PLUGINS);
+
+$exports = $pluginLoader->getExports();
+
+$exports->set("FrontController", $frontController)
+        ->set("EventDispatcher", $eventDispatcher)
+        ->set("Config", $config);
 
 /*
  * This Front Controller plugin calls the beforeDispatch and afterDispatch
  * Callbacks of each Plugin
  */
 $pluginCallbacks = new Controller_Plugin_PluginCallbacks(
-  array("plugins" => $pluginLoader->getPluginRegistry())
+	array("plugins" => $pluginLoader->getPluginRegistry())
 );
 $frontController->addPlugin($pluginCallbacks); 
 
@@ -70,12 +78,15 @@ set_exception_handler(array($frontController, "handleException"));
 
 // Load all plugins in the plugin folder
 $pluginLoader->loadDirectory();
-
 $frontController->handleRequest();
 
 // Some cleanup
 unset(
-    $autoloader,
+    $libraryLoader,
+    $sparkLoader,
+    $fallback,
+    $defaultRoute,
+    $exports,
     $config,
     $eventDispatcher,
     $frontController, 

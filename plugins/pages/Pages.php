@@ -14,12 +14,12 @@ class Pages extends AbstractPlugin
         // Use the error controller of our plugin (=pages)
         $frontController->setErrorController(array("pages", "error"));
         
-        $frontController->getRouter()->addRoute(
-            "pages", 
-            new PageRoute(
-                array("module_name" => "pages", "controller_name" => "page")
-            )
-        );
+        $pageRoute = new PageRoute(array(
+            "module_name"     => "pages", 
+            "controller_name" => "page"
+        ));
+        
+        $frontController->getRouter()->addRoute("pages", $pageRoute);
         
         /*
          * Create the layout Plugin for the Front Controller, it wraps 

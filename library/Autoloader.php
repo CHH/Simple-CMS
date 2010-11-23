@@ -1,18 +1,7 @@
 <?php
-/**
- * @uses Zend_Loader
- */
-require_once "Zend/Loader.php";
 
 class Autoloader
 {
-    /**
-     * Contains mappings between Prefixes and Paths
-     *
-     * @var array
-     */
-    protected $prefixDirectoryMap = array();
-    
     /**
      * Path for fallback loading
      *
@@ -65,30 +54,21 @@ class Autoloader
      */
     public function autoload($class)
     {
-        $prefix = substr($class, 0, strrpos($class, self::PREFIX_SEPARATOR));
+        $filename = str_replace(
+            array(self::PREFIX_SEPARATOR, self::NAMESPACE_SEPARATOR), 
+            DIRECTORY_SEPARATOR, 
+            $class
+        );
         
-        if (isset($this->prefixDirectoryMap[$prefix])) {
-            $path     = $this->prefixDirectoryMap[$prefix];
-            $class    = substr($class, strrpos($class, self::PREFIX_SEPARATOR));
-            $filename = $path . $class;
-        } else {
-            $filename = str_replace(
-                array(self::PREFIX_SEPARATOR, self::NAMESPACE_SEPARATOR), 
-                DIRECTORY_SEPARATOR, 
-                $class
-            );
-
-            if ($this->includePath) {
-                $filename = $this->includePath . DIRECTORY_SEPARATOR . $filename;
-            }
+        if ($this->includePath) {
+            $filename = $this->includePath . DIRECTORY_SEPARATOR . $filename;
         }
-
+        
         $filename .= $this->suffix;
 
         if (!Zend_Loader::isReadable($filename)) {
             return false;
         }
-        
         require_once $filename;
     }
     
@@ -152,33 +132,6 @@ class Autoloader
     public function setIncludePath($path)
     {
         $this->includePath = $path;
-        return $this;
-    }
-    
-    /**
-     * Sets an array of prefix => include path pairs
-     *
-     * @param  array $prefixes
-     * @return Autoloader
-     */
-    public function setPrefixes(Array $prefixes)
-    {
-        foreach ($prefixes as $prefix => $path) {
-            $this->registerPrefix($prefix, $path);
-        }
-        return $this;
-    }
-    
-    /**
-     * Register a prefix with a path
-     *
-     * @param  string $prefix Class prefix, e.g. "Spark_"
-     * @param  string $path   Absolute or relative path
-     * @return Autoloader
-     */
-    public function registerPrefix($prefix, $path)
-    {
-        $this->prefixDirectoryMap[$prefix] = $path;
         return $this;
     }
 }

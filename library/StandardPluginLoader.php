@@ -4,10 +4,8 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
 {
 
     protected $pluginPath = null;
-
-    protected $exports = array();
-
-    protected $plugins = null;
+    protected $exports    = null;
+    protected $plugins    = null;
 
     const ERROR_LOADING_PLUGIN       = 510;
     const ERROR_BOOTSTRAPPING_PLUGIN = 511;
@@ -62,14 +60,13 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
     public function load($pluginName)
     { 
         $pluginRegistry = $this->getPluginRegistry();
-        $pluginClass    = $this->getPluginClass($pluginName);
-
-        if($pluginRegistry->has($pluginClass)) {
+		
+        if($pluginRegistry->has($pluginName)) {
             return false;
         }
 
         $ds                  = DIRECTORY_SEPARATOR;
-        $pluginBootstrapFile = $this->getPluginPath() . $ds . $pluginName . $ds . $pluginClass . ".php";
+        $pluginBootstrapFile = $this->getPluginPath() . $ds . $pluginName . $ds . $pluginName . ".php";
 
         if(!include_once($pluginBootstrapFile)) {
             $pluginDirectory = $this->getPluginPath() . $ds . $pluginName;
@@ -82,7 +79,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
             );
         }
 
-        $plugin = new $pluginClass;
+        $plugin = new $pluginName;
 
         if (!$plugin instanceof Plugin) {
             throw new PluginLoadException(
@@ -112,7 +109,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
             );
         }
 
-        $pluginRegistry->set($pluginClass, $plugin);
+        $pluginRegistry->set($pluginName, $plugin);
 
         return $plugin;
     }
@@ -140,31 +137,16 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
     public function getPluginRegistry()
     {
         if(null === $this->plugins) {
-            $this->plugins = new Spark_Registry;
+            $this->plugins = new Spark_Registry();
         }
         return $this->plugins;
     }
 
-    public function setExport($name, $value)
+    public function getExports()
     {
-        if (isset($this->exports[$name])) {
-            throw new InvalidArgumentException("\"{$name}\" was already exported");
-        }
-        $this->exports[$name] = $value;
-        return $this;
-    }
-
-    public function getExport($name)
-    {
-        if (isset($this->exports[$name])) {
-            return $this->exports[$name];
-        }
-        throw new InvalidArgumentException(sprintf("Undefined export %s", $name));
-    }
-
-    protected function getPluginClass($id)
-    {
-        $class = str_replace(" ", "", ucwords(str_replace("_", " ", $id)));
-        return $class;
+    	if (null === $this->exports) {
+			$this->exports = new Spark_Registry();
+    	}
+    	return $this->exports;
     }
 }
