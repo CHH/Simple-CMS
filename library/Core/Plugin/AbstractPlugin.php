@@ -1,5 +1,7 @@
 <?php
 
+namespace Core\Plugin;
+
 abstract class AbstractPlugin implements Plugin
 { 
 	/**
@@ -89,7 +91,7 @@ abstract class AbstractPlugin implements Plugin
 		$pluginLoader = $this->getPluginLoader();
 		
 		if (!$plugins) {
-			throw new InvalidArgumentException("No plugin given");
+			throw new \InvalidArgumentException("No plugin given");
 		}
 		
 		foreach ($plugins as $plugin) {

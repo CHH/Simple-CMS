@@ -1,33 +1,34 @@
 <?php
 
-class StandardPluginLoader implements PluginLoader, Spark_Configurable
-{
+namespace Core\Plugin;
 
-    protected $pluginPath = null;
-    protected $exports    = null;
-    protected $plugins    = null;
+class StandardLoader implements Loader
+{
+    protected $pluginPath;
+    protected $exports    = array();
+    protected $plugins    = array();
 
     const ERROR_LOADING_PLUGIN       = 510;
     const ERROR_BOOTSTRAPPING_PLUGIN = 511;
 
-    public function __construct(array $options = array())
+    function __construct(array $options = array())
     {
         $this->setOptions($options);
     }
 
-    public function setOptions(array $options)
+    function setOptions(array $options)
     {
-        Spark_Options::setOptions($this, $options);
+        \Spark\Options::setOptions($this, $options);
         return $this;
     }
 
-    public function loadDirectory($pluginPath = null) 
+    function loadDirectory($pluginPath = null) 
     {
         if(is_null($pluginPath)) {
             $pluginPath = $this->getPluginPath();
         }
 
-        $pluginIterator = new DirectoryIterator($pluginPath);
+        $pluginIterator = new \DirectoryIterator($pluginPath);
 
         $failedPlugins = array();
 
@@ -45,7 +46,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
         if($failedPlugins) {
             $failedPluginList = join(array_keys($failedPlugins), ", ");
 
-            $e = new PluginException(
+            $e = new Exception(
                "main", 
                "Following plugins could not be loaded: {$failedPluginList}. Make sure 
                   these plugins are correctly installed",
@@ -57,7 +58,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
         }
     }
 
-    public function load($pluginName)
+    function load($pluginName)
     { 
         $pluginRegistry = $this->getPluginRegistry();
 		
@@ -65,28 +66,19 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
             return false;
         }
 
-        $ds                  = DIRECTORY_SEPARATOR;
+        $ds = DIRECTORY_SEPARATOR;
         $pluginBootstrapFile = $this->getPluginPath() . $ds . $pluginName . $ds . $pluginName . ".php";
 
         if(!include_once($pluginBootstrapFile)) {
             $pluginDirectory = $this->getPluginPath() . $ds . $pluginName;
 
-            throw new PluginLoadException(
-                $plugin, 
-                "The Plugin was not found in \"{$pluginDirectory}\". Please make sure 
-                  you have installed the Plugin \"{$pluginName}\".", 
-                self::ERROR_LOADING_PLUGIN
-            );
+            // Failed to load the file
         }
 
         $plugin = new $pluginName;
 
         if (!$plugin instanceof Plugin) {
-            throw new PluginLoadException(
-                $pluginName, 
-                "The Plugin \"{$pluginName}\" does not implement the PluginInterface.", 
-                self::ERROR_LOADING_PLUGIN
-            );
+            // Not implementing Plugin interface
         }
 
         /*
@@ -101,12 +93,7 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
             $plugin->init();
 
         } catch(Exception $e) {
-            throw new PluginBootstrapException(
-                $pluginName, 
-                "There was an failure during bootstrapping of " 
-                . "the plugin \"{$pluginName}\" with the message {$e->getMessage()}",
-                self::ERROR_BOOTSTRAPPING_PLUGIN
-            );
+            // exception thrown by plugin while bootstrapping
         }
 
         $pluginRegistry->set($pluginName, $plugin);
@@ -114,39 +101,33 @@ class StandardPluginLoader implements PluginLoader, Spark_Configurable
         return $plugin;
     }
 
-    public function setPluginPath($pluginPath)
+    function setPluginPath($pluginPath)
     {
         $this->pluginPath = $pluginPath;
         return $this;
     }
 
-    public function getPluginPath()
+    function getPluginPath()
     {
         if(!is_null($this->pluginPath)) {
             return $this->pluginPath;
         }
-        throw new PluginException("Please set the plugin path correctly before you attempt to load plugins");
+        throw new \UnexpectedValueException("Please set the plugin path correctly before you attempt to load plugins");
     }
 
-    public function setPluginRegistry(Spark_Registry $registry)
+    function setPluginRegistry(Spark_Registry $registry)
     {
         $this->plugins = $registry;
         return $this;
     }
 
-    public function getPluginRegistry()
+    function getPluginRegistry()
     {
-        if(null === $this->plugins) {
-            $this->plugins = new Spark_Registry();
-        }
         return $this->plugins;
     }
 
-    public function getExports()
+    function getExports()
     {
-    	if (null === $this->exports) {
-			$this->exports = new Spark_Registry();
-    	}
     	return $this->exports;
     }
 }

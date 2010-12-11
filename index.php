@@ -1,35 +1,23 @@
 <?php
+/** @namespace */
+namespace Core;
 
-define("APPROOT",      realpath(dirname(__FILE__)));
-define("LIBRARY_PATH", APPROOT . DIRECTORY_SEPARATOR . "library");
-define("PLUGINS",      APPROOT . DIRECTORY_SEPARATOR . "plugins");
+use \Spark\App;
+use \Spark\Controller\HttpRequest;
+use \Spark\Controller\HttpResponse;
 
-require_once "Zend/Loader.php";
-require_once LIBRARY_PATH . DIRECTORY_SEPARATOR . "Autoloader.php";
+const ENV_DEVELOPMENT = "development";
+const ENV_PRODUCTION  = "production";
 
-// Fallback loader
-$libraryLoader = new Autoloader(array("include_path" => LIBRARY_PATH));
-$libraryLoader->register();
+const APPROOT   = __DIR__;
 
-// If Spark is not in the LIBRARY_PATH, then load it from a checkout in the parent folder
-if (!is_dir(LIBRARY_PATH . "/Spark")) {
-    $sparkLoader = new Autoloader(array(
-        "include_path" => realpath(APPROOT . "/../Spark-Web-Framework/lib/")
-    ));
-    $sparkLoader->register();
-}
+define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
+define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
-// Fallback Loader
-$fallback = new Autoloader();
-$fallback->register();
+require_once(LIBRARIES . '/Spark2/lib/Spark.php');
+require_once(LIBRARIES . '/Core.php');
 
-$config = new Zend_Config_Ini(APPROOT . "/config.ini");
-
-if (isset($config->env)) {
-    define("ENVIRONMENT",  $config->env);
-} else {
-    define("ENVIRONMENT", "production");
-}
+const ENVIRONMENT = ENV_DEVELOPMENT;
 
 // Force error reporting in development environment
 if (ENVIRONMENT === "development") {
@@ -37,60 +25,12 @@ if (ENVIRONMENT === "development") {
     error_reporting(E_ALL | E_STRICT);
 }
 
-// Initialize event dispatcher and front controller
-$eventDispatcher = new Spark_Event_Dispatcher;
+$request  = new HttpRequest;
+$response = new HttpResponse;
 
-$frontController = new Spark_Controller_FrontController;
-$frontController->setEventDispatcher($eventDispatcher);
-$frontController->getResolver()->setModuleDirectory(PLUGINS);
+$app = new App;
 
-// Add our own Default Route, taking plugins and our default settings for names in accout
-$router = $frontController->getRouter();
-$router->removeDefaultRoutes();
-$defaultRoute = new Zend_Controller_Router_Route(
-	"/:module/:controller/:action/*", 
-	array("module" => null, "controller" => "index", "action" => "index")
-);
+$pluginLoader = new Plugin\StandardLoader;
+//$pluginLoader->loadDirectory(PLUGINS);
 
-$router->addRoute("commands", $defaultRoute);
-
-// Set up Plugin search path and some standard exports
-$pluginLoader = new StandardPluginLoader;
-$pluginLoader->setPluginPath(PLUGINS);
-
-$exports = $pluginLoader->getExports();
-
-$exports->set("FrontController", $frontController)
-        ->set("EventDispatcher", $eventDispatcher)
-        ->set("Config", $config);
-
-/*
- * This Front Controller plugin calls the beforeDispatch and afterDispatch
- * Callbacks of each Plugin
- */
-$pluginCallbacks = new Controller_Plugin_PluginCallbacks(
-	array("plugins" => $pluginLoader->getPluginRegistry())
-);
-$frontController->addPlugin($pluginCallbacks); 
-
-// Exceptions should be handled by the Front Controller
-set_exception_handler(array($frontController, "handleException"));
-
-// Load all plugins in the plugin folder
-$pluginLoader->loadDirectory();
-$frontController->handleRequest();
-
-// Some cleanup
-unset(
-    $libraryLoader,
-    $sparkLoader,
-    $fallback,
-    $defaultRoute,
-    $exports,
-    $config,
-    $eventDispatcher,
-    $frontController, 
-    $router,
-    $callPluginCallbacksPlugin,
-    $pluginLoader
-);
+//$app($request, $response);
