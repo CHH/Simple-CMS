@@ -14,10 +14,13 @@ const APPROOT   = __DIR__;
 define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
 define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
-require_once(LIBRARIES . '/Spark2/lib/Spark.php');
+require_once('../Spark2/lib/Spark.php');
 require_once(LIBRARIES . '/Core.php');
 
-const ENVIRONMENT = ENV_DEVELOPMENT;
+$config = parse_ini_file('config.ini', true);
+$env    = isset($config["env"]) ? $config["env"] : ENV_PRODUCTION;
+
+define("ENVIRONMENT", $env);
 
 // Force error reporting in development environment
 if (ENVIRONMENT === "development") {
@@ -30,7 +33,11 @@ $response = new HttpResponse;
 
 $app = new App;
 
-$pluginLoader = new Plugin\StandardLoader;
-//$pluginLoader->loadDirectory(PLUGINS);
+$pluginLoader = new Plugin\StandardLoader(array("path" => PLUGINS));
+$pluginLoader->loadAll();
+
+echo "<pre>";
+print_r(array_keys($pluginLoader->getRegistered()));
+echo "</pre>";
 
 //$app($request, $response);

@@ -4,13 +4,12 @@ namespace Core\Plugin;
 
 class StandardLoader implements Loader
 {
-    protected $pluginPath;
+    protected $path;
     protected $exports    = array();
-    protected $plugins    = array();
+    protected $registered = array();
 
-    const ERROR_LOADING_PLUGIN       = 510;
-    const ERROR_BOOTSTRAPPING_PLUGIN = 511;
-
+	protected $namespace = "Plugin";
+	
     function __construct(array $options = array())
     {
         $this->setOptions($options);
@@ -22,12 +21,10 @@ class StandardLoader implements Loader
         return $this;
     }
 
-    function loadDirectory($pluginPath = null) 
+    function loadAll() 
     {
-        if(is_null($pluginPath)) {
-            $pluginPath = $this->getPluginPath();
-        }
-
+        $pluginPath = $this->getPath();
+		
         $pluginIterator = new \DirectoryIterator($pluginPath);
 
         $failedPlugins = array();
@@ -35,99 +32,97 @@ class StandardLoader implements Loader
         foreach($pluginIterator as $entry) { 
             if($entry->isDir() and !$entry->isDot()) {
                 try {
-                    $this->load($entry->getFilename());
-                  
-                } catch(PluginException $e) {
-                    $failedPlugins[$e->getPluginName()] = $e;
+                	$this->load($entry->getFilename());
+                } catch (\Exception $e) {
+					// Log the error and continue loading
                 }
             }
         }
-
-        if($failedPlugins) {
-            $failedPluginList = join(array_keys($failedPlugins), ", ");
-
-            $e = new Exception(
-               "main", 
-               "Following plugins could not be loaded: {$failedPluginList}. Make sure 
-                  these plugins are correctly installed",
-               self::ERROR_LOADING_PLUGIN,
-               $failedPlugins
-            );
-
-           throw $e;
-        }
+        return $this;
     }
 
     function load($pluginName)
     { 
-        $pluginRegistry = $this->getPluginRegistry();
-		
-        if($pluginRegistry->has($pluginName)) {
-            return false;
-        }
-
+        $registered = $this->getRegistered();
+        
+        if ($this->isRegistered($pluginName)) return $this->registered[$pluginName];
+        
         $ds = DIRECTORY_SEPARATOR;
-        $pluginBootstrapFile = $this->getPluginPath() . $ds . $pluginName . $ds . $pluginName . ".php";
-
+        $pluginBootstrapFile = $this->getPath() . $ds . $pluginName . $ds . $pluginName . ".php";
+		
         if(!include_once($pluginBootstrapFile)) {
-            $pluginDirectory = $this->getPluginPath() . $ds . $pluginName;
-
-            // Failed to load the file
+            throw new Exception(sprintf(
+				"The plugin %s was not found in %s, please make sure its correctly installed",
+				$pluginName,
+				$this->getPath() . $ds . $pluginName
+            ));
         }
 
-        $plugin = new $pluginName;
+		$className = "\\" . $this->namespace . "\\" . $pluginName;
+		
+        $plugin = new $className;
 
         if (!$plugin instanceof Plugin) {
-            // Not implementing Plugin interface
+            throw new Exception("Plugins must implement the Core\Plugin\Plugin Interface");
         }
 
         /*
          * If Plugin extends the Abstract Plugin, then give it some more information
          */
         if ($plugin instanceof AbstractPlugin) {
-            $plugin->setPath($this->getPluginPath() . $ds . $pluginName);
+            $plugin->setPath($this->getPath() . $ds . $pluginName);
             $plugin->setPluginLoader($this);
         }
 
         try {
             $plugin->init();
 
-        } catch(Exception $e) {
-            // exception thrown by plugin while bootstrapping
+        } catch(\Exception $e) {
+            throw new Exception(sprintf(
+				"There was an exception while bootstrapping the plugin %s, with message %s",
+				$pluginName,
+				$e->getMessage()
+            ), null, $e);
         }
-
-        $pluginRegistry->set($pluginName, $plugin);
-
+		
+        $this->register($pluginName, $plugin);
         return $plugin;
     }
 
-    function setPluginPath($pluginPath)
+    function setPath($pluginPath)
     {
-        $this->pluginPath = $pluginPath;
+        $this->path = $pluginPath;
         return $this;
     }
 
-    function getPluginPath()
+    function getPath()
     {
-        if(!is_null($this->pluginPath)) {
-            return $this->pluginPath;
+        if(!is_null($this->path)) {
+            return $this->path;
         }
         throw new \UnexpectedValueException("Please set the plugin path correctly before you attempt to load plugins");
     }
 
-    function setPluginRegistry(Spark_Registry $registry)
-    {
-        $this->plugins = $registry;
-        return $this;
-    }
+	function isRegistered($plugin)
+	{
+		return isset($this->registered[$plugin]);
+	}
 
-    function getPluginRegistry()
+    function getRegistered()
     {
-        return $this->plugins;
+        return $this->registered;
     }
 
     function getExports()
     {
     	return $this->exports;
     }
+
+    protected function register($plugin, $instance)
+	{
+		if ($this->isRegistered($plugin)) return;
+
+		$this->registered[$plugin] = $instance;
+		return $this;
+	}
 }

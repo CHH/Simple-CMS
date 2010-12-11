@@ -3,25 +3,25 @@
 namespace Core\Plugin;
 
 abstract class AbstractPlugin implements Plugin
-{ 
+{
 	/**
 	 * Instance of the plugin loader
 	 * @var PluginLoader
 	 */
 	protected $pluginLoader;
-
+	
 	/**
 	 * Absolute path to the directory of the plugin
 	 * @var string
 	 */
 	protected $path;
-
+	
 	/**
 	 * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
 	 */
 	public function init()
 	{}
-
+	
 	/**
 	 * preDispatch() - FrontController Callback, gets called before a plugin
 	 * command gets executed
@@ -36,7 +36,7 @@ abstract class AbstractPlugin implements Plugin
 	public function postDispatch($request, $response)
 	{}
 
-	public function setPluginLoader(PluginLoader $pluginLoader)
+	public function setPluginLoader(Loader $pluginLoader)
 	{
 		$this->pluginLoader = $pluginLoader;
 		return $this;

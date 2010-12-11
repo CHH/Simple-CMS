@@ -1,8 +1,15 @@
 <?php
 
-class Pages extends AbstractPlugin
+namespace Plugin;
+
+class Pages extends \Core\Plugin\AbstractPlugin
 {
-    public function init()
+	function init()
+	{
+		echo "Pages";
+	}
+	
+    public function initOld()
     {
         $frontController = $this->import("FrontController");
         $request         = $frontController->getRequest(); 
@@ -44,7 +51,7 @@ class Pages extends AbstractPlugin
           "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
           "Spark_View_Helper"
         );
-
+		
         // Set up the doctype and charset for the layout
         $layout->doctype("HTML5");
         $layout->headMeta()->setCharset("UTF-8"); 
