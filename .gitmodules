@@ -1,0 +1,6 @@
+[submodule "library/Spark2"]
+	path = library/Spark2
+	url = git://github.com/CHH/Spark2.git
+[submodule "library/Mustache"]
+	path = library/Mustache
+	url = git://github.com/weierophinney/phly_mustache
