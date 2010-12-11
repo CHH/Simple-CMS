@@ -9,7 +9,7 @@ use \Spark\Controller\HttpResponse;
 const ENV_DEVELOPMENT = "development";
 const ENV_PRODUCTION  = "production";
 
-const APPROOT   = __DIR__;
+const APPROOT = __DIR__;
 
 define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
 define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
