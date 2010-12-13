@@ -3,61 +3,47 @@
 namespace Core\Plugin;
 
 abstract class AbstractPlugin implements Plugin
-{
-	/**
-	 * Instance of the plugin loader
-	 * @var PluginLoader
-	 */
-	protected $pluginLoader;
-	
+{	
 	/**
 	 * Absolute path to the directory of the plugin
 	 * @var string
 	 */
 	protected $path;
 	
+	protected $environment;
+	
 	/**
-	 * bootstrap() - Gets called by the main bootstrap when the plugin gets loaded
+	 * init() - Gets called by the main bootstrap when the plugin gets loaded
 	 */
-	public function init()
+	function init()
 	{}
 	
 	/**
 	 * preDispatch() - FrontController Callback, gets called before a plugin
 	 * command gets executed
 	 */
-	public function preDispatch($request, $response)
+	function preDispatch($request, $response)
 	{}
 
 	/**
 	 * postDispatch() - FrontController Callback, gets called after a command of 
 	 * this plugin is executed and before the response is sent back to the client.
 	 */
-	public function postDispatch($request, $response)
+	function postDispatch($request, $response)
 	{}
-
-	public function setPluginLoader(Loader $pluginLoader)
-	{
-		$this->pluginLoader = $pluginLoader;
-		return $this;
-	}
-
-	/**
-	 * Returns the plugin loader
-	 *
-	 * @return PluginLoader
-	 */
-	public function getPluginLoader()
-	{
-		return $this->pluginLoader;
-	}
-
+    
+    function setEnvironment(Environment $env)
+    {
+        $this->environment = $env;
+        return $this;
+    }
+    
 	/**
 	 * Returns the absolute path to the plugin directory
 	 *
 	 * @return string
 	 */
-	public function getPath()
+	function getPath()
 	{
 		if (is_null($this->path)) {
 			$this->path = PLUGINS . DIRECTORY_SEPARATOR . strtolower(get_class($this));
@@ -71,7 +57,7 @@ abstract class AbstractPlugin implements Plugin
 	 * @param  string
 	 * @return Plugin
 	 */
-	public function setPath($path)
+	function setPath($path)
 	{
 		$this->path = $path;
 		return $this;
@@ -85,20 +71,10 @@ abstract class AbstractPlugin implements Plugin
 	 * @param  string $plugin,... Plugins to load
 	 * @return Plugin
 	 */ 
-	public function depend()
+	protected function depend()
 	{
-		$plugins      = func_get_args();
-		$pluginLoader = $this->getPluginLoader();
-		
-		if (!$plugins) {
-			throw new \InvalidArgumentException("No plugin given");
-		}
-		
-		foreach ($plugins as $plugin) {
-			$pluginLoader->load($plugin);
-		}
-
-		return $this;
+		$plugins = func_get_args();
+		$this->environment->depend($plugins);
 	}
 
 	/**
@@ -108,9 +84,9 @@ abstract class AbstractPlugin implements Plugin
 	 * @param mixed $value
 	 * @return Plugin
 	 */
-	public function export($var, $object)
+	protected function export($key, $object)
 	{
-		$this->getPluginLoader()->getExports()->set($var, $object);
+		$this->environment->export($var, $object);
 		return $this;
 	}
 
@@ -120,8 +96,8 @@ abstract class AbstractPlugin implements Plugin
 	 * @param string $var
 	 * @return mixed
 	 */
-	public function import($var)
+	protected function import($key)
 	{
-		return $this->getPluginLoader()->getExports()->get($var);
+		return $this->environment->import($var);
 	}
 }

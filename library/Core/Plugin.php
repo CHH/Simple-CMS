@@ -6,4 +6,5 @@ autoload('Core\Plugin\AbstractPlugin', __DIR__ . '/Plugin/AbstractPlugin.php');
 
 require_once 'Plugin/Plugin.php';
 require_once 'Plugin/Loader.php';
+require_once 'Plugin/Environment.php';
 require_once 'Plugin/StandardLoader.php';

@@ -4,6 +4,7 @@ namespace Core\Plugin;
 
 interface Loader
 {
-  public function load($plugin);
-  public function loadAll();
+    public function load($plugin);
+    public function loadAll();
+    public function setEnvironment(Environment $env);
 }

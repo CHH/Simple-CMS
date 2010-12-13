@@ -5,8 +5,7 @@ namespace Core\Plugin;
 class StandardLoader implements Loader
 {
     protected $path;
-    protected $exports    = array();
-    protected $registered = array();
+    protected $environment;
 
 	protected $namespace = "Plugin";
 	
@@ -43,9 +42,9 @@ class StandardLoader implements Loader
 
     function load($pluginName)
     { 
-        $registered = $this->getRegistered();
+        $env = $this->environment;
         
-        if ($this->isRegistered($pluginName)) return $this->registered[$pluginName];
+        if ($env->isRegistered($pluginName)) return $env->getPlugin($pluginName);
         
         $ds = DIRECTORY_SEPARATOR;
         $pluginBootstrapFile = $this->getPath() . $ds . $pluginName . $ds . $pluginName . ".php";
@@ -57,7 +56,7 @@ class StandardLoader implements Loader
 				$this->getPath() . $ds . $pluginName
             ));
         }
-
+        
 		$className = "\\" . $this->namespace . "\\" . $pluginName;
 		
         $plugin = new $className;
@@ -71,7 +70,7 @@ class StandardLoader implements Loader
          */
         if ($plugin instanceof AbstractPlugin) {
             $plugin->setPath($this->getPath() . $ds . $pluginName);
-            $plugin->setPluginLoader($this);
+            $plugin->setEnvironment($env);
         }
 
         try {
@@ -85,10 +84,22 @@ class StandardLoader implements Loader
             ), null, $e);
         }
 		
-        $this->register($pluginName, $plugin);
+        $env->registerPlugin($pluginName, $plugin);
         return $plugin;
     }
 
+    function setEnvironment(Environment $env)
+    {
+        $this->environment = $env; 
+        $env->setLoader($this);
+        return $this;
+    }
+    
+    function getEnvironment()
+    {
+        return $this->environment;
+    }
+    
     function setPath($pluginPath)
     {
         $this->path = $pluginPath;
@@ -102,27 +113,4 @@ class StandardLoader implements Loader
         }
         throw new \UnexpectedValueException("Please set the plugin path correctly before you attempt to load plugins");
     }
-
-	function isRegistered($plugin)
-	{
-		return isset($this->registered[$plugin]);
-	}
-
-    function getRegistered()
-    {
-        return $this->registered;
-    }
-
-    function getExports()
-    {
-    	return $this->exports;
-    }
-
-    protected function register($plugin, $instance)
-	{
-		if ($this->isRegistered($plugin)) return;
-
-		$this->registered[$plugin] = $instance;
-		return $this;
-	}
 }

@@ -4,15 +4,15 @@ namespace Core\Plugin;
 
 class Controller extends \Spark\Controller\ActionController
 {
-	protected $plugin;
+	static protected $environment;
 	
-	function init()
+	static function setEnvironment(Environment $env)
 	{
-		// init plugin
+	    static::$environment = $env;
 	}
 
 	public function import($var)
 	{
-		return $this->plugin->import($var);
+		return static::$environment->import($var);
 	}
 }

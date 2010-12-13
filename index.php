@@ -33,11 +33,18 @@ $response = new HttpResponse;
 
 $app = new App;
 
-$pluginLoader = new Plugin\StandardLoader(array("path" => PLUGINS));
-$pluginLoader->loadAll();
+$pluginEnv = new Plugin\Environment;
 
-echo "<pre>";
-print_r(array_keys($pluginLoader->getRegistered()));
-echo "</pre>";
+$pluginEnv->export("App",    $app)
+          ->export("Routes", $app->routes);
+
+$pluginLoader = new Plugin\StandardLoader(array(
+    "path" => PLUGINS,
+    "environment" => $pluginEnv
+));
+
+Plugin\Controller::setEnvironment($pluginEnv);
+
+$pluginLoader->loadAll();
 
 //$app($request, $response);
