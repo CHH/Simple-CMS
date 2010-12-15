@@ -1,94 +1,56 @@
 <?php
 
-class PageRoute 
-  extends Zend_Controller_Router_Route_Abstract
-  implements Spark_Configurable
+namespace Plugin\Pages;
+
+class PageRoute implements \Spark\Router\Route
 {
-  
-  const PARAM_DELIMITER = "/";
-  
-  private $_controllerName;
+    const PARAM_DELIMITER = "/";
 
-  private $_actionName;
-  
-  private $_moduleName;
-  
-  private $_defaultPage;
-  
-  private $_defaults = array(
-    "controller_name" => "Page",
-    "action_name"     => "view",
-    "module_name"     =>  null,
-    "default_page"    => "index"
-  );
-  
-  public static function getInstance(Zend_Config $config)
-  {
-    return new self($config);
-  }
+    private $callback;
 
-  public function __construct(array $options = array())
-  {
-    $this->setOptions($options);
-  }
-
-  public function setOptions(array $options)
-  {
-    Spark_Options::setOptions($this, $options, $this->_defaults);
-    return $this;
-  }
-
-  public function match($request)
-  {
-    $params = array();
-    $path   = $request->getRequestUri();
-    $path   = substr($path, strlen($request->getBaseUrl()));
+    private $defaultPage;
     
-    $path   = trim($path, self::PARAM_DELIMITER);
+    private $defaults = array(
+        "default_page" => "index"
+    );
 
-    if ($path == null) {
-      $path = $this->_defaultPage;
+    function __construct(array $options = array())
+    {
+        $this->setOptions($options);
+    }
+
+    function setOptions(array $options)
+    {
+        \Spark\Options::setOptions($this, $options, $this->defaults);
+        return $this;
+    }
+
+    function match(\Spark\Controller\HttpRequest $request)
+    {
+        $path = $request->getRequestUri();
+        $path = trim($path, self::PARAM_DELIMITER);
+
+        if ($path == null) {
+            $path = $this->defaultPage;
+        }
+
+        if (false === Page::find($path)) {
+            $request->setParam("page", $path);
+            throw new \Spark\Controller\Exception("Page not found", 404);
+        }
+        
+        return array("page" => $path, "__callback" => $this->callback);
     }
     
-    if (!$page = Page::find($path)) {
-      $request->setParam("page", $path);
-      return false;
+    function setCallback($callback)
+    {
+        $this->callback = $callback;
+        return $this;
     }
     
-    $request->setControllerName($this->_controllerName);
-    $request->setActionName($this->_actionName);
-    $request->setModuleName($this->_moduleName);
-    
-    $params["page"] = $path;
-    
-    return $params;
-  }
-
-  public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
-  {}
-  
-  public function setModuleName($name)
-  {
-    $this->_moduleName = $name;
-    return $this;
-  }
-  
-  public function setControllerName($name)
-  {
-    $this->_controllerName = $name;
-    return $this;
-  }
-
-  public function setActionName($name)
-  {
-    $this->_actionName = $name;
-    return $this;
-  }
-
-  public function setDefaultPage($default)
-  {
-    $this->_defaultPage = $default;
-    return $this;
-  }  
+    function setDefaultPage($default)
+    {
+        $this->defaultPage = $default;
+        return $this;
+    }  
 }
-

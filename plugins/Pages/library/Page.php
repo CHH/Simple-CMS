@@ -1,13 +1,17 @@
 <?php
 
+namespace Plugin\Pages;
+
+use InvalidArgumentException,
+    DirectoryIterator,
+    SplStack,
+    Textile,
+    Spark\Options,
+    Spark\Util\ArrayObject,
+    Phly\Mustache\Mustache;
+
 class Page
-{
-    /**
-     * Search path(s) for pages and directories
-     * @param array
-     */
-    protected static $searchPath = array();    
-    
+{   
     /**
      * Name of page which gets searched if a directory within the search path is requested
      * @var string
@@ -15,16 +19,42 @@ class Page
     protected static $defaultPageName = "index";
     
     /**
-     * Suffix for all pages, gets stripped of the page name
+     * Suffix for all pages, gets stripped off the page name
      * @var string
      */
     protected static $suffix = ".txt";
     
+    /** @var Phly\Mustache\Mustache */
+    protected static $mustache;
+    
+    /** @var SplStack */
+    protected static $searchPath;
+
     /**
      * Name of page without suffix
      * @var string
      */
-    protected $name;
+    public $name;
+    
+    /**
+     * When page was created
+     * @var string
+     */
+    public $created;
+    
+    /**
+     * When page was last modified
+     * @var string
+     */
+    public $modified;
+
+    /**
+     * Attributes set at runtime
+     * @param array
+     */
+    public $attributes = array();
+    
+    public $filename;
     
     /**
      * Content of page
@@ -32,29 +62,8 @@ class Page
      */
     protected $content;
     
-    /**
-     * When page was created
-     * @var string
-     */
-    protected $created;
-    
-    /**
-     * When page was last modified
-     * @var string
-     */
-    protected $modified;
-    
-    /**
-     * Attributes set at runtime
-     * @param array
-     */
-    protected $attributes = array();
-    
-    /**
-     * The absolute path to the page, is only set when the page gets loaded from file
-     * @var string
-     */
-    protected $absolutePath;
+    /** @var bool */
+    protected $isRendered = false;
     
     /**
      * Constructor
@@ -62,10 +71,10 @@ class Page
      * @param  array $page key value pairs of page properties
      * @return Page
      */
-    public function __construct(Array $page = array())
+    function __construct(Array $page = array())
     {
         if ($page) {
-            Spark_Options::setOptions($this, $page);
+            Options::setOptions($this, $page);
         }
     }
     
@@ -75,10 +84,10 @@ class Page
      * @param  string $file path to page, relative to the search path(s). 
      * @return Page
      */
-    public static function find($file)
+    static function find($file)
     {
         $page = new self;
-        return $page->loadFile($file);
+        return $page->fromFile($file);
     }
     
     /**
@@ -87,24 +96,13 @@ class Page
      * @param  string $path Path relative to the search path(s)
      * @return array
      */
-    public static function findAll($path) 
+    static function findAll($path) 
     {
         if (!is_string($path) or empty($path)) {
             throw new InvalidArgumentException("No path given");
         }
         
-        foreach (self::getSearchPath() as $searchPath) {
-            $absolutePath = $searchPath . DIRECTORY_SEPARATOR . $path;
-            if (is_dir($absolutePath)) {
-                break;
-            }
-        }
-                
-        if (!isset($absolutePath)) {
-            throw new InvalidArgumentException("Path not found");
-        }
-        
-        $directory = new DirectoryIterator($absolutePath);
+        $directory = new DirectoryIterator($path);
         $pages     = array(); 
         
         foreach ($directory as $entry) {
@@ -114,10 +112,30 @@ class Page
             }
             
             $page    = new self;
-            $pages[] = $page->loadFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
+            $pages[] = $page->fromFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
         }
         
-        return new Spark_Model_Collection($pages);
+        return new ArrayObject($pages);
+    }
+    
+    protected function search($file)
+    {
+        foreach (static::$searchPath as $path) {
+            $template = $path . DIRECTORY_SEPARATOR . $file;
+            
+            if (is_dir($template)) {
+                $template .= DIRECTORY_SEPARATOR . "index" . static::$suffix;
+            }
+            
+            if (substr($template, strlen(static::$suffix), -strlen(static::$suffix)) !== static::$suffix) {
+                $template .= static::$suffix;
+            }
+            
+            if (file_exists($template)) {
+                return $template;
+            }
+        }
+        return false;
     }
     
     /**
@@ -126,57 +144,25 @@ class Page
      * @param  string $file The filename relative to the search path(s)
      * @return Page
      */
-    public function loadFile($file)
+    function fromFile($file)
     {
         if (!is_string($file) or empty($file)) {
             throw new InvalidArgumentException("No valid file name given.");
         }
         
-        if (!$absolutePath = self::getAbsolutePath($file)) {
+        $template = $this->search($file);
+        
+        if (!$template) {
             return false;
         }
-        
-        $pathinfo = pathinfo($file);
-        
-        $this->setName($pathinfo["filename"]);
-        $this->setModified(filemtime($absolutePath));
+        $this->filename = $template;
+
+        $pathinfo = pathinfo($template);
+        $this->setName($pathinfo["filename"] ?: "index");
+        $this->setModified(filemtime($template));
         $this->setPath($pathinfo["dirname"]);
         
-        $this->absolutePath = $absolutePath;
-        
         return $this;
-    }
-
-    /**
-     * Returns the absolute path for a given page or directory
-     *
-     * @param  string $page Either name of page or name of directory, relative to the
-     *                      search path(s)
-     * @return string|false
-     */
-    protected static function getAbsolutePath($page)
-    {
-        if (!is_string($page) or empty($page)) {
-            throw new InvalidArgumentException("No valid file name given.");
-        }
-        
-        $pathinfo = pathinfo($page);
-        
-        foreach (self::getSearchPath() as $searchPath) {
-            $absoluteFilePath = $searchPath . DIRECTORY_SEPARATOR . $pathinfo["dirname"] 
-                . DIRECTORY_SEPARATOR . $pathinfo["filename"];
-            
-            if (is_dir($absoluteFilePath)) {
-                $absoluteFilePath .= DIRECTORY_SEPARATOR . self::$defaultPageName;
-            }
-            
-            $absoluteFilePath .= self::$suffix;
-            
-            if (file_exists($absoluteFilePath)) {
-                return $absoluteFilePath;
-            }
-        }
-        return false;
     }
     
     /**
@@ -185,31 +171,12 @@ class Page
      * @param string|array one ore more search paths
      * @return void
      */
-    public static function setSearchPath($path)
+    static function setSearchPath($path)
     {
-        if (is_string($path) and !empty($path)) {
-            array_unshift(self::$searchPath, $path);
-            
-        } else if (is_array($path)) {
-            self::$searchPath = array_merge($path, self::$searchPath);
-            
-        } else {
-            throw new InvalidArgumentException("setBasePath() expects either "
-                . "a string or an array as path, " . gettype($path) . " given");
+        if (null === static::$searchPath) {
+            static::$searchPath = new SplStack;
         }
-    }
-    
-    /**
-     * Returns the Search Paths for pages
-     *
-     * @return array
-     */
-    public static function getSearchPath()
-    {
-        if (empty(self::$searchPath)) {
-            throw new RuntimeException("Search path for pages is not defined");
-        }
-        return self::$searchPath;
+        static::$searchPath->push($path);
     }
     
     /**
@@ -218,7 +185,7 @@ class Page
      * @param  string $name
      * @return Page
      */
-    public function setName($name)
+    function setName($name)
     {
         if (!is_string($name) or empty($name)) {
             throw new InvalidArgumentException("setName() expects a string as name. "
@@ -228,7 +195,7 @@ class Page
         return $this;
     }
     
-    public function getName()
+    function getName()
     {
         return $this->name;
     }
@@ -239,7 +206,7 @@ class Page
      * @param  $path
      * @return Page
      */
-    public function setPath($path)
+    function setPath($path)
     {
         if (!is_string($path) or empty($path)) {
             throw new InvalidArgumentException("setPath() expects a string as name. "
@@ -249,12 +216,12 @@ class Page
         return $this;
     }
     
-    public function getPath()
+    function getPath()
     {
         return $this->path;
     }
     
-    public function setContent($content)
+    function setContent($content)
     {
         $this->content = $content;
         return $this;
@@ -265,19 +232,21 @@ class Page
      *
      * @return string
      */
-    public function getContent()
+    function getContent()
     {
-        if (null === $this->content and $this->absolutePath) {
-            $textile = new Spark_View_Helper_Textile;
+        if (false === $this->isRendered) {
+            $textile  = new Textile;
+            $mustache = static::getMustache();
+            $tokens   = $mustache->getLexer()->compile(file_get_contents($this->filename));
+            $content  = $mustache->getRenderer()->render($tokens, $this);
             
-            ob_start();
-            include $this->absolutePath;
-            $this->content = $textile->parse(ob_get_clean());
+            $this->content    = $textile->TextileThis($content);
+            $this->isRendered = true;
         }
         return $this->content;
     }
     
-    public function __toString()
+    function __toString()
     {
         return $this->getContent();
     }
@@ -288,7 +257,7 @@ class Page
      * @param  int|string $created
      * @return Page
      */
-    public function setCreated($created)
+    function setCreated($created)
     {
         if (is_string($created)) {
             $created = strtotime($created);
@@ -302,7 +271,7 @@ class Page
         return $this;
     }
     
-    public function getCreated()
+    function getCreated()
     {
         return $this->created;
     }
@@ -313,7 +282,7 @@ class Page
      * @param  int|string $modified
      * @return Page
      */
-    public function setModified($modified)
+    function setModified($modified)
     {
         if (is_string($modified)) {
             $modified = strtotime($modified);
@@ -327,9 +296,18 @@ class Page
         return $this;
     }
     
-    public function getModified()
+    function getModified()
     {
         return $this->modified;
+    }
+    
+    protected static function getMustache()
+    {
+        if (null === static::$mustache) {
+            static::$mustache = new Mustache;
+            static::$mustache->setSuffix(static::$suffix);
+        }
+        return static::$mustache;
     }
     
     /**
@@ -338,7 +316,7 @@ class Page
      * @param  array $attributes
      * @return Page
      */
-    public function setAttributes(Array $attributes)
+    function setAttributes(Array $attributes)
     {
         foreach ($attributes as $attribute => $value) {
             $this->setAttribute($attribute, $value);
@@ -346,7 +324,7 @@ class Page
         return $this;
     }
     
-    public function getAttributes()
+    function getAttributes()
     {
         return $this->attributes;
     }
@@ -359,13 +337,13 @@ class Page
      * @param  mixed  $value
      * @return Page
      */
-    public function setAttribute($attribute, $value)
+    function setAttribute($attribute, $value)
     {
         $this->attributes[$attribute] = $value;
         return $this;
     }
     
-    public function getAttribute($attribute)
+    function getAttribute($attribute)
     {
         if (!isset($this->attributes[$attribute])) {
             return null;

@@ -1,5 +1,4 @@
-<div id="default">
-<div id="content_main">
+<div id="default"><div id="content_main">
 
 h1. Schnellstart
 
@@ -12,8 +11,8 @@ Die 6 Schritte zu deiner ersten Webseite mit SimpleCMS:
 # Um die Seiten zu formatieren kannst du "Textile":http://www.textism.com/tools/textile verwenden. "Textile":http://www.textism.com/tools/textile ist grob gesagt eine vereinfachte Version von HTML. Du kannst aber auch ganz normales HTML mit Textile mischen. 
 # "PHP":http://php.net Code in deinen Seiten wird auch interpretiert. Wenn du nicht wei&szlig;t was "PHP":http://de.wikipedia.org/wiki/PHP ist, kannst du diesen Punkt getrost streichen.
 
-Um zu &auml;ndern was hier angezeigt wird kannst du deine eigene @index.txt@ im Ordner @pages@ erstellen.
-Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/pages/default/index.txt@ findest.
+Um zu &auml;ndern was hier angezeigt wird kannst du deine eigene @{{name}}.txt@ im Ordner @pages@ erstellen.
+Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/pages/default/{{name}}.txt@ findest.
 
 </div>
 <div id="content_sub">

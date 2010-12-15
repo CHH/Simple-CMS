@@ -2,95 +2,92 @@
 
 namespace Plugin;
 
+require_once "library/Page.php";
+require_once "library/PageRoute.php";
+
+use StdClass,
+    Plugin\Pages\Page,
+    Plugin\Pages\PageRoute,
+    Phly\Mustache\Mustache,
+    Spark\Event;
+
+/**
+ * @todo Allow rendering of pages from within pages
+ * @todo Implement findAll properly
+ * @todo Concept for errors
+ */
 class Pages extends \Core\Plugin\AbstractPlugin
 {
 	function init()
 	{
-		echo "Pages";
+		$routes = $this->import("Routes");
+		$app    = $this->import("App");
+		
+		$pageRoute = new PageRoute(array(
+		    "callback" => array($this, "render")
+		));
+		$routes->addRoute($pageRoute);
+		
+		Page::setSearchPath($this->getPath() . "/default");
+		Page::setSearchPath(\Core\APPROOT . "/pages");
+		
+		$layout = new StdClass;
+		$this->export("Layout", $layout);
+		
+        $layout->title = "Willkommen zu SimpleCMS!";    
+	    
+		$layoutRenderer = new Mustache;
+		$layoutRenderer->setTemplatePath(\Core\APPROOT . "/layouts");
+		$layoutRenderer->setTemplatePath($this->getPath() . "/default");
+		
+		Event::observe($app, "post_dispatch", function($request, $response) use ($layout, $layoutRenderer) { 
+		    $body = $response->getBody();
+		    $layout->content = $body;
+		    $response->setBody($layoutRenderer->render("layout", $layout));
+		});
+		
+		Event::observe($app, "post_dispatch", array($this, "renderErrorPage"));
 	}
 	
-    public function initOld()
-    {
-        $frontController = $this->import("FrontController");
-        $request         = $frontController->getRequest(); 
+	function renderErrorPage($request, $response)
+	{
+	    if (!$response->hasExceptions()) {
+	        return;
+	    }
+	    
+	    $exceptions = $response->getExceptions();
+	    $exception = array_pop($exceptions);
+        $code = $exception->getCode();
         
-        // Register an Autoloader for the classes in the plugin's library path
-        $loader = new Autoloader(array("include_path" => $this->getPath() . "/library"));
-        $loader->register();
-        
-        // Use the error controller of our plugin (=pages)
-        $frontController->setErrorController(array("pages", "error"));
-        
-        $pageRoute = new PageRoute(array(
-            "module_name"     => "pages", 
-            "controller_name" => "page"
-        ));
-        
-        $frontController->getRouter()->addRoute("pages", $pageRoute);
-        
-        /*
-         * Create the layout Plugin for the Front Controller, it wraps 
-         * all of our pages in a common layout template
-         */
-        $layoutPlugin = new Spark_Controller_Plugin_Layout;
-        $layoutPlugin->setLayoutPath($this->getPath() . "/default");
-        
-        $layout = $layoutPlugin->getLayout();
-        $layout->addScriptPath(APPROOT . "/layouts");
-        
-        $frontController->addPlugin(
-            $layoutPlugin,
-            array(Spark_Controller_FrontController::EVENT_POST_DISPATCH)
-        );
-        
-        /*
-         * Add the Spark View Helpers (Gravatar, Link, Textile, HtmlElement,...) 
-         * to the Layout
-         */    
-        $layout->addHelperPath(
-          "Spark" . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "Helper", 
-          "Spark_View_Helper"
-        );
-		
-        // Set up the doctype and charset for the layout
-        $layout->doctype("HTML5");
-        $layout->headMeta()->setCharset("UTF-8"); 
-
-        // Add Less.js to Layout for CSS Preprocessing
-        $layout->headScript()->prependFile($request->getBaseUrl() . "/javascript/less.min.js");
-        $layout->headLink()->prependStylesheet($request->getBaseUrl() . "/styles/reset.css");
-
-        Page::setSearchPath($this->getPath() . DIRECTORY_SEPARATOR . "default");
-        Page::setSearchPath(APPROOT . DIRECTORY_SEPARATOR . "pages");
-        
-        /*
-         * If the App is in development mode, then prepend our stylesheet for pretty 
-         * errors and default pages
-         */
-        if (ENVIRONMENT === "development") {  
-            $layout->headLink(array(
-                "href" => $request->getBaseUrl() . "/styles/defaults.less",
-                "rel"  => "stylesheet/less",
-                "type" => "text/css"
-            ));
-            $layout->headScript()->appendScript("less.env='development'; less.watch();");
+        if ($code == null or (ENVIRONMENT === "production" and $code > 500)) {
+            $code = 500;
         }
         
-        $this->export("LayoutPlugin", $layoutPlugin);
-    }
-
-    public function preDispatch($request, $response)
-    {
-        $page = $request->getParam("page");
+        if($page = Page::find("_errors/{$code}")) {
+            $page->code = $code;
+            $page->message = $exception->getMessage();
+            $page->stackTrace = $exception->getTrace();
+            $page->requestedPage = $request->getParam("page");
+            $page->exceptionType = get_class($exception);
+            $page->requestUri = $request->getRequestUri();
+            $page->requestMethod = $request->getMethod();
+            
+            $response->renderExceptions(false);
+            return $response->append($page);
+        }
+        throw new Exception("No Error Page Template found");
+	}
+	
+	function render($request, $response)
+	{
+	    $page   = $request->getParam("page");
+        $layout = $this->import("Layout");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new Exception("Page is hidden", 404);
         }
-        
         $page = Page::find($page);
-        $page->setAttribute("layout", $this->import("LayoutPlugin")->getLayout());
-        
-        $response->appendBody($page->getContent());
-        $request->setDispatched(true);
-    }
+        $page->setAttribute("layout", $layout);
+        $response->append($page->getContent());
+	}
 }
