@@ -9,10 +9,10 @@ Die 6 Schritte zu deiner ersten Webseite mit SimpleCMS:
 # Um deine Seiten zu organisieren, kannst du Unterordner im @pages@ Verzeichnis erstellen. Alle Seiten die in einem Unterordner liegen werden &uuml;ber @/<Unterordner>/<Seitenname>@ aufgerufen.
 # Seiten die @index.txt@ hei&szlig;en haben eine spezielle Bedeutung -- sie werden angezeigt wenn in der URL kein Seitenname festgelegt wird, z.B. wenn @/@ angefragt wird, wird die Seite @index.txt@ im @pages@ Verzeichnis angezeigt. Du kannst diese Seiten z.B. als Startseite f&uuml;r die Web Seite oder als Startseite f&uuml;r eine bestimmte Kategorie verwenden.
 # Um die Seiten zu formatieren kannst du "Textile":http://www.textism.com/tools/textile verwenden. "Textile":http://www.textism.com/tools/textile ist grob gesagt eine vereinfachte Version von HTML. Du kannst aber auch ganz normales HTML mit Textile mischen. 
-# "PHP":http://php.net Code in deinen Seiten wird auch interpretiert. Wenn du nicht wei&szlig;t was "PHP":http://de.wikipedia.org/wiki/PHP ist, kannst du diesen Punkt getrost streichen.
+# Alle Seiten werden auch durch "Mustache":http://mustache.github.com verarbeitet.
 
 Um zu &auml;ndern was hier angezeigt wird kannst du deine eigene @{{name}}.txt@ im Ordner @pages@ erstellen.
-Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/pages/default/{{name}}.txt@ findest.
+Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/Pages/default/{{name}}.txt@ findest.
 
 </div>
 <div id="content_sub">
