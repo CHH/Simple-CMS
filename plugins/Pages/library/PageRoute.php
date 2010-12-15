@@ -2,6 +2,10 @@
 
 namespace Plugin\Pages;
 
+use Spark\Options,
+    Spark\Controller\Exception,
+    Spark\Controller\HttpRequest;
+
 class PageRoute implements \Spark\Router\Route
 {
     const PARAM_DELIMITER = "/";
@@ -21,11 +25,11 @@ class PageRoute implements \Spark\Router\Route
 
     function setOptions(array $options)
     {
-        \Spark\Options::setOptions($this, $options, $this->defaults);
+        Options::setOptions($this, $options, $this->defaults);
         return $this;
     }
 
-    function match(\Spark\Controller\HttpRequest $request)
+    function match(HttpRequest $request)
     {
         $path = $request->getRequestUri();
         $path = trim($path, self::PARAM_DELIMITER);
@@ -33,10 +37,10 @@ class PageRoute implements \Spark\Router\Route
         if ($path == null) {
             $path = $this->defaultPage;
         }
-
+        
         if (false === Page::find($path)) {
             $request->setParam("page", $path);
-            throw new \Spark\Controller\Exception("Page not found", 404);
+            throw new Exception("Page not found", 404);
         }
         
         return array("page" => $path, "__callback" => $this->callback);
