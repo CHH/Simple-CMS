@@ -14,7 +14,6 @@ class Sample extends \Core\Plugin\AbstractPlugin
      */
     public function init() 
     {
-    	echo "foo";
     }
   	
     /**

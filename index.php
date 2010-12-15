@@ -15,6 +15,8 @@ define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
 define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
 require_once('../Spark2/lib/Spark.php');
+require_once(LIBRARIES . '/Mustache/library/Phly/Mustache/_autoload.php');
+require_once(LIBRARIES . '/Textile.php');
 require_once(LIBRARIES . '/Core.php');
 
 $config = parse_ini_file('config.ini', true);
@@ -47,4 +49,4 @@ Plugin\Controller::setEnvironment($pluginEnv);
 
 $pluginLoader->loadAll();
 
-//$app($request, $response);
+$app($request, $response);
