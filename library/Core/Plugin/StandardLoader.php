@@ -22,21 +22,25 @@ class StandardLoader implements Loader
 
     function loadAll() 
     {
-        $pluginPath = $this->getPath();
-		
+        $pluginPath     = $this->getPath();
         $pluginIterator = new \DirectoryIterator($pluginPath);
-
-        $failedPlugins = array();
-
+        $exceptions     = new ExceptionStack;
+        
         foreach($pluginIterator as $entry) { 
             if($entry->isDir() and !$entry->isDot()) {
+                $plugin = $entry->getFilename();
                 try {
-                	$this->load($entry->getFilename());
+                	$this->load($plugin);
                 } catch (\Exception $e) {
-					// Log the error and continue loading
+					$exceptions->push($e);
                 }
             }
         }
+        
+        if (count($exceptions) > 0) {
+            throw $exceptions;
+        }
+        
         return $this;
     }
 
@@ -78,9 +82,8 @@ class StandardLoader implements Loader
 
         } catch(\Exception $e) {
             throw new Exception(sprintf(
-				"There was an exception while bootstrapping the plugin %s, with message %s",
-				$pluginName,
-				$e->getMessage()
+				"There was an exception while bootstrapping the plugin %s",
+				$pluginName
             ), null, $e);
         }
 		

@@ -86,7 +86,7 @@ abstract class AbstractPlugin implements Plugin
 	 */
 	protected function export($key, $object)
 	{
-		$this->environment->export($var, $object);
+		$this->environment->export($key, $object);
 		return $this;
 	}
 
@@ -98,6 +98,6 @@ abstract class AbstractPlugin implements Plugin
 	 */
 	protected function import($key)
 	{
-		return $this->environment->import($var);
+		return $this->environment->import($key);
 	}
 }

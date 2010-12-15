@@ -1,6 +1,7 @@
 <?php
 
 autoload('Core\Plugin\Exception',      __DIR__ . '/Plugin/Exception.php');
+autoload('Core\Plugin\ExceptionStack', __DIR__ . '/Plugin/ExceptionStack.php');
 autoload('Core\Plugin\Controller',     __DIR__ . '/Plugin/Controller.php');
 autoload('Core\Plugin\AbstractPlugin', __DIR__ . '/Plugin/AbstractPlugin.php');
 
