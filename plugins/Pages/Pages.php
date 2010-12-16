@@ -43,13 +43,13 @@ class Pages extends \Core\Plugin\AbstractPlugin
 		$layoutRenderer->setTemplatePath(\Core\APPROOT . "/layouts");
 		$layoutRenderer->setTemplatePath($this->getPath() . "/default");
 		
-		$app->filter(function($request, $response) use ($layout, $layoutRenderer) { 
+		$app->postDispatch(function($request, $response) use ($layout, $layoutRenderer) { 
 		    $body = $response->getBody();
 		    $layout->content = $body;
 		    $response->setBody($layoutRenderer->render("layout", $layout));
 		});
 		
-		$app->filter(new ErrorHandler);
+		$app->postDispatch(new ErrorHandler);
 	}
 	
 	function render($request, $response)
