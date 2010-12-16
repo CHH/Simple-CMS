@@ -7,6 +7,7 @@ class Environment
     protected $exports = array();
     protected $plugins = array();
     
+    /** @var Loader */
     protected $loader;
     
     function registerPlugin($name, Plugin $plugin)

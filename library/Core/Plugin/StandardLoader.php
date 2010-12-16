@@ -4,9 +4,12 @@ namespace Core\Plugin;
 
 class StandardLoader implements Loader
 {
+    /** @var string */
     protected $path;
+    
+    /** @var Environment */
     protected $environment;
-
+    
 	protected $namespace = "Plugin";
 	
     function __construct(array $options = array())
@@ -51,15 +54,18 @@ class StandardLoader implements Loader
         if ($env->isRegistered($pluginName)) return $env->getPlugin($pluginName);
         
         $ds = DIRECTORY_SEPARATOR;
-        $pluginBootstrapFile = $this->getPath() . $ds . $pluginName . $ds . $pluginName . ".php";
+        
+        $pluginBootstrapFile = realpath($this->getPath() . $ds . $pluginName . $ds 
+            . $pluginName . ".php");
 		
-        if(!include_once($pluginBootstrapFile)) {
+        if(!$pluginBootstrapFile) {
             throw new Exception(sprintf(
 				"The plugin %s was not found in %s, please make sure its correctly installed",
 				$pluginName,
 				$this->getPath() . $ds . $pluginName
             ));
         }
+        include_once($pluginBootstrapFile);
         
 		$className = "\\" . $this->namespace . "\\" . $pluginName;
 		
@@ -95,6 +101,7 @@ class StandardLoader implements Loader
     {
         $this->environment = $env; 
         $env->setLoader($this);
+        Controller::setEnvironment($env);
         return $this;
     }
     
@@ -108,7 +115,7 @@ class StandardLoader implements Loader
         $this->path = $pluginPath;
         return $this;
     }
-
+    
     function getPath()
     {
         if(!is_null($this->path)) {

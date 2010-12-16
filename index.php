@@ -35,10 +35,14 @@ $response = new HttpResponse;
 
 $app = new App;
 
+$resolver = $app->getResolver();
+$resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Controller");
+
 $pluginEnv = new Plugin\Environment;
 
 $pluginEnv->export("App",    $app)
-          ->export("Routes", $app->routes);
+          ->export("Routes", $app->routes)
+          ->export("Config", $config);
 
 $pluginLoader = new Plugin\StandardLoader(array(
     "path" => PLUGINS,

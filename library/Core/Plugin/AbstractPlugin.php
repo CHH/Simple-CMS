@@ -17,20 +17,6 @@ abstract class AbstractPlugin implements Plugin
 	 */
 	function init()
 	{}
-	
-	/**
-	 * preDispatch() - FrontController Callback, gets called before a plugin
-	 * command gets executed
-	 */
-	function preDispatch($request, $response)
-	{}
-
-	/**
-	 * postDispatch() - FrontController Callback, gets called after a command of 
-	 * this plugin is executed and before the response is sent back to the client.
-	 */
-	function postDispatch($request, $response)
-	{}
     
     function setEnvironment(Environment $env)
     {
