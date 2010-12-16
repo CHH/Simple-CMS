@@ -16,33 +16,33 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
 
 </div>
 <div id="content_sub">
-	<h2>Siehe auch</h2>
-	
-	<ul id="nav_external" class="nav">
-		<li><a href="http://github.com/CHH/Simple-CMS">
-			<strong class="title">SimpleCMS auf Github</strong>
-			<span>Hier kannst du zum Projekt beitragen</span>
-		</a></li>
-		<li><a href="http://github.com/CHH/Simple-CMS/issues">
-			<strong class="title">Fehler melden</strong>
-			<span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge einbringen</span>
-		</a></li>
-		<li><a href="http://yuri41.wordpress.com/category/SimpleCMS">
-			<strong class="title">Weblog von Christoph Hochstrasser</strong>
-			<span>Tips & Tricks zu SimpleCMS</span>
-		</a></li>
-	</ul>
-	
-	<p>
-		SimpleCMS ist Open Source und steht unter der MIT Lizenz. N&auml;heres dazu 
-		steht in der mitgelieferten @LICENSE@ Datei.
-	</p>
-	
-	<p>
-		SimpleCMS nutzt "PHP":http://php.net und "Zend Framework":http://framework.zend.com
-	</p>
-	
-	<p>(c) 2010 Christoph Hochstrasser</p>
-	
+    <h2>Siehe auch</h2>
+
+    <ul id="nav_external" class="nav">
+        <li><a href="http://github.com/CHH/Simple-CMS">
+            <strong class="title">SimpleCMS auf Github</strong>
+            <span>Hier kannst du zum Projekt beitragen</span>
+        </a></li>
+        <li><a href="http://github.com/CHH/Simple-CMS/issues">
+            <strong class="title">Fehler melden</strong>
+            <span>Einen Fehler melden oder Verbesserungsvorschl&auml;ge einbringen</span>
+        </a></li>
+        <li><a href="http://yuri41.wordpress.com/category/SimpleCMS">
+            <strong class="title">Weblog von Christoph Hochstrasser</strong>
+            <span>Tips & Tricks zu SimpleCMS</span>
+        </a></li>
+    </ul>
+
+    <p>
+        SimpleCMS ist Open Source und steht unter der MIT Lizenz. N&auml;heres dazu 
+        steht in der mitgelieferten @LICENSE@ Datei.
+    </p>
+
+    <p>
+        SimpleCMS nutzt "PHP":http://php.net und "Zend Framework":http://framework.zend.com
+    </p>
+
+    <p>(c) 2010 Christoph Hochstrasser</p>
+    
 </div>
 </div><!-- end of: #default -->

@@ -173,6 +173,12 @@ class Page
      */
     static function setSearchPath($path)
     {
+        if (is_array($path)) {
+            foreach ($path as $p) {
+                static::setSearchPath($p);
+            }
+            return true;
+        }
         if (null === static::$searchPath) {
             static::$searchPath = new SplStack;
         }

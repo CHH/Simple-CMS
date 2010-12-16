@@ -10,8 +10,8 @@ class StandardLoader implements Loader
     /** @var Environment */
     protected $environment;
     
-	protected $namespace = "Plugin";
-	
+    protected $namespace = "Plugin";
+
     function __construct(array $options = array())
     {
         $this->setOptions($options);
@@ -33,9 +33,9 @@ class StandardLoader implements Loader
             if($entry->isDir() and !$entry->isDot()) {
                 $plugin = $entry->getFilename();
                 try {
-                	$this->load($plugin);
+                    $this->load($plugin);
                 } catch (\Exception $e) {
-					$exceptions->push($e);
+                    $exceptions->push($e);
                 }
             }
         }
@@ -57,18 +57,18 @@ class StandardLoader implements Loader
         
         $pluginBootstrapFile = realpath($this->getPath() . $ds . $pluginName . $ds 
             . $pluginName . ".php");
-		
+        
         if(!$pluginBootstrapFile) {
             throw new Exception(sprintf(
-				"The plugin %s was not found in %s, please make sure its correctly installed",
-				$pluginName,
-				$this->getPath() . $ds . $pluginName
+                "The plugin %s was not found in %s, please make sure its correctly installed",
+                $pluginName,
+                $this->getPath() . $ds . $pluginName
             ));
         }
         include_once($pluginBootstrapFile);
         
-		$className = "\\" . $this->namespace . "\\" . $pluginName;
-		
+        $className = "\\" . $this->namespace . "\\" . $pluginName;
+        
         $plugin = new $className;
 
         if (!$plugin instanceof Plugin) {
@@ -88,11 +88,11 @@ class StandardLoader implements Loader
 
         } catch(\Exception $e) {
             throw new Exception(sprintf(
-				"There was an exception while bootstrapping the plugin %s",
-				$pluginName
+                "There was an exception while bootstrapping the plugin %s",
+                $pluginName
             ), null, $e);
         }
-		
+        
         $env->registerPlugin($pluginName, $plugin);
         return $plugin;
     }

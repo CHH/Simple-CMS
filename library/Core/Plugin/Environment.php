@@ -45,17 +45,17 @@ class Environment
         } else {
             $plugins = func_get_args();
         }
-		$loader = $this->loader;
-		
-		if (!$plugins) {
-			throw new \InvalidArgumentException("No plugin given");
-		}
-		
-		foreach ($plugins as $plugin) {
-			$loader->load($plugin);
-		}
+        $loader = $this->loader;
 
-		return $this;
+        if (!$plugins) {
+            throw new \InvalidArgumentException("No plugin given");
+        }
+
+        foreach ($plugins as $plugin) {
+            $loader->load($plugin);
+        }
+
+        return $this;
     }
     
     function export($export, $object = null)
