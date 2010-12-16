@@ -14,8 +14,12 @@ const APPROOT = __DIR__;
 define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
 define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
-//require_once('../Spark2/lib/Spark.php');
-require_once(LIBRARIES . '/Spark2/lib/Spark.php');
+// Look for a checkout of Spark in the parent folder, otherwise take the bundled version
+if (file_exists("../Spark2/lib/Spark.php")) {
+    require_once('../Spark2/lib/Spark.php');
+} else {
+    require_once(LIBRARIES . '/Spark2/lib/Spark.php');
+}
 require_once(LIBRARIES . '/Mustache/library/Phly/Mustache/_autoload.php');
 require_once(LIBRARIES . '/Textile.php');
 require_once(LIBRARIES . '/Core.php');
