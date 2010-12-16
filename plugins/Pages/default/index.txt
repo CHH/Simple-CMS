@@ -42,7 +42,7 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
 		SimpleCMS nutzt "PHP":http://php.net und "Zend Framework":http://framework.zend.com
 	</p>
 	
-	<p>&copy; 2010 Christoph Hochstrasser</p>
+	<p>(c) 2010 Christoph Hochstrasser</p>
 	
 </div>
 </div><!-- end of: #default -->
