@@ -17,7 +17,7 @@ use StdClass,
 
 /**
  * @todo Allow rendering of pages from within pages
- * @todo Implement findAll properly
+ * @todo Implement Page::findAll properly
  */
 class Pages extends \Core\Plugin\AbstractPlugin
 {
