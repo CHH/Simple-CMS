@@ -307,53 +307,22 @@ class Page
         return $this->modified;
     }
     
+    /**
+     * Return a configured instance of Mustache
+     *
+     * Important: the page class uses its own loading mechanism instead of Mustache's.
+     *
+     * @return Phly\Mustache\Mustache
+     */
     protected static function getMustache()
     {
         if (null === static::$mustache) {
-            static::$mustache = new Mustache;
-            static::$mustache->setSuffix(static::$suffix);
+            $mustache = new Mustache;
+            $renderer = $mustache->getRenderer();
+            $renderer->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator);
+            $renderer->addPragma(new \Plugin\Pages\Pragma\FormatDate);
+            static::$mustache = $mustache;
         }
         return static::$mustache;
-    }
-    
-    /**
-     * Set an array of Attributes for the page
-     *
-     * @param  array $attributes
-     * @return Page
-     */
-    function setAttributes(Array $attributes)
-    {
-        foreach ($attributes as $attribute => $value) {
-            $this->setAttribute($attribute, $value);
-        }
-        return $this;
-    }
-    
-    function getAttributes()
-    {
-        return $this->attributes;
-    }
-    
-    /**
-     * Set an Attribute for the page, can be used to dynamically assign values
-     * to the page
-     *
-     * @param  string $attribute
-     * @param  mixed  $value
-     * @return Page
-     */
-    function setAttribute($attribute, $value)
-    {
-        $this->attributes[$attribute] = $value;
-        return $this;
-    }
-    
-    function getAttribute($attribute)
-    {
-        if (!isset($this->attributes[$attribute])) {
-            return null;
-        }
-        return $this->attributes[$attribute];
     }
 }
