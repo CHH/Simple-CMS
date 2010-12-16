@@ -4,6 +4,7 @@ namespace Plugin;
 
 autoload("Plugin\Pages\ErrorHandler", __DIR__ . "/library/ErrorHandler.php");
 
+require_once "library/Pragma.php";
 require_once "library/Page.php";
 require_once "library/PageRoute.php";
 
@@ -65,13 +66,11 @@ class Pages extends \Core\Plugin\AbstractPlugin
     function render($request, $response)
     {
         $page   = $request->getParam("page");
-        $layout = $this->import("Layout");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new \Spark\Controller\Exception("Page is hidden", 404);
         }
         $page = Page::find($page);
-        $page->setAttribute("layout", $layout);
         $response->append($page->getContent());
     }
 }
