@@ -10,15 +10,16 @@
  * should be performance wise superior to the Action-Controller-based
  * approach, similar to Zend_Controller_Action, which is also available.
  */
-class Sample_DefaultController implements Spark_Controller_Controller
+namespace Plugin\Sample\Controller; 
+
+use Spark\Controller\HttpRequest, Spark\Controller\HttpResponse;
+
+class IndexController implements \Spark\Controller\Controller
 {
-  
-  public function execute(
-    Zend_Controller_Request_Abstract  $request,
-    Zend_Controller_Response_Abstract $response
-  )
-  {
-    $response->appendBody("Hello from Sample Plugin");
-  }
+
+    function __invoke(HttpRequest $request, HttpResponse $response)
+    {
+        $response->appendBody("Hello from Sample Plugin");
+    }
   
 }
