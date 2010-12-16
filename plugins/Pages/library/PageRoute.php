@@ -4,7 +4,7 @@ namespace Plugin\Pages;
 
 use Spark\Options,
     Spark\Controller\Exception,
-    Spark\Controller\HttpRequest;
+    Spark\HttpRequest;
 
 class PageRoute implements \Spark\Router\Route
 {

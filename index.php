@@ -3,8 +3,8 @@
 namespace Core;
 
 use \Spark\App;
-use \Spark\Controller\HttpRequest;
-use \Spark\Controller\HttpResponse;
+use \Spark\HttpRequest;
+use \Spark\HttpResponse;
 
 const ENV_DEVELOPMENT = "development";
 const ENV_PRODUCTION  = "production";
