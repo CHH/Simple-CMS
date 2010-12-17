@@ -1,7 +1,21 @@
 <?php
-
+/**
+ * Plugin Abstract
+ * 
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.txt.
+ *
+ * @author     Christoph Hochstrasser <christoph.hochstrasser@gmail.com>
+ * @copyright  Copyright (c) 2010 Christoph Hochstrasser
+ * @license    MIT License
+ */
 namespace Core\Plugin;
 
+/**
+ * Plugin Abstract
+ *
+ * Provides a base class for plugins which provides access to the plugin's environment
+ */
 abstract class AbstractPlugin implements Plugin
 {
     /**
@@ -18,6 +32,12 @@ abstract class AbstractPlugin implements Plugin
     function init()
     {}
 
+	/**
+	 * Set the plugin's environment
+	 *
+	 * @param  Environment    $env
+	 * @return AbstractPlugin
+	 */
     function setEnvironment(Environment $env)
     {
         $this->environment = $env;
@@ -57,7 +77,7 @@ abstract class AbstractPlugin implements Plugin
      * @param  string $plugin,... Plugins to load
      * @return Plugin
      */ 
-    protected function depend()
+    protected function depend($on)
     {
         $plugins = func_get_args();
         $this->environment->depend($plugins);

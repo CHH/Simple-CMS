@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Pages Plugin
+ *
+ * Renders requested pages and handles the layout
+ * 
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.txt.
+ *
+ * @package    Plugin
+ * @subpackage Pages
+ * @author     Christoph Hochstrasser <christoph.hochstrasser@gmail.com>
+ * @copyright  Copyright (c) 2010 Christoph Hochstrasser
+ * @license    MIT License
+ */
 namespace Plugin;
 
 autoload("Plugin\Pages\ErrorHandler", __DIR__ . "/library/ErrorHandler.php");

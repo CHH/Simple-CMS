@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * Holds the environment for all plugins
+ *
+ * Contains the loaded plugins, imported/exported variables and handles dependencies
+ * 
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.txt.
+ *
+ * @author     Christoph Hochstrasser <christoph.hochstrasser@gmail.com>
+ * @copyright  Copyright (c) 2010 Christoph Hochstrasser
+ * @license    MIT License
+ */
 namespace Core\Plugin;
 
 class Environment

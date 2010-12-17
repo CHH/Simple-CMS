@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Page Class
+ *
+ * Represents a page and handles rendering through Textile and Mustache
+ * 
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.txt.
+ *
+ * @package    Plugin
+ * @subpackage Pages
+ * @author     Christoph Hochstrasser <christoph.hochstrasser@gmail.com>
+ * @copyright  Copyright (c) 2010 Christoph Hochstrasser
+ * @license    MIT License
+ */
 namespace Plugin\Pages;
 
 use InvalidArgumentException,
@@ -26,6 +39,9 @@ class Page
     
     /** @var Phly\Mustache\Mustache */
     protected static $mustache;
+
+	/** @var Textile */
+	protected static $textile;
     
     /** @var SplStack */
     protected static $searchPath;
@@ -241,8 +257,9 @@ class Page
     function getContent()
     {
         if (false === $this->isRendered) {
-            $textile  = new Textile;
+            $textile  = static::getTextile();
             $mustache = static::getMustache();
+            
             $tokens   = $mustache->getLexer()->compile(file_get_contents($this->filename));
             $content  = $mustache->getRenderer()->render($tokens, $this);
             
@@ -306,6 +323,14 @@ class Page
     {
         return $this->modified;
     }
+
+	static function getTextile()
+	{
+		if (null === static::$textile) {
+			static::$textile = new Textile;
+		}
+		return static::$textile;
+	}
     
     /**
      * Return a configured instance of Mustache
@@ -314,13 +339,15 @@ class Page
      *
      * @return Phly\Mustache\Mustache
      */
-    protected static function getMustache()
+    static function getMustache()
     {
         if (null === static::$mustache) {
             $mustache = new Mustache;
             $renderer = $mustache->getRenderer();
-            $renderer->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator);
-            $renderer->addPragma(new \Plugin\Pages\Pragma\FormatDate);
+            
+            $renderer->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator)
+                     ->addPragma(new \Plugin\Pages\Pragma\FormatDate);
+                     
             static::$mustache = $mustache;
         }
         return static::$mustache;
