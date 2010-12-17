@@ -14,6 +14,10 @@ h2. Stable Package
 # Setup a new VHOST and point its document root to the directory of the Simple CMS install, for example @/var/www/simple_cms@. Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
 # Start your server and open the URL of your VHOST in a Browser -- you should see the Getting Started Page
 
+h2. Developer Snapshot
+
+Just clone the repository with @git clone git://github.com/CHH/Simple-CMS /your/desired/path@.
+
 h1. Usage
 
 h2. Pages
