@@ -1,9 +1,7 @@
 h1. Requirements
 
-# PHP 5.2.6 or newer (PHP 5.3 supported)
-# Permissions to modify the @include_path@ of PHP (e.g. via @set_include_path()@)
+# > PHP 5.3
 # Apache 2.2 with mod_rewrite enabled and access to VHOSTs configuration (not tested without, but could also work)
-# Make sure you have the Zend Framework either installed through PEAR or somewhere in your PHP @include path@ (copying to the library directory of your Simple CMS Install will also do)
 
 (For Experts: It can also work on other web servers than Apache, although I haven't tested it. Make sure the rewrite rules are configured correctly, look at the rules in public/.htaccess for reference)
 
@@ -16,13 +14,9 @@ h2. Stable Package
 # Setup a new VHOST and point its document root to the directory of the Simple CMS install, for example @/var/www/simple_cms@. Don't forget to update your @/etc/hosts@ or @C:\Windows\system32\drivers\etc\hosts@ file with the server name of your VHOST!
 # Start your server and open the URL of your VHOST in a Browser -- you should see the Getting Started Page
 
-h2. Developer Package
+h2. Developer Snapshot
 
-You can obtain Developer Packages by directly cloning the git repository at @git://github.com/CHH/Simple-CMS.git@ or by taking a snapshot of the repository.
-
-# Get a Developer Package, copy the folder you get from cloning or from unzipping the snapshot, to the document root of your Web Server, for example @/var/www@, you should have a folder @/var/www/Simple-CMS@
-# Clone the Spark Web Framework with @git clone git://github.com/yuri41/Spark-Web-Framework@ into for example @/var/www@. Simple CMS will by default look in its parent folder for the Spark Framework checkout
-# Proceed with Point Three of the Stable Package install
+Just clone the repository with @git clone git://github.com/CHH/Simple-CMS /your/desired/path@.
 
 h1. Usage
 
@@ -48,20 +42,7 @@ pre.. |- pages/ The folder for all pages. Subdirectories can be created to achie
 |- images/
 |- js/ Javascript files for your site
 |- styles/ A place to put your stylesheets in.
-|- layouts/ Contains one or more layouts used by all pages. Layouts are rendered around the page content and are used to render content used on all pages such as Navigation or links to stylesheets.
-
-h1. Advanced Usage
-
-The common Layout for all pages is stored in the layouts folder and is named "default.phtml" by default. This can be changed with the config directive "pages.layout.layout_name".
-The path where the layout files are located can be changed with "pages.layout.layout_path".
-Both config directives are found in the "pages.ini" config file in the "config" folder.
-
-The layout file uses Zend_View as template engine. To get the content of the requested page, simply output $this->content. Just write your HTML as you normally do, or use 
-the Helpers provided by Zend_View.
-For additional information refer to the manual of Zend_View.
-
-Because the pages are also parsed with Zend_View, you mix in PHP and use View Helpers
-in your Pages too.
+|- layouts/ Contains one or more layouts used by all pages. Layouts are rendered around the page content and are used to render content used on all pages such as Navigation or links to stylesheets. 
 
 h1. Want to contribute?
 
@@ -69,8 +50,6 @@ Simple CMS is licensed under the MIT License, and thus Open Source.
 To contribute fork the git repository at http://github.com/CHH/Simple-CMS and send me pull requests either by mail <christoph.hochstrasser@gmail.com> or submit your pull request via github.
 
 I'm always open for new features and feedback, just send me a mail or a Message on Github and we discuss it.
-
-
 
 P.S.
 
