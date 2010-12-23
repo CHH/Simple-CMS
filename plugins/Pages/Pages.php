@@ -78,7 +78,7 @@ class Pages extends \Core\Plugin\AbstractPlugin
 
     function render($request, $response)
     {
-        $page   = $request->getParam("page");
+        $page   = $request->getMetadata("page");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new \Spark\Controller\Exception("Page is hidden", 404);

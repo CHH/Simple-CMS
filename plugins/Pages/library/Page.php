@@ -19,7 +19,7 @@ use InvalidArgumentException,
     DirectoryIterator,
     SplStack,
     Textile,
-    Spark\Options,
+    Spark\Util\Options,
     Spark\Util\ArrayObject,
     Phly\Mustache\Mustache;
 

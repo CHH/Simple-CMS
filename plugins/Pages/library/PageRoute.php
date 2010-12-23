@@ -2,7 +2,7 @@
 
 namespace Plugin\Pages;
 
-use Spark\Options,
+use Spark\Util\Options,
     Spark\Controller\Exception,
     Spark\HttpRequest;
 
@@ -39,11 +39,11 @@ class PageRoute implements \Spark\Router\Route
         }
         
         if (false === Page::find($path)) {
-            $request->setParam("page", $path);
+            $request->setMetadata("page", $path);
             throw new Exception("Page not found", 404);
         }
         
-        return array("page" => $path, "__callback" => $this->callback);
+        return array("page" => $path, "callback" => $this->callback);
     }
     
     function setCallback($callback)

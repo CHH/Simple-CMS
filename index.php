@@ -20,6 +20,7 @@ if (file_exists("../Spark2/lib/Spark.php")) {
 } else {
     require_once(LIBRARIES . '/Spark2/lib/Spark.php');
 }
+
 require_once(LIBRARIES . '/Mustache/library/Phly/Mustache/_autoload.php');
 require_once(LIBRARIES . '/Textile.php');
 require_once(LIBRARIES . '/Core.php');
@@ -45,9 +46,10 @@ $resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Contro
 
 $pluginEnv = new Plugin\Environment;
 
-$pluginEnv->export("App",    $app)
-          ->export("Routes", $app->routes)
-          ->export("Config", $config);
+$pluginEnv
+    ->export("App",    $app)
+    ->export("Routes", $app->routes)
+    ->export("Config", $config);
 
 $pluginLoader = new Plugin\StandardLoader(array(
     "path" => PLUGINS,

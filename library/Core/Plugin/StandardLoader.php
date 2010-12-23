@@ -28,7 +28,7 @@ class StandardLoader implements Loader
 
     function setOptions(array $options)
     {
-        \Spark\Options::setOptions($this, $options);
+        \Spark\Util\Options::setOptions($this, $options);
         return $this;
     }
 
