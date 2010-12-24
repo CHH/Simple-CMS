@@ -43,6 +43,5 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
     </p>
 
     <p>(c) 2010 Christoph Hochstrasser</p>
-    
 </div>
 </div><!-- end of: #default -->

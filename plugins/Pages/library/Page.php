@@ -50,27 +50,27 @@ class Page
      * Name of page without suffix
      * @var string
      */
-    public $name;
+    protected $name;
     
     /**
      * When page was created
      * @var string
      */
-    public $created;
+    protected $created;
     
     /**
      * When page was last modified
      * @var string
      */
-    public $modified;
+    protected $modified;
 
     /**
      * Attributes set at runtime
      * @param array
      */
-    public $attributes = array();
+    protected $attributes = array();
     
-    public $filename;
+    protected $filename;
     
     /**
      * Content of page
@@ -107,6 +107,26 @@ class Page
     }
     
     /**
+     * Set one or more search path(s) for pages
+     *
+     * @param string|array one ore more search paths
+     * @return void
+     */
+    static function setSearchPath($path)
+    {
+        if (is_array($path)) {
+            foreach ($path as $p) {
+                static::setSearchPath($p);
+            }
+            return true;
+        }
+        if (null === static::$searchPath) {
+            static::$searchPath = new SplStack;
+        }
+        static::$searchPath->push($path);
+    }
+    
+    /**
      * Returns all pages from a given path
      *
      * @param  string $path Path relative to the search path(s)
@@ -134,7 +154,7 @@ class Page
         return new ArrayObject($pages);
     }
     
-    protected function search($file)
+    protected static function search($file)
     {
         foreach (static::$searchPath as $path) {
             $template = $path . DIRECTORY_SEPARATOR . $file;
@@ -166,7 +186,7 @@ class Page
             throw new InvalidArgumentException("No valid file name given.");
         }
         
-        $template = $this->search($file);
+        $template = static::search($file);
         
         if (!$template) {
             return false;
@@ -178,27 +198,9 @@ class Page
         $this->setModified(filemtime($template));
         $this->setPath($pathinfo["dirname"]);
         
+        $this->content = file_get_contents($template);
+        
         return $this;
-    }
-    
-    /**
-     * Set one or more search path(s) for pages
-     *
-     * @param string|array one ore more search paths
-     * @return void
-     */
-    static function setSearchPath($path)
-    {
-        if (is_array($path)) {
-            foreach ($path as $p) {
-                static::setSearchPath($p);
-            }
-            return true;
-        }
-        if (null === static::$searchPath) {
-            static::$searchPath = new SplStack;
-        }
-        static::$searchPath->push($path);
     }
     
     /**
@@ -260,12 +262,17 @@ class Page
             $textile  = static::getTextile();
             $mustache = static::getMustache();
             
-            $tokens   = $mustache->getLexer()->compile(file_get_contents($this->filename));
+            $tokens   = $mustache->getLexer()->compile($this->content);
             $content  = $mustache->getRenderer()->render($tokens, $this);
             
             $this->content    = $textile->TextileThis($content);
             $this->isRendered = true;
         }
+        return $this->content;
+    }
+    
+    function getRawContent()
+    {
         return $this->content;
     }
     
@@ -323,14 +330,37 @@ class Page
     {
         return $this->modified;
     }
-
-	static function getTextile()
-	{
-		if (null === static::$textile) {
-			static::$textile = new Textile;
-		}
-		return static::$textile;
-	}
+    
+    function __set($var, $value)
+    {
+        $setter = "set" . ucfirst($var);
+        if (!is_callable(array($this, $setter))) {
+            throw new \Exception("$var is not defined");
+        }
+        $this->{$setter}($value);
+    }
+    
+    function __get($var)
+    {
+        $getter = "get" . ucfirst($var);
+        if (!is_callable(array($this, $getter))) {
+            throw new \Exception("$var is not defined");
+        }
+        return $this->{$getter}();
+    }
+    
+    /**
+     * Returns an instance of the Textile parser
+     *
+     * @return Textile
+     */
+    static function getTextile()
+    {
+        if (null === static::$textile) {
+            static::$textile = new Textile;
+        }
+        return static::$textile;
+    }
     
     /**
      * Return a configured instance of Mustache
@@ -345,8 +375,9 @@ class Page
             $mustache = new Mustache;
             $renderer = $mustache->getRenderer();
             
-            $renderer->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator)
-                     ->addPragma(new \Plugin\Pages\Pragma\FormatDate);
+            $renderer
+                ->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator)
+                ->addPragma(new \Plugin\Pages\Pragma\FormatDate);
                      
             static::$mustache = $mustache;
         }

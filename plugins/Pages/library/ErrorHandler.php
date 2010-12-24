@@ -26,7 +26,7 @@ class ErrorHandler
         
         $page->message       = $exception->getMessage();
         $page->stackTrace    = $exception->getTrace();
-        $page->requestedPage = $request->getParam("page");
+        $page->requestedPage = $request->getMetadata("page");
         $page->exceptionType = get_class($exception);
         $page->requestUri    = $request->getRequestUri();
         $page->requestMethod = $request->getMethod();
