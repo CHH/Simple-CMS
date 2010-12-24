@@ -252,7 +252,8 @@ class Page
     }
     
     /**
-     * Lazy load the page content from the file
+     * Renders the page's content through Mustache and Textile. Returns the 
+     * rendered content.
      *
      * @return string
      */
