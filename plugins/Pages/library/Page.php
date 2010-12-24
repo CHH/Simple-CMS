@@ -125,6 +125,11 @@ class Page
         }
         static::$searchPath->push($path);
     }
+
+    static function setDefaultPageName($name = "index")
+    {
+        static::$defaultPageName = $name;
+    }
     
     /**
      * Returns all pages from a given path
@@ -159,9 +164,9 @@ class Page
             $template = $path . DIRECTORY_SEPARATOR . $file;
             
             if (is_dir($template)) {
-                $template .= DIRECTORY_SEPARATOR . "index" . static::$suffix;
+                $template .= DIRECTORY_SEPARATOR . static::$defaultPageName . static::$suffix;
             }
-
+            
             if (false === strpos($template, static::$suffix)) {
                 $template .= static::$suffix;
             }
