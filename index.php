@@ -2,9 +2,10 @@
 /** @namespace */
 namespace Core;
 
-use \Spark\App;
-use \Spark\HttpRequest;
-use \Spark\HttpResponse;
+use \Spark\App,
+    \Spark\HttpRequest,
+    \Spark\HttpResponse,
+    \Spark\Controller;
 
 const ENV_DEVELOPMENT = "development";
 const ENV_PRODUCTION  = "production";
@@ -40,9 +41,12 @@ $request  = new HttpRequest;
 $response = new HttpResponse;
 
 $app = new App;
+$callbackFilter = new Controller\CallbackFilter;
 
-$resolver = $app->getResolver();
+$resolver = $callbackFilter->getResolver();
 $resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Controller");
+
+$app->routes->filter($callbackFilter);
 
 $pluginEnv = new Plugin\Environment;
 
