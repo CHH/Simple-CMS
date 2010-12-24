@@ -150,7 +150,6 @@ class Page
             $page    = new self;
             $pages[] = $page->fromFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
         }
-        
         return new ArrayObject($pages);
     }
     
@@ -162,8 +161,8 @@ class Page
             if (is_dir($template)) {
                 $template .= DIRECTORY_SEPARATOR . "index" . static::$suffix;
             }
-            
-            if (substr($template, strlen(static::$suffix), -strlen(static::$suffix)) !== static::$suffix) {
+
+            if (false === strpos($template, static::$suffix)) {
                 $template .= static::$suffix;
             }
             
@@ -182,10 +181,6 @@ class Page
      */
     function fromFile($file)
     {
-        if (!is_string($file) or empty($file)) {
-            throw new InvalidArgumentException("No valid file name given.");
-        }
-        
         $template = static::search($file);
         
         if (!$template) {
@@ -336,7 +331,8 @@ class Page
     {
         $setter = "set" . ucfirst($var);
         if (!is_callable(array($this, $setter))) {
-            throw new \Exception("$var is not defined");
+            $this->{$var} = $value;
+            return;
         }
         $this->{$setter}($value);
     }
