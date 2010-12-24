@@ -374,12 +374,12 @@ class Page
     {
         if (null === static::$mustache) {
             $mustache = new Mustache;
-            $renderer = $mustache->getRenderer();
             
-            $renderer
+            $mustache
+                ->getRenderer()
                 ->addPragma(new \Phly\Mustache\Pragma\ImplicitIterator)
                 ->addPragma(new \Plugin\Pages\Pragma\FormatDate);
-                     
+            
             static::$mustache = $mustache;
         }
         return static::$mustache;
