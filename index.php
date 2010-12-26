@@ -41,12 +41,12 @@ $request  = new HttpRequest;
 $response = new HttpResponse;
 
 $app = new App;
-$callbackFilter = new Controller\CallbackFilter;
+$mvc = new Controller\CallbackFilter;
 
-$resolver = $callbackFilter->getResolver();
+$resolver = $mvc->getResolver();
 $resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Controller");
 
-$app->routes->filter($callbackFilter);
+$app->preDispatch($mvc);
 
 $pluginEnv = new Plugin\Environment;
 
@@ -61,7 +61,6 @@ $pluginLoader = new Plugin\StandardLoader(array(
 ));
 
 Plugin\Controller::setEnvironment($pluginEnv);
-
 $pluginLoader->loadAll();
 
 $app($request, $response);
