@@ -36,7 +36,7 @@ class PageRoute implements Route
         
         if (false === Page::find($path)) {
             $request->setMetadata("page", $path);
-            throw new Exception("Page not found", 404);
+            return false;
         }
         return array("page" => $path, "callback" => $this->callback);
     }
