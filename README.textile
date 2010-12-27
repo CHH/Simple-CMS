@@ -7,7 +7,7 @@ h1. Requirements
 
 h2. Sample Apache VHOST Configuration
 
-bc..
+<pre><code>
 NameVirtualHost *:80
 
 <VirtualHost *:80>
@@ -24,6 +24,7 @@ NameVirtualHost *:80
         Allow from all
     </Directory>
 </VirtualHost>
+</code></pre>
 
 h1. How to install
 
@@ -73,9 +74,9 @@ and send me pull requests either by mail <christoph.hochstrasser@gmail.com> or v
 I'm always open for new features and feedback, just send me a mail or a Message on 
 Github and we discuss it.
 
-h2. Coding is not your thing? But good at writing?
+h2. Coding is not your thing? But you're good at writing?
 
-Good documentation is also a feature! Just head over to the Wiki
+Good documentation is also a feature! Just head over to the "Wiki":https://github.com/CHH/Simple-CMS/wiki
 and write about your favourite feature of Simple-CMS!
 
 P.S.
@@ -87,3 +88,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+(c) 2010 Christoph Hochstrasser
