@@ -73,10 +73,13 @@ class Page
     protected $filename;
     
     /**
-     * Content of page
+     * Rendered Content of page
      * @var string
      */
     protected $content;
+
+    /** @var string content of page, not rendered */
+    protected $rawContent;
     
     /** @var bool */
     protected $isRendered = false;
@@ -90,7 +93,7 @@ class Page
     function __construct(Array $page = array())
     {
         if ($page) {
-            Options::setOptions($this, $page);
+            $this->fromArray($page);
         }
     }
     
@@ -178,6 +181,28 @@ class Page
         return false;
     }
     
+    function fromArray(Array $data)
+    {
+        Options::setOptions($this, $data);
+        return $this;
+    }
+    
+    function toArray()
+    {
+        return array(
+            "name"       => $this->name,
+            "content"    => $this->rawContent,
+            "attributes" => $this->attributes,
+            "created"    => $this->created,
+            "modified"   => $this->modified
+        );
+    }
+
+    function toString()
+    {
+        return $this->getContent();
+    }
+    
     /**
      * Initialize the page from a given template file
      *
@@ -198,7 +223,7 @@ class Page
         $this->setModified(filemtime($template));
         $this->setPath($pathinfo["dirname"]);
         
-        $this->content = file_get_contents($template);
+        $this->rawContent = file_get_contents($template);
         
         return $this;
     }
@@ -247,7 +272,8 @@ class Page
     
     function setContent($content)
     {
-        $this->content = $content;
+        $this->rawContent = $content;
+        $this->isRendered = false;
         return $this;
     }
     
@@ -263,7 +289,7 @@ class Page
             $textile  = static::getTextile();
             $mustache = static::getMustache();
             
-            $tokens   = $mustache->getLexer()->compile($this->content);
+            $tokens   = $mustache->getLexer()->compile($this->rawContent);
             $content  = $mustache->getRenderer()->render($tokens, $this);
             
             $this->content    = $textile->TextileThis($content);
@@ -274,7 +300,7 @@ class Page
     
     function getRawContent()
     {
-        return $this->content;
+        return $this->rawContent;
     }
     
     function __toString()

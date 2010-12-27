@@ -44,6 +44,7 @@ class Pages extends \Core\Plugin\AbstractPlugin
     {
         $routes = $this->import("Routes");
         $app    = $this->import("App");
+        $config = $this->import("Config");
         
         $pageRoute = new PageRoute(array(
             "callback" => array($this, "render")
@@ -64,21 +65,25 @@ class Pages extends \Core\Plugin\AbstractPlugin
         $layoutRenderer = new Mustache;
         $layoutRenderer->setTemplatePath($this->getPath() . "/default")
                        ->setTemplatePath(\Core\APPROOT    . "/layouts");
+
+        $layoutName = isset($config["Pages"]["layout_name"]) 
+            ? $config["Pages"]["layout_name"] 
+            : "layout";
         
         // Render the layout after the dispatching process
-        $app->postDispatch(function($request, $response) use ($layout, $layoutRenderer) { 
+        $app->postDispatch(function($request, $response) use ($layoutName, $layout, $layoutRenderer) { 
             $body = $response->getBody();
             $layout->content = $body;
-            $response->setBody($layoutRenderer->render("layout", $layout));
+            $response->setBody($layoutRenderer->render($layoutName, $layout));
         });
         
         // Checks if the response has errors and renders appropiate error pages
         $app->postDispatch(new ErrorHandler);
     }
-
+    
     function render($request, $response)
     {
-        $page   = $request->getMetadata("page");
+        $page = $request->getMetadata("page");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new \Spark\Controller\Exception("Page is hidden", 404);
