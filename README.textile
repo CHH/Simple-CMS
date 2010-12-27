@@ -5,6 +5,26 @@ h1. Requirements
 
 (For Experts: It can also work on other web servers than Apache, although I haven't tested it. Make sure the rewrite rules are configured correctly, look at the rules in public/.htaccess for reference)
 
+h2. Sample Apache VHOST Configuration
+
+bc..
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+    DocumentRoot /path/to/dir/where/you/extracted/SimpleCMS
+
+    # Make sure you have registered this with a DNS server
+    # or have an entry in your computer's host file (C:\Windows\System32\drivers\etc\hosts or /etc/hosts on *NIX)
+    ServerName your_domain.com
+
+    <Directory "/path/to/dir/where/you/extracted/SimpleCMS">
+        Options FollowSymLinks ExecCGI Includes
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
+
 h1. How to install
 
 h2. Stable Package
@@ -16,7 +36,7 @@ h2. Stable Package
 
 h2. Developer Snapshot
 
-Just clone the repository with @git clone git://github.com/CHH/Simple-CMS /your/desired/path@.
+Just clone the repository with @git clone git://github.com/CHH/Simple-CMS /your/desired/path@ and initialize all dependencies with @git submodule init@ and @git submodule update@.
 
 h1. Usage
 
@@ -47,9 +67,16 @@ pre.. |- pages/ The folder for all pages. Subdirectories can be created to achie
 h1. Want to contribute?
 
 Simple CMS is licensed under the MIT License, and thus Open Source. 
-To contribute fork the git repository at http://github.com/CHH/Simple-CMS and send me pull requests either by mail <christoph.hochstrasser@gmail.com> or submit your pull request via github.
+To contribute just fork the git repository at http://github.com/CHH/Simple-CMS 
+and send me pull requests either by mail <christoph.hochstrasser@gmail.com> or via github.
 
-I'm always open for new features and feedback, just send me a mail or a Message on Github and we discuss it.
+I'm always open for new features and feedback, just send me a mail or a Message on 
+Github and we discuss it.
+
+h2. Coding is not your thing? But good at writing?
+
+Good documentation is also a feature! Just head over to the Wiki
+and write about your favourite feature of Simple-CMS!
 
 P.S.
 
@@ -60,4 +87,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
