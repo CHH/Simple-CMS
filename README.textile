@@ -7,8 +7,7 @@ h1. Requirements
 
 h2. Sample Apache VHOST Configuration
 
-bc..
-NameVirtualHost *:80
+pre..bc..NameVirtualHost *:80
 
 <VirtualHost *:80>
     DocumentRoot /path/to/dir/where/you/extracted/SimpleCMS
