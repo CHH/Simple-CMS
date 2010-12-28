@@ -83,6 +83,8 @@ class Page
     
     /** @var bool */
     protected $isRendered = false;
+
+    protected $renderTextile = true;
     
     /**
      * Constructor
@@ -301,8 +303,11 @@ class Page
             
             $tokens   = $mustache->getLexer()->compile($this->rawContent);
             $content  = $mustache->getRenderer()->render($tokens, $this);
-            
-            $this->content    = $textile->TextileThis($content);
+
+            if ($this->renderTextile) {
+                $content = $textile->TextileThis($content);
+            }
+            $this->content = $content;
             $this->isRendered = true;
         }
         return $this->content;
@@ -366,6 +371,12 @@ class Page
     function getModified()
     {
         return $this->modified;
+    }
+    
+    function setRenderTextile($enabled = true)
+    {
+        $this->renderTextile = $enabled;
+        return $this;
     }
     
     function __set($var, $value)

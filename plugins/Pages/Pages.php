@@ -83,12 +83,18 @@ class Pages extends \Core\Plugin\AbstractPlugin
     
     function render($request, $response)
     {
+        $config = $this->import("Config");
+        $config = array_delete_key("Pages", $config) ?: array();
+        
+        $renderTextile = isset($config["render_textile"]) ? $config["render_textile"] : true;
+        
         $page = $request->getMetadata("page");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new \Spark\Controller\Exception("Page is hidden", 404);
         }
         $page = Page::find($page);
+        $page->setRenderTextile($renderTextile);
         $response->append($page->getContent());
     }
 }
