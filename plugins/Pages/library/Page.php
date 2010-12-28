@@ -106,7 +106,9 @@ class Page
     static function find($file)
     {
         $page = new self;
-        return $page->fromFile($file);
+        
+        if (!$file = static::search($file)) return false;
+        else return $page->fromFile($file);
     }
     
     /**
@@ -140,12 +142,14 @@ class Page
      * @param  string $path Path relative to the search path(s)
      * @return array
      */
-    static function findAll($path) 
+    static function findAll($path, $number = null) 
     {
         if (!is_string($path) or empty($path)) {
             throw new InvalidArgumentException("No path given");
         }
-
+        
+        $path = rtrim($path, "/\\");
+        
         foreach (static::$searchPath as $p) {
             if (is_dir($p .= DIRECTORY_SEPARATOR . $path)) {
                 $path = $p;
@@ -155,15 +159,18 @@ class Page
         
         $directory = new DirectoryIterator($path);
         $pages     = array(); 
-        
+
         foreach ($directory as $entry) {
             if (!$entry->isFile() or $entry->isDot() 
                 or self::$suffix !== "." . pathinfo($entry->getFilename(), PATHINFO_EXTENSION)) {
                 continue;
             }
-            
             $page    = new self;
             $pages[] = $page->fromFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
+
+            if (null !== $number and strlen($pages) === $number) {
+                break;
+            }
         }
         return new ArrayObject($pages);
     }
@@ -218,19 +225,15 @@ class Page
      */
     function fromFile($file)
     {
-        $template = static::search($file);
+        if (!file_exists($file)) return false;
+        else $this->filename = $file;
         
-        if (!$template) {
-            return false;
-        }
-        $this->filename = $template;
-
-        $pathinfo = pathinfo($template);
+        $pathinfo = pathinfo($file);
         $this->setName($pathinfo["filename"] ?: "index");
-        $this->setModified(filemtime($template));
+        $this->setModified(filemtime($file));
         $this->setPath($pathinfo["dirname"]);
         
-        $this->rawContent = file_get_contents($template);
+        $this->rawContent = file_get_contents($file);
         
         return $this;
     }
