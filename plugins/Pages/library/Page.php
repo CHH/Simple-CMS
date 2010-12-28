@@ -145,6 +145,13 @@ class Page
         if (!is_string($path) or empty($path)) {
             throw new InvalidArgumentException("No path given");
         }
+
+        foreach (static::$searchPath as $p) {
+            if (is_dir($p .= DIRECTORY_SEPARATOR . $path)) {
+                $path = $p;
+                break;
+            }
+        }
         
         $directory = new DirectoryIterator($path);
         $pages     = array(); 
