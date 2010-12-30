@@ -144,7 +144,7 @@ class Page
      * @param  string $path Path relative to the search path(s)
      * @return array
      */
-    static function findAll($path, $number = null) 
+    static function findAll($path, $number = null, $offset = null) 
     {
         if (!is_string($path) or empty($path)) {
             throw new InvalidArgumentException("No path given");
@@ -161,7 +161,15 @@ class Page
         
         $directory = new DirectoryIterator($path);
         $pages     = array(); 
+        
+        if (null !== $offset) {
+            $directory->seek($offset);
 
+            if (!$directory->valid()) {
+                throw new InvalidArgumentException("$offset is not valid");
+            }
+        }
+        
         foreach ($directory as $entry) {
             if (!$entry->isFile() or $entry->isDot() 
                 or self::$suffix !== "." . pathinfo($entry->getFilename(), PATHINFO_EXTENSION)) {
