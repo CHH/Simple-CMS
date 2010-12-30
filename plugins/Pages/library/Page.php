@@ -175,6 +175,9 @@ class Page
                 or self::$suffix !== "." . pathinfo($entry->getFilename(), PATHINFO_EXTENSION)) {
                 continue;
             }
+            if ("index" . static::$suffix === $entry->getFilename()) {
+                continue;
+            }
             $page    = new self;
             $pages[] = $page->fromFile($path . DIRECTORY_SEPARATOR . $entry->getFilename());
 
