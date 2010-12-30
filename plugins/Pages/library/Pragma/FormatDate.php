@@ -21,8 +21,9 @@ use DateTime,
 
 class FormatDate extends AbstractPragma
 {
-    const FORMAT_SHORT = "short";    
-    const FORMAT_LONG  = "long";
+    const FORMAT_SHORT = "short";
+    const FORMAT_SHORT_DATE = "short_date"; 
+    const FORMAT_LONG = "long";
     
     protected $name = "FORMAT-DATE";
     
@@ -55,6 +56,9 @@ class FormatDate extends AbstractPragma
                 break;
             case self::FORMAT_LONG:
                 $format = "j. F Y G:i";
+                break;
+            case self::FORMAT_SHORT_DATE:
+                $format = "j. M. y";
                 break;
             default:
                 // do nothing
