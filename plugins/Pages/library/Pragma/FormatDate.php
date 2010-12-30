@@ -59,10 +59,12 @@ class FormatDate extends AbstractPragma
             default:
                 // do nothing
         }
-        
-        $date = new DateTime($view[$data]);
+        try {
+            $date = new DateTime($this->getRenderer()->getValue($data, $view));
+        } catch (\Exception $e) {
+            return "";
+        }
         $formatted = $date->format($format);
-        
         return $escape ? $this->getRenderer()->escape($formatted) : $formatted;
     }
 }
