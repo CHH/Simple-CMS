@@ -45,6 +45,7 @@ $mvc = new Controller\CallbackFilter;
 
 $resolver = $mvc->getResolver();
 $resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Controller");
+$resolver->setModuleDirectory(PLUGINS);
 
 $app->preDispatch($mvc);
 
