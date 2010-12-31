@@ -37,9 +37,6 @@ if (ENVIRONMENT === "development") {
     error_reporting(E_ALL | E_STRICT);
 }
 
-$request  = new HttpRequest;
-$response = new HttpResponse;
-
 $app = new App;
 $mvc = new Controller\CallbackFilter;
 
@@ -64,4 +61,4 @@ $pluginLoader = new Plugin\StandardLoader(array(
 Plugin\Controller::setEnvironment($pluginEnv);
 $pluginLoader->loadAll();
 
-$app($request, $response);
+$app(new HttpRequest, new HttpResponse);
