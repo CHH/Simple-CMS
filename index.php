@@ -38,13 +38,13 @@ if (ENVIRONMENT === "development") {
 }
 
 $app = new App;
-$mvc = new Controller\CallbackFilter;
 
-$resolver = $mvc->getResolver();
-$resolver->setNamingSpec("\\Plugin\\{{module}}\\Controller\\{{controller}}Controller");
-$resolver->setModuleDirectory(PLUGINS);
+$app->setMetadata(array(
+    "naming_spec" => "\\Plugin\\{{module}}\\Controller\\{{controller}}Controller",
+    "module_directory" => PLUGINS
+));
 
-$app->preDispatch($mvc);
+Controller::enable($app);
 
 $pluginEnv = new Plugin\Environment;
 
