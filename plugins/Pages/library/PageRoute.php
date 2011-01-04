@@ -33,12 +33,12 @@ class PageRoute implements Route
         if (false !== ($pos = strpos($path, "?"))) {
             $path = substr($path, 0, $pos);
         }
+        $request->setMetadata("page", $path);
         
         if (false === Page::find($path)) {
-            $request->setMetadata("page", $path);
             return false;
         }
-        return array("page" => $path, "callback" => $this->callback);
+        return $this->callback;
     }
     
     function setCallback($callback)

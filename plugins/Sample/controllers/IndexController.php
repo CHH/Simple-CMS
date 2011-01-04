@@ -14,10 +14,11 @@ namespace Plugin\Sample\Controller;
 
 use Spark\HttpRequest, Spark\HttpResponse;
 
-class IndexController implements \Spark\Controller\Controller
+class IndexController extends \Core\Plugin\Controller
 {
-    function __invoke(HttpRequest $request, HttpResponse $response)
+    function indexAction()
     {
-        $response->append("Hello from Sample Plugin");
+        $this->import("Layout")->title = "Hello World";
+        echo "Hello from Sample Plugin";
     }
 }

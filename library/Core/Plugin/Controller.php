@@ -26,7 +26,7 @@ class Controller extends \Spark\Controller\ActionController
     protected function getPlugin()
     {
         if (null === $this->plugin) {
-            $pluginName = str_camelize($this->request->getParam("module"));
+            $pluginName = str_camelize($this->request->getMetadata("module"));
             $this->plugin = static::$environment->getPlugin($pluginName);
         }
         return $this->plugin;
