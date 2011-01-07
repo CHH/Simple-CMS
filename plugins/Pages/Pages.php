@@ -46,10 +46,7 @@ class Pages extends \Core\Plugin\AbstractPlugin
         $app    = $this->import("App");
         $config = $this->import("Config");
         
-        $pageRoute = new PageRoute(array(
-            "callback" => array($this, "render")
-        ));
-        $routes->addRoute($pageRoute);
+        $routes->addRoute(new PageRoute(array($this, "render")));
         
         Page::setSearchPath(array(
             $this->getPath() . "/default",

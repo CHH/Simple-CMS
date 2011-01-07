@@ -2,8 +2,7 @@
 
 namespace Plugin\Pages;
 
-use Spark\Util\Options,
-    Spark\HttpRequest,
+use Spark\HttpRequest,
     Spark\Router\Exception,
     Spark\Router\Route;
 
@@ -13,15 +12,9 @@ class PageRoute implements Route
 
     private $callback;
     
-    function __construct(array $options = array())
+    function __construct($callback)
     {
-        $this->setOptions($options);
-    }
-    
-    function setOptions(array $options)
-    {
-        Options::setOptions($this, $options);
-        return $this;
+        $this->callback = $callback;
     }
     
     function match(HttpRequest $request)
@@ -39,11 +32,5 @@ class PageRoute implements Route
             return false;
         }
         return $this->callback;
-    }
-    
-    function setCallback($callback)
-    {
-        $this->callback = $callback;
-        return $this;
     }
 }
