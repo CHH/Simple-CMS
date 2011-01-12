@@ -12,13 +12,12 @@ class Sample extends \Core\Plugin\AbstractPlugin
      * That means, all components are configured and your plugin just gets 
      * loaded by the Plugin Loader. 
      */
-    public function init() 
+    function init() 
     {
         $routes = $this->import("Routes");
-        $routes->map(
-            "sample/:controller/:action", 
-            array("module" => "Sample"),
-            array("controller" => "index", "action" => "index")
-        );
+        
+        $routes->scope("sample", function($sample) {
+            $sample->match(array("/" => "index#index"));
+        });
     }
 }

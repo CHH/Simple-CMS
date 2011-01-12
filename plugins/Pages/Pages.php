@@ -26,7 +26,8 @@ use StdClass,
     Plugin\Pages\PageRoute,
     Plugin\Pages\ErrorHandler,
     Phly\Mustache\Mustache,
-    Spark\Event;
+    Spark\Event,
+    Spark\Util;
 
 /**
  * @todo Allow rendering of pages from within pages
@@ -84,7 +85,7 @@ class Pages extends \Core\Plugin\AbstractPlugin
     function render($request, $response)
     {
         $config = $this->import("Config");
-        $config = array_delete_key("Pages", $config) ?: array();
+        $config = Util\array_delete_key("Pages", $config) ?: array();
         
         $renderTextile = isset($config["render_textile"]) ? $config["render_textile"] : true;
         
