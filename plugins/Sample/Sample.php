@@ -5,6 +5,8 @@
  */
 namespace Plugin;
 
+use Spark\Router\Redirect;
+
 class Sample extends \Core\Plugin\AbstractPlugin
 {
     /**
@@ -18,6 +20,7 @@ class Sample extends \Core\Plugin\AbstractPlugin
         
         $routes->scope("sample", function($sample) {
             $sample->match(array("/" => "index#index"));
+            $sample->match(array("/redirect_test" => new Redirect("/sample")));
         });
     }
 }
