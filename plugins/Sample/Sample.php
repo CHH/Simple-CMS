@@ -20,7 +20,7 @@ class Sample extends \Core\Plugin\AbstractPlugin
         
         $routes->scope("sample", function($sample) {
             $sample->match(array("/" => "index#index"));
-            $sample->match(array("/redirect_test" => new Redirect("/sample")));
+            $sample->match(array("/redirect_test" => new Redirect("http://google.at")));
         });
     }
 }
