@@ -17,7 +17,7 @@ class PageRoute implements Route
         $this->callback = $callback;
     }
     
-    function match(HttpRequest $request)
+    function __invoke(HttpRequest $request)
     {
         $path = $request->getRequestUri();
         $path = trim($path, self::PARAM_DELIMITER);

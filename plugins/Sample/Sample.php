@@ -5,6 +5,8 @@
  */
 namespace Plugin;
 
+use Spark\Router\Redirect;
+
 class Sample extends \Core\Plugin\AbstractPlugin
 {
     /**
@@ -12,12 +14,13 @@ class Sample extends \Core\Plugin\AbstractPlugin
      * That means, all components are configured and your plugin just gets 
      * loaded by the Plugin Loader. 
      */
-    public function init() 
+    function init() 
     {
         $routes = $this->import("Routes");
-
+        
         $routes->scope("sample", function($sample) {
-            $sample->match("/", "index#index");
+            $sample->match(array("/" => "index#index"));
+            $sample->match(array("/redirect_test" => new Redirect("http://google.at")));
         });
     }
 }
