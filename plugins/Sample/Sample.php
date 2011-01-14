@@ -19,8 +19,12 @@ class Sample extends \Core\Plugin\AbstractPlugin
         $routes = $this->import("Routes");
         
         $routes->scope("sample", function($sample) {
-            $sample->match(array("/" => "index#index"));
-            $sample->match(array("/redirect_test" => new Redirect("http://google.at")));
+            $sample->match(array(
+                "/?(:controller(/:action(.:format)?)?)?" => "index#index"
+            ));
+            $sample->match(array(
+                "/redirect_test" => new Redirect("/sample/index/index.txt")
+            ));
         });
     }
 }
