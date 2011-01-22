@@ -26,7 +26,7 @@ class PageRoute implements Route
         if (false !== ($pos = strpos($path, "?"))) {
             $path = substr($path, 0, $pos);
         }
-        $request->setMetadata("page", $path);
+        $request->meta("page", $path);
         
         if (false === Page::find($path)) {
             return false;

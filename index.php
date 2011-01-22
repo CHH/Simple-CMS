@@ -16,10 +16,10 @@ define("LIBRARIES", APPROOT . DIRECTORY_SEPARATOR . "library");
 define("PLUGINS",   APPROOT . DIRECTORY_SEPARATOR . "plugins");
 
 // Look for a checkout of Spark in the parent folder, otherwise take the bundled version
-if (file_exists("../Spark2/lib/Spark.php")) {
-    require_once('../Spark2/lib/Spark.php');
+if (file_exists("../Spark2/lib/Spark/App.php")) {
+    require_once('../Spark2/lib/Spark/App.php');
 } else {
-    require_once(LIBRARIES . '/Spark2/lib/Spark.php');
+    require_once(LIBRARIES . '/Spark2/lib/Spark/App.php');
 }
 
 require_once(LIBRARIES . '/Mustache/library/Phly/Mustache/_autoload.php');
@@ -39,7 +39,7 @@ if (ENVIRONMENT === "development") {
 
 $app = new App;
 
-$app->setMetadata(array(
+$app->set(array(
     "naming_spec" => "\\Plugin\\{{module}}\\Controller\\{{controller}}Controller",
     "module_directory" => PLUGINS
 ));
@@ -50,7 +50,7 @@ $pluginEnv = new Plugin\Environment;
 
 $pluginEnv
     ->export("App",    $app)
-    ->export("Routes", $app->routes)
+    ->export("Routes", $app->route())
     ->export("Config", $config);
 
 $pluginLoader = new Plugin\StandardLoader(array(

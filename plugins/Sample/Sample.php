@@ -19,12 +19,8 @@ class Sample extends \Core\Plugin\AbstractPlugin
         $routes = $this->import("Routes");
         
         $routes->scope("sample", function($sample) {
-            $sample->match(array(
-                "/?(:controller(/:action(.:format)?)?)?" => "index#index"
-            ));
-            $sample->match(array(
-                "/redirect_test" => new Redirect("/sample/index/index.txt")
-            ));
+            $sample->match("/?(:controller(/:action(\.:format|)|)|)")->to("index#index");
+            $sample->match("/redirect_test")->to(new Redirect("/sample/index/index.txt"));
         });
     }
 }

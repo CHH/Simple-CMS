@@ -69,14 +69,14 @@ class Pages extends \Core\Plugin\AbstractPlugin
             : "layout";
         
         // Render the layout after the dispatching process
-        $app->postDispatch(function($request, $response) use ($layoutName, $layout, $layoutRenderer) { 
+        $app->after(function($request, $response) use ($layoutName, $layout, $layoutRenderer) { 
             $body = $response->getBody();
             $layout->content = $body;
             $response->setBody($layoutRenderer->render($layoutName, $layout));
         });
         
         // Checks if the response has errors and renders appropiate error pages
-        $app->postDispatch(new ErrorHandler);
+        $app->error(new ErrorHandler);
     }
     
     function render($request, $response)
@@ -86,7 +86,7 @@ class Pages extends \Core\Plugin\AbstractPlugin
         
         $renderTextile = isset($config["render_textile"]) ? $config["render_textile"] : true;
         
-        $page = $request->getMetadata("page");
+        $page = $request->meta("page");
         
         if (strpos($page, "_") === 0 or strpos($page, "/_") !== false) {
             throw new \Spark\Controller\Exception("Page is hidden", 404);

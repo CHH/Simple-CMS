@@ -5,12 +5,8 @@ namespace Plugin\Pages;
 class ErrorHandler
 {
     function __invoke($request, $response) {
-        if (!$response->hasExceptions()) return;
-        
-        $exceptions = $response->getExceptions();
-        $exception  = array_pop($exceptions);
-        
-        $code = $exception->getCode();
+        $exception = $response->getException();
+        $code      = $exception->getCode();
         
         if ($code == null or (ENVIRONMENT === "production" and $code > 500)) {
             $code = 500;
@@ -26,7 +22,7 @@ class ErrorHandler
         
         $page->message       = $exception->getMessage();
         $page->stackTrace    = $exception->getTrace();
-        $page->requestedPage = $request->getMetadata("page");
+        $page->requestedPage = $request->meta("page");
         $page->exceptionType = get_class($exception);
         $page->requestUri    = $request->getRequestUri();
         $page->requestMethod = $request->getMethod();
