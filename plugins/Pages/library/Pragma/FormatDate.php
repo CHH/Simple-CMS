@@ -17,7 +17,8 @@ namespace Plugin\Pages\Pragma;
 
 use DateTime,
     Phly\Mustache\Pragma\AbstractPragma,
-    Phly\Mustache\Lexer;
+    Phly\Mustache\Lexer,
+    Spark\Util;
 
 class FormatDate extends AbstractPragma
 {
@@ -47,7 +48,7 @@ class FormatDate extends AbstractPragma
                 return;
         }
         
-        $format = array_delete_key("format", $options) ?: "Y-m-d H:i:s";
+        $format = Util\array_delete_key("format", $options) ?: "Y-m-d H:i:s";
         
         // Handle some predefined formats
         switch ($format) {
