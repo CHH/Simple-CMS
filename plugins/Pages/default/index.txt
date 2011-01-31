@@ -39,9 +39,9 @@ Du kannst dir dabei ein Beispiel an dieser Seite nehmen, die du unter @/plugins/
     </p>
 
     <p>
-        SimpleCMS nutzt "PHP":http://php.net und "Zend Framework":http://framework.zend.com
+        SimpleCMS nutzt "PHP":http://php.net und <a href="https://github.com/CHH/Spark2">Spark2</a>
     </p>
 
-    <p>(c) 2010 Christoph Hochstrasser</p>
+    <p>(c) 2011 Christoph Hochstrasser</p>
 </div>
 </div><!-- end of: #default -->
